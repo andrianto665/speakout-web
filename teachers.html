@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Teachers - SpeakOut</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="welcome.html" class="logo">
+                <div class="logo-icon">S</div>
+                <div class="logo-text">
+                    <h1>SpeakOut</h1>
+                    <p>ngomong Inggris jadi mudah</p>
+                </div>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="welcome.html">Home</a></li>
+                    <li><a href="teachers.html" class="active">Teachers</a></li>
+                    <li><a href="#records">Records</a></li>
+                </ul>
+            </nav>
+            <div class="user-info">
+                <a href="index.html" class="btn-login">Log In</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Our Expert Instructors</h1>
+                <p>Belajar dari para profesional berpengalaman</p>
+            </div>
+
+            <!-- Loading -->
+            <div id="loadingState" class="loading">
+                <div class="spinner"></div>
+                <p>Loading teachers...</p>
+            </div>
+
+            <!-- Teachers Grid -->
+            <div id="teachersList" class="teachers-grid" style="display: none;"></div>
+
+            <!-- Error -->
+            <div id="errorState" class="error-state" style="display: none;">
+                <p>Failed to load teachers.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- ✅ PENTING: Load JS teachers -->
+    <script src="js/teachers.js"></script>
+</body>
+</html>
