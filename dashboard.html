@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SpeakOut E-Course</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #333; }
+
+        /* Header */
+        .header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 0; position: sticky; top: 0; z-index: 1000; }
+        .header-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-icon { width: 45px; height: 45px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 20px; }
+        .logo-text h1 { font-size: 24px; font-weight: 700; color: #667eea; margin: 0; }
+        .logo-text p { font-size: 12px; color: #666; margin: 0; }
+        .nav-menu { display: flex; gap: 30px; list-style: none; }
+        .nav-menu a { text-decoration: none; color: #333; font-weight: 500; font-size: 14px; transition: color 0.3s; position: relative; }
+        .nav-menu a:hover { color: #667eea; }
+        .nav-menu a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: #667eea; transition: width 0.3s; }
+        .nav-menu a:hover::after { width: 100%; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .user-name { font-weight: 500; color: #333; font-size: 14px; }
+        .btn-logout { padding: 8px 16px; background: #EF4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.3s; }
+        .btn-logout:hover { background: #DC2626; transform: translateY(-2px); }
+
+        /* Main Content */
+        .main-content { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 400px; gap: 40px; }
+
+        /* Dashboard Section */
+        .dashboard-section { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .dashboard-header { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #e1e5eb; }
+        .dashboard-header h2 { font-size: 28px; font-weight: 600; color: #1a1a1a; margin-bottom: 5px; }
+        .dashboard-header p { color: #666; font-size: 14px; }
+        .breadcrumb { color: #666; font-size: 14px; margin-bottom: 15px; }
+        .breadcrumb a { color: #667eea; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        /* Course Grid */
+        .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        
+        /* Course Card */
+        .course-card { background: #f8f9fa; border: 1px solid #e1e5eb; border-radius: 10px; padding: 20px; transition: all 0.3s; }
+        .course-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: #667eea; }
+        .course-card h3 { font-size: 18px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
+        .course-card .description { color: #666; font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
+        .course-card .instructor { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #667eea; font-weight: 500; margin-bottom: 15px; }
+        
+        /* Progress Bar */
+        .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: #666; margin-bottom: 6px; }
+        .progress-bar { background: #e1e5eb; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 15px; }
+        .progress-fill { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+        
+        /* Update Button */
+        .btn-update { width: 100%; padding: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
+        .btn-update:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
+        .btn-update:disabled { background: #9CA3AF; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-update.completed { background: #10B981; }
+        
+        /* Empty State */
+        .empty-state { text-align: center; padding: 40px 20px; color: #666; }
+        .empty-state p { margin-bottom: 15px; }
+        .btn-browse { display: inline-block; padding: 10px 20px; background: #667eea; color: white; border-radius: 6px; text-decoration: none; font-weight: 500; }
+        .btn-browse:hover { background: #764ba2; }
+
+        /* Loading State */
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #e1e5eb; border-top-color: #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Sidebar */
+        .sidebar { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); height: fit-content; }
+        .sidebar h3 { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #1a1a1a; }
+        .office-info { color: #666; line-height: 1.8; font-size: 14px; }
+        .office-info p { margin-bottom: 15px; }
+        .office-info a { color: #667eea; text-decoration: none; }
+        .office-info a:hover { text-decoration: underline; }
+        .view-map { display: inline-block; margin-top: 10px; color: #667eea; font-weight: 500; text-decoration: none; }
+        .view-map:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .main-content { grid-template-columns: 1fr; }
+            .nav-menu { display: none; }
+            .dashboard-section { padding: 20px; }
+            .course-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">S</div>
+                <div class="logo-text">
+                    <h1>SpeakOut</h1>
+                    <p>ngomong Inggris jadi mudah</p>
+                </div>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Course</a></li>
+                    <li><a href="#">Teachers</a></li>
+                    <li><a href="#">Record</a></li>
+                    <li><a href="#">Schedules</a></li>
+                    <li><a href="#">Articles</a></li>
+                </ul>
+            </nav>
+            <div class="user-info">
+                <span class="user-name" id="userName">User</span>
+                <button id="logoutBtn" class="btn-logout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section class="dashboard-section">
+            <div class="dashboard-header">
+                <div class="breadcrumb">
+                    <a href="index.html">Home</a> / Dashboard
+                </div>
+                <h2>My Courses</h2>
+                <p>Track your learning progress and continue your journey</p>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading">
+                <div class="spinner"></div>
+                <p>Loading your courses...</p>
+            </div>
+
+            <!-- Course Grid (akan diisi oleh JavaScript) -->
+            <div id="courseList" class="course-grid" style="display: none;"></div>
+
+            <!-- Empty State (akan muncul jika tidak ada course) -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <p>🎉 You haven't enrolled in any courses yet!</p>
+                <a href="#" class="btn-browse">Browse Courses</a>
+            </div>
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>SpeakOut Office</h3>
+            <div class="office-info">
+                <p>
+                    Jl. Jenderal Sudirman 3007 KM 3.5<br>
+                    Palembang
+                </p>
+                <p>
+                    (0711) 319988 / 370066<br>
+                    <a href="mailto:speakout@palcomtech.com">speakout@palcomtech.com</a>
+                </p>
+                <a href="#" class="view-map">View Map →</a>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Load API Script -->
+    <script src="js/api.js"></script>
+    
+    <!-- Dashboard Logic -->
+    <script>
+        // 🔐 Auto-check: Redirect jika belum login
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!api.isLoggedIn()) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Tampilkan nama user di header
+            const user = api.getUser();
+            if (user?.name) {
+                document.getElementById('userName').textContent = user.name.split(' ')[0];
+            }
+            
+            // Load courses
+            loadCourses();
+            
+            // Setup logout button
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        });
+
+        // 🚪 Handle Logout
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                api.logout(); // Fungsi logout sudah ada di api.js
+            }
+        }
+
+        // 📚 Load & Display Courses
+        async function loadCourses() {
+            const loadingEl = document.getElementById('loadingState');
+            const courseListEl = document.getElementById('courseList');
+            const emptyStateEl = document.getElementById('emptyState');
+            
+            try {
+                const courses = await api.getCourses();
+                
+                // Hide loading
+                loadingEl.style.display = 'none';
+                
+                if (!courses || courses.length === 0) {
+                    // Show empty state
+                    emptyStateEl.style.display = 'block';
+                    return;
+                }
+                
+                // Show course grid
+                courseListEl.style.display = 'grid';
+                courseListEl.innerHTML = '';
+                
+                courses.forEach(course => {
+                    // Get progress from enrollment or default to 0
+                    const progress = course.enrollment?.progress || 0;
+                    const isCompleted = progress >= 100;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'course-card';
+                    card.innerHTML = `
+                        <h3>${escapeHtml(course.title)}</h3>
+                        <p class="description">${escapeHtml(course.description || 'No description available.')}</p>
+                        <span class="instructor">👤 ${escapeHtml(course.instructor || 'Unknown Instructor')}</span>
+                        
+                        <div class="progress-label">
+                            <span>Progress</span>
+                            <span>${progress}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        
+                        <button class="btn-update ${isCompleted ? 'completed' : ''}" 
+                                onclick="updateCourseProgress(${course.id}, this, ${progress})"
+                                ${isCompleted ? 'disabled' : ''}>
+                            ${isCompleted ? '✓ Completed' : (progress > 0 ? `Continue (${progress}%)` : 'Start Learning')}
+                        </button>
+                    `;
+                    courseListEl.appendChild(card);
+                });
+                
+            } catch (error) {
+                console.error('❌ Error loading courses:', error);
+                loadingEl.innerHTML = '<p style="color: #EF4444;">Failed to load courses. Please try again later.</p>';
+            }
+        }
+
+        // 🔄 Update Course Progress
+        async function updateCourseProgress(courseId, btnElement, currentProgress) {
+            // Disable button & show loading
+            const originalText = btnElement.textContent;
+            btnElement.disabled = true;
+            btnElement.textContent = 'Saving...';
+            
+            try {
+                // Set new progress: jika 0 → 50%, jika 50 → 100%
+                const newProgress = currentProgress >= 50 ? 100 : 50;
+                
+                const result = await api.updateProgress(courseId, newProgress);
+                
+                if (result) {
+                    // Update UI tanpa reload halaman
+                    btnElement.textContent = '✓ Completed';
+                    btnElement.classList.add('completed');
+                    
+                    // Update progress bar
+                    const progressBar = btnElement.closest('.course-card').querySelector('.progress-fill');
+                    const progressLabel = btnElement.closest('.course-card').querySelector('.progress-label span:last-child');
+                    
+                    progressBar.style.width = '100%';
+                    progressLabel.textContent = '100%';
+                    
+                    // Show success feedback
+                    showNotification('🎉 Progress updated successfully!', 'success');
+                }
+            } catch (error) {
+                console.error('❌ Error updating progress:', error);
+                showNotification('Failed to update progress. Please try again.', 'error');
+                
+                // Restore button
+                btnElement.disabled = false;
+                btnElement.textContent = originalText;
+            }
+        }
+
+        // 🔔 Show Notification (Toast)
+        function showNotification(message, type = 'success') {
+            // Remove existing notifications
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                font-size: 14px;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+                background: ${type === 'success' ? '#10B981' : '#EF4444'};
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+            notification.textContent = message;
+            
+            // Add animation keyframes
+            if (!document.querySelector('#notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // 🔒 Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
