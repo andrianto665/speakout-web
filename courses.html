@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Teachers - SpeakOut E-Course</title>
+    <title>Courses - SpeakOut E-Course</title>
 
-    <!-- FONT -->
+    <!-- GOOGLE FONT -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
@@ -21,6 +21,7 @@
             font-family:'Poppins',sans-serif;
             background:#f7f7f7;
             overflow-x:hidden;
+            color:#222;
         }
 
         a{
@@ -108,27 +109,27 @@
             background:#125e9f;
         }
 
-        /* ================= HERO ================= */
+        /* ================= COURSES ================= */
 
-        .teachers-hero{
+        .courses-section{
             width:100%;
-            padding:90px 20px 70px;
+            padding:90px 20px;
             position:relative;
             overflow:hidden;
         }
 
-        .teachers-hero::before{
-            content:"Teachers";
+        .courses-section::before{
+            content:"Courses";
             position:absolute;
-            left:-30px;
-            top:0;
+            left:-20px;
+            top:20px;
             font-size:220px;
             font-weight:800;
             color:rgba(0,0,0,0.03);
             z-index:0;
         }
 
-        .hero-container{
+        .container{
             max-width:1200px;
             margin:auto;
             position:relative;
@@ -137,129 +138,154 @@
 
         .page-header{
             text-align:center;
-            margin-bottom:60px;
+            margin-bottom:70px;
         }
 
         .page-header h1{
             font-size:72px;
-            line-height:1.1;
             color:#252b72;
-            margin-bottom:18px;
             font-weight:800;
+            margin-bottom:18px;
+            line-height:1.1;
         }
 
         .page-header p{
             font-size:22px;
-            color:#444;
+            color:#555;
             max-width:750px;
             margin:auto;
             line-height:1.7;
         }
 
-        /* ================= TEACHERS GRID ================= */
+        /* ================= COURSE CARD ================= */
 
-        .teachers-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+        .courses-wrapper{
+            display:flex;
+            flex-direction:column;
             gap:35px;
         }
 
-        .teacher-card{
+        .course-card{
             background:white;
-            border-radius:30px;
+            border-radius:32px;
             overflow:hidden;
             box-shadow:0 15px 40px rgba(0,0,0,0.08);
+            display:grid;
+            grid-template-columns:380px 1fr;
             transition:0.3s;
+        }
+
+        .course-card:hover{
+            transform:translateY(-8px);
+        }
+
+        /* LEFT */
+
+        .course-image{
             position:relative;
+            overflow:hidden;
+            min-height:100%;
         }
 
-        .teacher-card:hover{
-            transform:translateY(-10px);
+        .course-image img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
         }
 
-        .teacher-top{
-            height:140px;
-            background:linear-gradient(135deg,#2f7ac9,#7b00ff);
-            position:relative;
-        }
-
-        .teacher-avatar{
-            width:110px;
-            height:110px;
-            border-radius:50%;
-            background:white;
+        .course-badge{
             position:absolute;
-            left:50%;
-            bottom:-55px;
-            transform:translateX(-50%);
+            top:20px;
+            left:20px;
+            background:linear-gradient(135deg,#ff00b8,#7b00ff);
+            color:white;
+            padding:10px 18px;
+            border-radius:50px;
+            font-size:14px;
+            font-weight:600;
+            box-shadow:0 10px 25px rgba(191,0,255,0.25);
+        }
+
+        /* RIGHT */
+
+        .course-content{
+            padding:40px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+        }
+
+        .course-title{
+            font-size:48px;
+            color:#252b72;
+            font-weight:700;
+            line-height:1.2;
+            margin-bottom:15px;
+        }
+
+        .course-author{
+            font-size:20px;
+            margin-bottom:28px;
+            color:#666;
+        }
+
+        .course-author span{
+            color:#4f46e5;
+            font-weight:600;
+        }
+
+        .course-meta{
+            display:flex;
+            flex-wrap:wrap;
+            gap:22px;
+            margin-bottom:28px;
+        }
+
+        .meta-item{
             display:flex;
             align-items:center;
-            justify-content:center;
+            gap:10px;
+            color:#555;
+            font-size:16px;
+            background:#f5f7ff;
+            padding:12px 18px;
+            border-radius:14px;
+        }
+
+        .course-desc{
+            font-size:18px;
+            color:#555;
+            line-height:1.8;
+            margin-bottom:35px;
+        }
+
+        .course-footer{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:20px;
+        }
+
+        .course-price{
             font-size:42px;
             font-weight:700;
-            color:#5b4bff;
-            box-shadow:0 10px 30px rgba(0,0,0,0.12);
+            color:#17b417;
         }
 
-        .teacher-content{
-            padding:80px 30px 30px;
-            text-align:center;
-        }
-
-        .teacher-content h3{
-            font-size:28px;
-            color:#252b72;
-            margin-bottom:10px;
-        }
-
-        .teacher-role{
-            color:#666;
-            font-size:15px;
-            margin-bottom:30px;
-        }
-
-        .teacher-stats{
-            display:flex;
-            justify-content:center;
-            gap:18px;
-            margin-bottom:30px;
-        }
-
-        .stat-box{
-            background:#f3f5ff;
-            padding:18px 20px;
-            border-radius:18px;
-            min-width:110px;
-        }
-
-        .stat-number{
-            display:block;
-            font-size:28px;
-            font-weight:700;
-            color:#5b4bff;
-        }
-
-        .stat-label{
-            font-size:14px;
-            color:#666;
-        }
-
-        .teacher-btn{
+        .course-btn{
             display:inline-block;
-            width:100%;
-            padding:16px;
-            border:none;
+            padding:18px 38px;
             border-radius:18px;
             background:linear-gradient(135deg,#e000ff,#7b00ff);
             color:white;
-            font-size:16px;
+            font-size:18px;
             font-weight:600;
-            cursor:pointer;
             transition:0.3s;
             box-shadow:0 10px 25px rgba(191,0,255,0.2);
         }
 
-        .teacher-btn:hover{
+        .course-btn:hover{
             transform:translateY(-3px);
         }
 
@@ -298,6 +324,21 @@
 
         /* ================= RESPONSIVE ================= */
 
+        @media(max-width:1100px){
+
+            .course-card{
+                grid-template-columns:1fr;
+            }
+
+            .course-image{
+                height:320px;
+            }
+
+            .course-title{
+                font-size:38px;
+            }
+        }
+
         @media(max-width:992px){
 
             .nav-menu{
@@ -313,22 +354,64 @@
             }
         }
 
+        @media(max-width:768px){
+
+            .course-content{
+                padding:28px;
+            }
+
+            .course-title{
+                font-size:32px;
+            }
+
+            .course-author{
+                font-size:17px;
+            }
+
+            .course-desc{
+                font-size:16px;
+            }
+
+            .course-footer{
+                flex-direction:column;
+                align-items:flex-start;
+            }
+
+            .course-btn{
+                width:100%;
+                text-align:center;
+            }
+
+            .course-price{
+                font-size:34px;
+            }
+        }
+
         @media(max-width:600px){
 
             .page-header h1{
                 font-size:42px;
             }
 
-            .teachers-grid{
-                grid-template-columns:1fr;
+            .course-image{
+                height:240px;
+            }
+
+            .course-meta{
+                gap:12px;
+            }
+
+            .meta-item{
+                width:100%;
+                font-size:14px;
             }
 
             .btn-login{
                 padding:12px 22px;
             }
 
-            .teacher-content h3{
-                font-size:24px;
+            .course-title{
+                font-size:28px;
             }
         }
 
@@ -356,8 +439,8 @@
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.html">Beranda</a></li>
-                    <li><a href="courses.html">Course</a></li>
-                    <li><a href="teachers.html" class="active">Teachers</a></li>
+                    <li><a href="courses.html" class="active">Course</a></li>
+                    <li><a href="teachers.html">Teachers</a></li>
                     <li><a href="#">Informasi Akademik</a></li>
                 </ul>
             </nav>
@@ -370,23 +453,23 @@
 
     </header>
 
-    <!-- ================= HERO ================= -->
+    <!-- ================= COURSES ================= -->
 
-    <section class="teachers-hero">
+    <section class="courses-section">
 
-        <div class="hero-container">
+        <div class="container">
 
             <div class="page-header">
 
                 <h1>
-                    Expert <br>
-                    Instructors
+                    Premium <br>
+                    Courses
                 </h1>
 
                 <p>
-                    Belajar bersama mentor profesional SpeakOut
-                    untuk meningkatkan skill public speaking dan
-                    bahasa Inggris secara aktif dan modern.
+                    Belajar bahasa Inggris dan public speaking
+                    dengan sistem modern, mentor profesional,
+                    dan pembelajaran aktif khas SpeakOut.
                 </p>
 
             </div>
@@ -396,16 +479,16 @@
 
                 <div class="spinner"></div>
 
-                <p>Loading teachers...</p>
+                <p>Loading courses...</p>
 
             </div>
 
-            <!-- TEACHERS -->
-            <div id="teachersList" class="teachers-grid"></div>
+            <!-- COURSE LIST -->
+            <div id="coursesList" class="courses-wrapper"></div>
 
             <!-- ERROR -->
             <div id="errorState" class="error-state" style="display:none;">
-                Failed to load teachers
+                Failed to load courses
             </div>
 
         </div>
@@ -413,7 +496,7 @@
     </section>
 
     <!-- JS -->
-    <script src="js/teachers.js"></script>
+    <script src="js/courses.js"></script>
 
 </body>
 </html>

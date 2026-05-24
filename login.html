@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In - SpeakOut E-Course</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #333; }
+
+        /* HEADER (TETAP SEPERTI TEACHERS STYLE B) */
+        .header{
+            width:100%;
+            background:white;
+            padding:18px 0;
+            position:sticky;
+            top:0;
+            z-index:999;
+            box-shadow:0 2px 15px rgba(0,0,0,0.04);
+        }
+
+        .header-container{
+            max-width:1200px;
+            margin:auto;
+            padding:0 20px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .logo-icon{
+            width:45px;
+            height:45px;
+            border-radius:12px;
+            background:linear-gradient(135deg,#ff8a00,#ff0058);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            font-weight:700;
+        }
+
+        .logo-text h1{ font-size:24px; color:#252b72; }
+        .logo-text p{ font-size:12px; color:#666; }
+
+        /* LOGIN BOX */
+        .wrapper{
+            max-width:450px;
+            margin:70px auto;
+            background:white;
+            padding:40px;
+            border-radius:30px;
+            box-shadow:0 15px 40px rgba(0,0,0,0.08);
+        }
+
+        h2{
+            text-align:center;
+            font-size:34px;
+            color:#252b72;
+            margin-bottom:30px;
+        }
+
+        .form-group{
+            margin-bottom:20px;
+        }
+
+        label{
+            font-size:14px;
+            color:#444;
+            display:block;
+            margin-bottom:8px;
+        }
+
+        input{
+            width:100%;
+            padding:14px;
+            border-radius:12px;
+            border:2px solid #e5e5e5;
+            outline:none;
+        }
+
+        input:focus{
+            border-color:#7b00ff;
+        }
+
+        button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:14px;
+            background:linear-gradient(135deg,#e000ff,#7b00ff);
+            color:white;
+            font-weight:600;
+            cursor:pointer;
+            margin-top:10px;
+        }
+
+        button:hover{
+            transform:translateY(-2px);
+        }
+
+        .link{
+            text-align:center;
+            margin-top:20px;
+            font-size:14px;
+        }
+
+        .link a{
+            color:#7b00ff;
+            text-decoration:none;
+        }
+
+        @media(max-width:600px){
+            .wrapper{ margin:40px 15px; padding:25px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-container">
+
+        <div class="logo">
+            <div class="logo-icon">S</div>
+            <div class="logo-text">
+                <h1>SpeakOut</h1>
+                <p>Ngomong Inggris Jadi Mudah</p>
+            </div>
+        </div>
+
+    </div>
+</header>
+
+<!-- LOGIN -->
+<div class="wrapper">
+
+    <h2>Login</h2>
+
+    <!-- 🔥 FIX UTAMA: HARUS PUNYA ID FORM (INI YANG DIPAKAI auth.js) -->
+    <form id="loginForm">
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" name="email" placeholder="Masukkan email" required>
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" name="password" placeholder="Masukkan password" required>
+        </div>
+
+        <button type="submit" class="login-btn">Masuk</button>
+
+    </form>
+
+    <div class="link">
+        Belum punya akun? <a href="register.html">Daftar</a>
+    </div>
+
+</div>
+
+<!-- 🔥 PENTING: JANGAN HAPUS INI -->
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+
+</body>
+</html>

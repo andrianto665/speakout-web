@@ -207,7 +207,7 @@ const api = {
                 // Jika 401 Unauthorized, token mungkin expired
                 if (response.status === 401) {
                     this.clearToken();
-                    window.location.href = 'index.html';
+                    window.location.href = 'login.html';
                 }
                 throw new Error(`HTTP ${response.status}`);
             }
@@ -297,7 +297,7 @@ const api = {
 // Jalankan saat DOM siap, kecuali di halaman yang memang public
 document.addEventListener('DOMContentLoaded', () => {
     // Daftar halaman yang TIDAK butuh login
-    const publicPages = ['index.html', 'register.html', ''];
+    const publicPages = ['index.html', 'login.html', 'register.html',''];
     const currentPage = window.location.pathname.split('/').pop();
     
     const isPublicPage = publicPages.includes(currentPage);
@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 2. Jika user BELUM login dan buka halaman protected → redirect ke login
     if (!api.isLoggedIn() && !isPublicPage) {
-        window.location.href = 'index.html';
+        window.location.href = 'login.html';
     }
 });
 

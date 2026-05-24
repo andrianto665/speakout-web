@@ -75,7 +75,7 @@ document.getElementById('registerForm')?.addEventListener('submit', async (e) =>
 
         if (result.success) {
             alert('✅ Registration successful! Please log in.');
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
         } else {
             // Handle validation errors dari Laravel
             const errors = result.data?.errors;
@@ -108,7 +108,7 @@ function handleLogout() {
 
 // 🔁 Auto-check: Jika user sudah login dan buka index.html, redirect ke dashboard
 document.addEventListener('DOMContentLoaded', () => {
-    const isLoginPage = window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/');
+    const isLoginPage = window.location.pathname.includes('login.html') || window.location.pathname.endsWith('/');
     
     if (api.isLoggedIn() && isLoginPage) {
         const role = api.getUserRole();
