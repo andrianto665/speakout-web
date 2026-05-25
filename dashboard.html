@@ -130,18 +130,11 @@ function normalizeCourses(response) {
 
 // Fetch progress per course dari GET api/courses/{id}/progress
 async function fetchProgress(courseId) {
-    const token = api.getToken();
     try {
-        const res = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}/progress`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
-            }
-        });
-        if (!res.ok) return 0;
-        const data = await res.json();
+        const data = await api.getCourseProgress(courseId);
         return data.progress ?? 0;
-    } catch {
+    } catch (error) {
+        console.warn(`Failed to fetch progress for course ${courseId}:`, error);
         return 0;
     }
 }
@@ -210,32 +203,50 @@ async function loadCourses() {
     }
 }
 
-async function updateProgress(id, btn, current) {
-    btn.disabled  = true;
+async function updateProgress(courseId, btn, currentProgress) {
+    btn.disabled = true;
     btn.innerText = 'Saving...';
-
-    const newProgress = current >= 50 ? 100 : 50;
-
+    
     try {
-        await api.updateProgress(id, newProgress);
-
+        // Untuk demo: toggle progress 50% ↔ 100%
+        // Nanti bisa diganti dengan logic per-lesson yang lebih detail
+        const newProgress = currentProgress >= 100 ? 0 : 100;
+        const isCompleted = newProgress >= 100;
+        
+        // Ambil meeting_id pertama yang merupakan lesson (bukan header)
+        // Ini temporary - nanti bisa diimprove dengan pilih lesson spesifik
+        const courseRes = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}`);
+        const courseData = await courseRes.json();
+        
+        // Cari lesson pertama yang belum completed
+        const lessons = (courseData.meetings || []).filter(m => m.content !== null);
+        const firstLesson = lessons.find(l => !l.is_completed) || lessons[0];
+        
+        if (firstLesson) {
+            // Update progress untuk lesson tersebut
+            await api.updateCourseProgress(courseId, firstLesson.id, isCompleted);
+        }
+        
+        // Update UI
         const card = btn.closest('.course-card');
         card.querySelector('.progress-fill').style.width = `${newProgress}%`;
         card.querySelector('.progress-label span:last-child').innerText = `${newProgress}%`;
-
+        
         if (newProgress >= 100) {
             btn.innerText = '✅ Completed';
             btn.classList.add('completed');
             btn.disabled = true;
         } else {
             btn.innerText = 'Continue Learning →';
-            btn.disabled  = false;
-            btn.onclick   = () => updateProgress(id, btn, newProgress);
+            btn.classList.remove('completed');
+            btn.disabled = false;
+            btn.onclick = () => updateProgress(courseId, btn, newProgress);
         }
+        
     } catch (err) {
         console.error('❌ updateProgress error:', err);
         btn.innerText = 'Gagal, coba lagi';
-        btn.disabled  = false;
+        btn.disabled = false;
     }
 }
 </script>

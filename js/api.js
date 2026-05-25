@@ -6,22 +6,20 @@
 
 // 🔹 Konfigurasi Base URL (Auto-detect environment)
 const getApiBaseUrl = () => {
-    // Jika dijalankan di Android Emulator, gunakan 10.0.2.2
-    // Jika di Web/Desktop, gunakan localhost/127.0.0.1
-    // Jika di Production, ganti dengan domain asli
     const isAndroidEmulator = typeof navigator !== 'undefined' && 
                               navigator.userAgent.includes('Android');
     
     if (isAndroidEmulator) return 'http://10.0.2.2:8000/api';
-    return 'http://127.0.0.1:8000/api'; // Lebih stabil daripada 'localhost'
+    return 'http://127.0.0.1:8000/api'; // ✅ Lebih stabil daripada 'localhost'
 };
 
 const API_BASE = getApiBaseUrl();
-const API_TIMEOUT = 15000; // 15 detik timeout
+const API_TIMEOUT = 15000;
 
+// ✅ DEFINISIKAN OBJECT api SEKALI SAJA DI SINI
 const api = {
-    // ========== TOKEN MANAGEMENT ==========
     
+    // ========== TOKEN MANAGEMENT ==========
     getToken() {
         return localStorage.getItem('speakout_token');
     },
@@ -41,7 +39,6 @@ const api = {
     },
     
     // ========== USER & ROLE ==========
-    
     getUser() {
         try {
             const userStr = localStorage.getItem('speakout_user');
@@ -53,12 +50,10 @@ const api = {
     
     getUserRole() {
         const user = this.getUser();
-        // Default ke 'user' jika role tidak ditemukan
         return user?.role || 'user'; 
     },
     
     // ========== HELPER: FETCH WITH TIMEOUT ==========
-    
     async _fetchWithTimeout(url, options = {}) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
@@ -85,20 +80,13 @@ const api = {
     },
     
     // ========== AUTH METHODS ==========
-    
-    /**
-     * Register user baru
-     * @returns {Promise<{success: boolean, data: object}>}
-     */
     async register(name, email, password) {
         try {
             const response = await this._fetchWithTimeout(`${API_BASE}/auth/register`, {
                 method: 'POST',
                 body: JSON.stringify({
-                    name,
-                    email,
-                    password,
-                    password_confirmation: password // Laravel butuh konfirmasi password
+                    name, email, password,
+                    password_confirmation: password
                 })
             });
             
@@ -120,10 +108,6 @@ const api = {
         }
     },
     
-    /**
-     * Login user
-     * @returns {Promise<{success: boolean, data: object}>}
-     */
     async login(email, password) {
         try {
             const response = await this._fetchWithTimeout(`${API_BASE}/auth/login`, {
@@ -134,10 +118,7 @@ const api = {
             const data = await response.json();
             
             if (response.ok && data.token) {
-                // Simpan token dan user info ke localStorage
                 this.setToken(data.token);
-                
-                // Simpan data user (termasuk role)
                 if (data.user) {
                     localStorage.setItem('speakout_user', JSON.stringify(data.user));
                 }
@@ -159,13 +140,9 @@ const api = {
         }
     },
     
-    /**
-     * Logout user
-     */
     async logout() {
         const token = this.getToken();
         
-        // Optional: Notify backend tentang logout
         if (token) {
             try {
                 await this._fetchWithTimeout(`${API_BASE}/auth/logout`, {
@@ -173,7 +150,6 @@ const api = {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
             } catch (e) {
-                // Ignore error, tetap logout di frontend
                 console.warn('⚠️ Backend logout failed, clearing local session anyway');
             }
         }
@@ -183,11 +159,6 @@ const api = {
     },
     
     // ========== COURSE METHODS ==========
-    
-    /**
-     * Get semua courses (butuh auth)
-     * @returns {Promise<Array>}
-     */
     async getCourses() {
         const token = this.getToken();
         if (!token) {
@@ -198,13 +169,10 @@ const api = {
         try {
             const response = await this._fetchWithTimeout(`${API_BASE}/courses`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             
             if (!response.ok) {
-                // Jika 401 Unauthorized, token mungkin expired
                 if (response.status === 401) {
                     this.clearToken();
                     window.location.href = 'login.html';
@@ -220,39 +188,30 @@ const api = {
         }
     },
     
-    /**
-     * Update progress course (butuh auth) - METHOD POST
-     * @param {number} courseId 
-     * @param {number} progress (0-100)
-     * @returns {Promise<object>}
-     */
-    async updateProgress(courseId, progress) {
+    // ✅ FIXED: Update progress dengan format snake_case yang benar
+    async updateProgress(courseId, meetingId, isCompleted) {
         const token = this.getToken();
         if (!token) {
             throw new Error('Unauthorized. Please login first.');
-        }
-        
-        // Validasi input
-        if (progress < 0 || progress > 100) {
-            throw new Error('Progress must be between 0 and 100');
         }
         
         try {
             const response = await this._fetchWithTimeout(
                 `${API_BASE}/courses/${courseId}/progress`, 
                 {
-                    method: 'POST', // ✅ PASTIKAN POST, BUKAN GET
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ progress })
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    // ✅ PENTING: snake_case sesuai Laravel API
+                    body: JSON.stringify({
+                        meeting_id: meetingId,
+                        is_completed: isCompleted
+                    })
                 }
             );
             
             const data = await response.json();
             
             if (!response.ok) {
-                // Handle error spesifik dari Laravel
                 if (response.status === 405) {
                     throw new Error('Method not allowed. Use POST for this endpoint.');
                 }
@@ -263,15 +222,58 @@ const api = {
             
         } catch (error) {
             console.error('❌ Update Progress Error:', error);
-            throw error; // Re-throw agar bisa di-catch di UI
+            throw error;
         }
     },
     
-    // ========== UTILITY ==========
+    // ✅ FIXED: Get progress - pakai API_BASE global (bukan this.API_BASE)
+    async getCourseProgress(courseId) {
+        const token = this.getToken();
+        if (!token) throw new Error('Not authenticated');
+        
+        const res = await this._fetchWithTimeout(`${API_BASE}/courses/${courseId}/progress`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (!res.ok) {
+            const error = await res.json().catch(() => ({}));
+            throw new Error(error.message || `HTTP ${res.status}`);
+        }
+        
+        return await res.json();
+    },
     
-    /**
-     * Refresh user data dari backend (opsional)
-     */
+    // ✅ FIXED: Update progress for meeting/lesson - pakai API_BASE global
+    async updateCourseProgress(courseId, meetingId, isCompleted) {
+        const token = this.getToken();
+        if (!token) throw new Error('Not authenticated');
+        
+        const res = await this._fetchWithTimeout(`${API_BASE}/courses/${courseId}/progress`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                meeting_id: meetingId,
+                is_completed: isCompleted
+            })
+        });
+        
+        if (!res.ok) {
+            const error = await res.json().catch(() => ({}));
+            throw new Error(error.message || `HTTP ${res.status}`);
+        }
+        
+        return await res.json();
+    },
+    
+    // ========== UTILITY ==========
     async refreshUser() {
         const token = this.getToken();
         if (!token) return null;
@@ -294,31 +296,24 @@ const api = {
 };
 
 // ========== AUTO-AUTH CHECK (Global) ==========
-// Jalankan saat DOM siap, kecuali di halaman yang memang public
 document.addEventListener('DOMContentLoaded', () => {
-    // Daftar halaman yang TIDAK butuh login
-    const publicPages = ['index.html', 'login.html', 'register.html',''];
+    const publicPages = ['index.html', 'login.html', 'register.html', ''];
     const currentPage = window.location.pathname.split('/').pop();
-    
     const isPublicPage = publicPages.includes(currentPage);
     
-    // 1. Jika user SUDAH login tapi buka halaman public → redirect ke dashboard
     if (api.isLoggedIn() && isPublicPage) {
         const role = api.getUserRole();
         const target = role === 'admin' ? 'admin.html' : 'dashboard.html';
-        // Hindari redirect loop
         if (!window.location.pathname.includes(target)) {
             window.location.href = target;
         }
     }
     
-    // 2. Jika user BELUM login dan buka halaman protected → redirect ke login
     if (!api.isLoggedIn() && !isPublicPage) {
         window.location.href = 'login.html';
     }
 });
 
-// Export untuk module system (jika pakai)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = api;
-}
+// ✅ HAPUS export default jika tidak pakai ES modules (browser biasa)
+// Jika pakai module, uncomment baris bawah:
+// export default api;

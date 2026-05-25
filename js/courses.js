@@ -118,6 +118,9 @@ function renderCourses(courses){
             document.createElement('div');
 
         card.className = 'course-card';
+        
+        // ✅ TAMBAHAN: Ubah cursor jadi pointer agar user tahu bisa diklik
+        card.style.cursor = 'pointer';
 
         card.innerHTML = `
 
@@ -181,6 +184,27 @@ function renderCourses(courses){
 
             </div>
         `;
+
+        // ✅ TAMBAHAN: Event Click untuk navigasi ke course-details.html
+        card.addEventListener('click', function() {
+            
+            // Encode title agar aman untuk URL (spasi jadi %20, dll)
+            const encodedTitle = encodeURIComponent(course.title);
+            
+            // Redirect ke halaman detail dengan membawa parameter
+            // Contoh: course-details.html?course_id=5&title=English%20For%20Family
+            window.location.href = `course-details.html?course_id=${course.id}&title=${encodedTitle}`;
+            
+        });
+
+        // ✅ TAMBAHAN: Efek hover kecil (opsional, untuk UX lebih baik)
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
 
         coursesList.appendChild(card);
 

@@ -9,7 +9,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #333; }
 
-        /* Header */
+        /* ===== HEADER ===== */
         .header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 0; position: sticky; top: 0; z-index: 1000; }
         .header-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
@@ -26,7 +26,7 @@
         .btn-logout { padding: 8px 16px; background: #EF4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.3s; }
         .btn-logout:hover { background: #DC2626; transform: translateY(-2px); }
 
-        /* Main Content */
+        /* ===== MAIN CONTENT ===== */
         .main-content { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 220px 1fr; gap: 30px; }
 
         /* Admin Sidebar */
@@ -126,7 +126,8 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
+
+    <!-- ===== HEADER ===== -->
     <header class="header">
         <div class="header-container">
             <a href="#" class="logo">
@@ -138,9 +139,9 @@
             </a>
             <nav>
                 <ul class="nav-menu">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Course</a></li>
-                    <li><a href="#">Teachers</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="courses.html">Course</a></li>
+                    <li><a href="teachers.html">Teachers</a></li>
                     <li><a href="#">Record</a></li>
                     <li><a href="#">Schedules</a></li>
                     <li><a href="#">Articles</a></li>
@@ -153,8 +154,9 @@
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
+        
         <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <h3>Admin Menu</h3>
@@ -162,12 +164,14 @@
                 <li><a href="#" class="active" data-section="dashboard"><span class="icon">📊</span> Dashboard</a></li>
                 <li><a href="#" data-section="courses"><span class="icon">📚</span> Manage Courses</a></li>
                 <li><a href="#" data-section="users"><span class="icon">👥</span> Manage Users</a></li>
+                <li><a href="#" data-section="content"><span class="icon">📁</span> Manage Content</a></li>
             </ul>
         </aside>
 
-        <!-- Admin Content -->
+        <!-- Admin Content Sections -->
         <section class="admin-content">
-            <!-- Dashboard Section -->
+
+            <!-- ===== DASHBOARD SECTION ===== -->
             <div id="dashboard" class="section active">
                 <div class="admin-header">
                     <div class="breadcrumb">
@@ -177,7 +181,6 @@
                     <p>Overview of your e-course platform</p>
                 </div>
 
-                <!-- Stats Cards -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <h4>Total Users</h4>
@@ -197,7 +200,6 @@
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
                 <div style="margin-top: 30px;">
                     <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 15px;">Recent Activity</h3>
                     <div id="activityList">
@@ -209,7 +211,7 @@
                 </div>
             </div>
 
-            <!-- Manage Courses Section -->
+            <!-- ===== MANAGE COURSES SECTION ===== -->
             <div id="courses" class="section">
                 <div class="admin-header">
                     <div class="breadcrumb">
@@ -234,18 +236,13 @@
                             </tr>
                         </thead>
                         <tbody id="coursesTableBody">
-                            <tr>
-                                <td colspan="6" class="loading">
-                                    <div class="spinner"></div>
-                                    Loading courses...
-                                </td>
-                            </tr>
+                            <tr><td colspan="6" class="loading"><div class="spinner"></div> Loading courses...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Manage Users Section -->
+            <!-- ===== MANAGE USERS SECTION ===== -->
             <div id="users" class="section">
                 <div class="admin-header">
                     <div class="breadcrumb">
@@ -268,18 +265,60 @@
                             </tr>
                         </thead>
                         <tbody id="usersTableBody">
-                            <tr>
-                                <td colspan="6" class="loading">
-                                    <div class="spinner"></div>
-                                    Loading users...
-                                </td>
-                            </tr>
+                            <tr><td colspan="6" class="loading"><div class="spinner"></div> Loading users...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            <!-- ===== MANAGE CONTENT SECTION (NEW) ===== -->
+            <div id="content" class="section">
+                <div class="admin-header">
+                    <div class="breadcrumb">
+                        <a href="index.html">Home</a> / Admin / Manage Content
+                    </div>
+                    <h2>Manage Course Content</h2>
+                    <p>Add, edit, or remove meetings and lessons for each course</p>
+                </div>
+
+                <!-- Step 1: Pilih Course -->
+                <div class="form-group">
+                    <label for="contentCourseSelect">Select Course *</label>
+                    <select id="contentCourseSelect" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                        <option value="">-- Select a Course --</option>
+                    </select>
+                </div>
+
+                <!-- Step 2: List Meetings (setelah course dipilih) -->
+                <div id="meetingsSection" style="display:none; margin-top:30px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h3 style="font-size:18px; font-weight:600;">Meetings & Lessons</h3>
+                        <button class="btn-add" onclick="openMeetingModal()" style="padding:8px 16px; font-size:13px;">+ Add Item</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Title</th>
+                                    <th>Type</th>
+                                    <th>Google Drive Link</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="meetingsTableBody">
+                                <tr><td colspan="5" class="loading"><div class="spinner"></div> Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </section>
     </main>
+
+    <!-- ===== MODALS ===== -->
 
     <!-- Course Modal -->
     <div id="courseModal" class="modal">
@@ -310,423 +349,711 @@
         </div>
     </div>
 
-    <!-- Load API Script -->
+    <!-- Content Modal (Meeting/Lesson) -->
+    <div id="contentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="contentModalTitle">Add New Item</h3>
+                <button class="modal-close" onclick="closeContentModal()">&times;</button>
+            </div>
+            <form id="contentForm">
+                <input type="hidden" id="contentId">
+                <input type="hidden" id="contentCourseId">
+                
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="contentTitle">Title *</label>
+                    <input type="text" id="contentTitle" required placeholder="e.g., Family 1 / Lesson 1: Greeting">
+                </div>
+
+                <!-- Type -->
+                <div class="form-group">
+                    <label for="contentItemType">Item Type *</label>
+                    <select id="contentItemType" required onchange="toggleContentFields()">
+                        <option value="meeting">📁 Meeting Header (Family 1, Family 2, etc.)</option>
+                        <option value="lesson">📄 Lesson / Material</option>
+                        <option value="test">✍️ Quiz / Test</option>
+                        <option value="final">🏆 Final Test</option>
+                    </select>
+                </div>
+
+                <!-- Google Drive Link (conditional) -->
+                <div class="form-group" id="driveLinkGroup" style="display:none;">
+                    <label for="contentDriveLink">Google Drive Link</label>
+                    <input type="url" id="contentDriveLink" placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
+                    <small style="color:#666; display:block; margin-top:5px;">
+                        💡 Paste link asli, sistem akan otomatis konversi ke format preview
+                    </small>
+                </div>
+
+                <!-- Order Number -->
+                <div class="form-group">
+                    <label for="contentOrder">Order Number *</label>
+                    <input type="number" id="contentOrder" required min="1" placeholder="e.g., 1, 2, 3 (urutan tampil)">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeContentModal()">Cancel</button>
+                    <button type="submit" class="btn-save">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
     <script src="js/api.js"></script>
     
-    <!-- Admin Logic (FULL API INTEGRATION + FIX EDIT BUTTON) -->
     <script>
-        // 🔹 Konfigurasi Base URL API
-        const ADMIN_API_BASE = 'http://127.0.0.1:8000/api';
+    /*
+    ========================================
+    CONFIG & GLOBAL VARIABLES
+    ========================================
+    */
+    const ADMIN_API_BASE = 'http://127.0.0.1:8000/api';
 
-        // 🔐 Auto-check: Redirect if not admin
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!api.isLoggedIn()) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            const user = api.getUser();
-            if (user?.role !== 'admin') {
-                alert('Access denied. Admin privileges required.');
-                window.location.href = 'dashboard.html';
-                return;
-            }
-            
-            if (user?.name) {
-                document.getElementById('userName').textContent = user.name.split(' ')[0];
-            }
-            
-            setupNavigation();
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-            loadDashboardStats();
-            loadCourses();
-            loadUsers();
-            document.getElementById('courseForm').addEventListener('submit', handleCourseSubmit);
+    /*
+    ========================================
+    INIT: DOM Loaded
+    ========================================
+    */
+    document.addEventListener('DOMContentLoaded', () => {
+        // 🔐 Auth Check
+        if (!api.isLoggedIn()) {
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        const user = api.getUser();
+        if (user?.role !== 'admin') {
+            alert('Access denied. Admin privileges required.');
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        
+        if (user?.name) {
+            document.getElementById('userName').textContent = user.name.split(' ')[0];
+        }
+        
+        // Setup navigation & event listeners
+        setupNavigation();
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        document.getElementById('courseForm').addEventListener('submit', handleCourseSubmit);
+        document.getElementById('contentForm').addEventListener('submit', handleContentSubmit);
+        
+        // Close modals when clicking outside
+        setupModalClose('courseModal');
+        setupModalClose('contentModal');
+        
+        // Load initial data
+        loadDashboardStats();
+        loadCourses();
+        loadUsers();
+    });
+
+    /*
+    ========================================
+    NAVIGATION & UI
+    ========================================
+    */
+    function setupNavigation() {
+        document.querySelectorAll('.admin-menu a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Update active menu
+                document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                
+                // Show selected section
+                const sectionId = e.currentTarget.dataset.section;
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Load data for content section
+                if (sectionId === 'content') {
+                    loadCoursesForContent();
+                }
+            });
         });
+    }
 
-        // 🧭 Navigation Handler
-        function setupNavigation() {
-            document.querySelectorAll('.admin-menu a').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
-                    e.currentTarget.classList.add('active');
-                    const sectionId = e.currentTarget.dataset.section;
-                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                    document.getElementById(sectionId).classList.add('active');
-                });
+    function setupModalClose(modalId) {
+        const modal = document.getElementById(modalId);
+        modal?.addEventListener('click', (e) => {
+            if (e.target.id === modalId) {
+                modal.classList.remove('active');
+            }
+        });
+    }
+
+    function handleLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            api.logout();
+        }
+    }
+
+    /*
+    ========================================
+    DASHBOARD STATS
+    ========================================
+    */
+    async function loadDashboardStats() {
+        const token = api.getToken();
+        if (!token) return;
+        
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/admin/stats`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            
+            if (!res.ok) throw new Error('Failed to fetch stats');
+            
+            const data = await res.json();
+            document.getElementById('totalUsers').textContent = data.total_users || 0;
+            document.getElementById('totalCourses').textContent = data.total_courses || 0;
+            document.getElementById('totalEnrollments').textContent = data.total_enrollments || 0;
+            document.getElementById('completedCourses').textContent = data.completed_courses || 0;
+            
+        } catch (error) {
+            console.error('Error loading stats:', error);
+            ['totalUsers','totalCourses','totalEnrollments','completedCourses'].forEach(id => {
+                document.getElementById(id).textContent = '-';
             });
         }
+    }
 
-        // 🚪 Handle Logout
-        function handleLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                api.logout();
-            }
+    /*
+    ========================================
+    MANAGE COURSES
+    ========================================
+    */
+    async function loadCourses() {
+        const tbody = document.getElementById('coursesTableBody');
+        const token = api.getToken();
+        
+        if (!token) {
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Please login as admin.</td></tr>';
+            return;
         }
-
-        // 📊 Load Dashboard Stats
-        async function loadDashboardStats() {
-            const token = api.getToken();
-            if (!token) return;
+        
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/admin/courses`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
             
-            try {
-                const res = await fetch(`${ADMIN_API_BASE}/admin/stats`, {
-                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-                });
-                
-                if (!res.ok) throw new Error('Failed to fetch stats');
-                
-                const data = await res.json();
-                document.getElementById('totalUsers').textContent = data.total_users || 0;
-                document.getElementById('totalCourses').textContent = data.total_courses || 0;
-                document.getElementById('totalEnrollments').textContent = data.total_enrollments || 0;
-                document.getElementById('completedCourses').textContent = data.completed_courses || 0;
-                
-            } catch (error) {
-                console.error('Error loading stats:', error);
-                document.getElementById('totalUsers').textContent = '-';
-                document.getElementById('totalCourses').textContent = '-';
-                document.getElementById('totalEnrollments').textContent = '-';
-                document.getElementById('completedCourses').textContent = '-';
-            }
-        }
-
-        // 📚 Load Courses Table - ✅ FIX: Menggunakan data attributes, bukan inline onclick
-        async function loadCourses() {
-            const tbody = document.getElementById('coursesTableBody');
-            const token = api.getToken();
+            if (!res.ok) throw new Error('Failed to fetch courses');
             
-            if (!token) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Please login as admin.</td></tr>';
+            const courses = await res.json();
+            
+            if (!courses || courses.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No courses found.</td></tr>';
                 return;
             }
             
-            try {
-                const res = await fetch(`${ADMIN_API_BASE}/admin/courses`, {
-                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-                });
-                
-                if (!res.ok) throw new Error('Failed to fetch courses');
-                
-                const courses = await res.json();
-                
-                if (!courses || courses.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No courses found.</td></tr>';
-                    return;
-                }
-                
-                // ✅ PERBAIKAN: Gunakan data-* attributes + JSON.stringify untuk aman dari special chars
-                tbody.innerHTML = courses.map(course => `
-                    <tr data-course-id="${course.id}">
-                        <td>${course.id}</td>
-                        <td><strong>${escapeHtml(course.title)}</strong></td>
-                        <td>${escapeHtml(course.instructor || '-')}</td>
-                        <td>${course.lessons_count || course.lessons?.length || 0}</td>
-                        <td><span class="status-badge active">Active</span></td>
-                        <td>
-                            <button class="btn-action btn-edit" 
-                                    data-action="edit"
-                                    data-id="${course.id}"
-                                    data-title='${JSON.stringify(course.title)}'
-                                    data-description='${JSON.stringify(course.description || "")}'
-                                    data-instructor='${JSON.stringify(course.instructor || "")}'>
-                                Edit
-                            </button>
-                            <button class="btn-action btn-delete" 
-                                    data-action="delete" 
-                                    data-id="${course.id}">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-                // ✅ Tambahkan event listener untuk tombol Edit & Delete
-                tbody.querySelectorAll('[data-action="edit"]').forEach(btn => {
-                    btn.addEventListener('click', handleEditClick);
-                });
-                
-                tbody.querySelectorAll('[data-action="delete"]').forEach(btn => {
-                    btn.addEventListener('click', handleDeleteClick);
-                });
-                
-            } catch (error) {
-                console.error('Error loading courses:', error);
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state" style="color: #EF4444;">Failed to load courses. Check console.</td></tr>';
-            }
-        }
-
-        // 👥 Load Users Table
-        async function loadUsers() {
-            const tbody = document.getElementById('usersTableBody');
-            const token = api.getToken();
+            tbody.innerHTML = courses.map(course => `
+                <tr data-course-id="${course.id}">
+                    <td>${course.id}</td>
+                    <td><strong>${escapeHtml(course.title)}</strong></td>
+                    <td>${escapeHtml(course.instructor || '-')}</td>
+                    <td>${course.lessons_count || course.lessons?.length || 0}</td>
+                    <td><span class="status-badge active">Active</span></td>
+                    <td>
+                        <button class="btn-action btn-edit" data-action="edit"
+                            data-id="${course.id}"
+                            data-title='${JSON.stringify(course.title)}'
+                            data-description='${JSON.stringify(course.description || "")}'
+                            data-instructor='${JSON.stringify(course.instructor || "")}'>Edit</button>
+                        <button class="btn-action btn-delete" data-action="delete" data-id="${course.id}">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
             
-            if (!token) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Please login as admin.</td></tr>';
+            // Add event listeners
+            tbody.querySelectorAll('[data-action="edit"]').forEach(btn => btn.addEventListener('click', handleEditClick));
+            tbody.querySelectorAll('[data-action="delete"]').forEach(btn => btn.addEventListener('click', handleDeleteClick));
+            
+        } catch (error) {
+            console.error('Error loading courses:', error);
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state" style="color:#EF4444;">Failed to load courses.</td></tr>';
+        }
+    }
+
+    function handleEditClick(e) {
+        const btn = e.currentTarget;
+        editCourse(
+            parseInt(btn.dataset.id),
+            JSON.parse(btn.dataset.title),
+            JSON.parse(btn.dataset.description),
+            JSON.parse(btn.dataset.instructor)
+        );
+    }
+
+    function handleDeleteClick(e) {
+        deleteCourse(parseInt(e.currentTarget.dataset.id));
+    }
+
+    function openCourseModal(course = null) {
+        const modal = document.getElementById('courseModal');
+        const form = document.getElementById('courseForm');
+        const title = document.getElementById('modalTitle');
+        
+        if (course) {
+            title.textContent = 'Edit Course';
+            document.getElementById('courseId').value = course.id;
+            document.getElementById('courseTitle').value = course.title || '';
+            document.getElementById('courseDescription').value = course.description || '';
+            document.getElementById('courseInstructor').value = course.instructor || '';
+        } else {
+            title.textContent = 'Add New Course';
+            form.reset();
+            document.getElementById('courseId').value = '';
+        }
+        modal.classList.add('active');
+    }
+
+    function closeCourseModal() {
+        document.getElementById('courseModal').classList.remove('active');
+    }
+
+    function editCourse(id, title, description, instructor) {
+        openCourseModal({ id, title, description, instructor });
+    }
+
+    async function handleCourseSubmit(e) {
+        e.preventDefault();
+        
+        const courseId = document.getElementById('courseId').value;
+        const courseData = {
+            title: document.getElementById('courseTitle').value.trim(),
+            description: document.getElementById('courseDescription').value.trim(),
+            instructor: document.getElementById('courseInstructor').value.trim(),
+        };
+        
+        const btnSave = e.target.querySelector('.btn-save');
+        const originalText = btnSave.textContent;
+        btnSave.textContent = 'Saving...';
+        btnSave.disabled = true;
+        const token = api.getToken();
+        
+        try {
+            const url = courseId 
+                ? `${ADMIN_API_BASE}/admin/courses/${courseId}`
+                : `${ADMIN_API_BASE}/admin/courses`;
+            const method = courseId ? 'PUT' : 'POST';
+            
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(courseData)
+            });
+            
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.message || `HTTP ${res.status}`);
+            }
+            
+            showNotification(courseId ? '✅ Course updated!' : '✅ Course created!', 'success');
+            closeCourseModal();
+            loadCourses();
+            
+        } catch (error) {
+            console.error('Error saving course:', error);
+            showNotification(`❌ Failed: ${error.message}`, 'error');
+        } finally {
+            btnSave.textContent = originalText;
+            btnSave.disabled = false;
+        }
+    }
+
+    async function deleteCourse(courseId) {
+        if (!confirm('Delete this course? This cannot be undone.')) return;
+        
+        const token = api.getToken();
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/admin/courses/${courseId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (!res.ok) throw new Error('Failed to delete');
+            
+            showNotification('✅ Course deleted!', 'success');
+            loadCourses();
+        } catch (error) {
+            console.error('Error deleting course:', error);
+            showNotification(`❌ Failed: ${error.message}`, 'error');
+        }
+    }
+
+    /*
+    ========================================
+    MANAGE USERS
+    ========================================
+    */
+    async function loadUsers() {
+        const tbody = document.getElementById('usersTableBody');
+        const token = api.getToken();
+        
+        if (!token) {
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Please login as admin.</td></tr>';
+            return;
+        }
+        
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/admin/users`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            
+            if (!res.ok) throw new Error('Failed to fetch users');
+            
+            const users = await res.json();
+            
+            if (!users || users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users found.</td></tr>';
                 return;
             }
             
-            try {
-                const res = await fetch(`${ADMIN_API_BASE}/admin/users`, {
-                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-                });
-                
-                if (!res.ok) throw new Error('Failed to fetch users');
-                
-                const users = await res.json();
-                
-                if (!users || users.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users found.</td></tr>';
-                    return;
+            const currentUserId = api.getUser()?.id;
+            
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td><strong>${escapeHtml(user.name)}</strong></td>
+                    <td>${escapeHtml(user.email)}</td>
+                    <td><span class="role-badge ${user.role === 'admin' ? 'admin' : 'user'}">${user.role}</span></td>
+                    <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                    <td>
+                        ${user.id !== currentUserId ? 
+                            `<button class="btn-action btn-delete" data-action="delete-user" data-id="${user.id}">Delete</button>` : 
+                            '<span style="color:#999;font-size:12px">Cannot delete self</span>'
+                        }
+                    </td>
+                </tr>
+            `).join('');
+            
+            tbody.querySelectorAll('[data-action="delete-user"]').forEach(btn => 
+                btn.addEventListener('click', (e) => deleteUser(parseInt(e.currentTarget.dataset.id)))
+            );
+            
+        } catch (error) {
+            console.error('Error loading users:', error);
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state" style="color:#EF4444;">Failed to load users.</td></tr>';
+        }
+    }
+
+    async function deleteUser(userId) {
+        const currentUser = api.getUser();
+        if (userId === currentUser?.id) {
+            showNotification('❌ Cannot delete your own account', 'error');
+            return;
+        }
+        
+        if (!confirm('Delete this user?')) return;
+        
+        const token = api.getToken();
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/admin/users/${userId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (!res.ok) throw new Error('Failed to delete');
+            
+            showNotification('✅ User deleted!', 'success');
+            loadUsers();
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            showNotification(`❌ Failed: ${error.message}`, 'error');
+        }
+    }
+
+    /*
+    ========================================
+    MANAGE CONTENT (NEW FEATURE)
+    ========================================
+    */
+    
+    // Load courses into dropdown for content management
+    async function loadCoursesForContent() {
+        const select = document.getElementById('contentCourseSelect');
+        const token = api.getToken();
+        
+        if (!token) return;
+        
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/courses`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            
+            if (!res.ok) throw new Error('Failed to fetch courses');
+            
+            const courses = await res.json();
+            
+            select.innerHTML = '<option value="">-- Select a Course --</option>' + 
+                courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
+            
+            select.onchange = (e) => {
+                const courseId = e.target.value;
+                if (courseId) {
+                    document.getElementById('meetingsSection').style.display = 'block';
+                    document.getElementById('contentCourseId').value = courseId;
+                    loadMeetingsForCourse(courseId);
+                } else {
+                    document.getElementById('meetingsSection').style.display = 'none';
                 }
-                
-                tbody.innerHTML = users.map(user => `
-                    <tr>
-                        <td>${user.id}</td>
-                        <td><strong>${escapeHtml(user.name)}</strong></td>
-                        <td>${escapeHtml(user.email)}</td>
-                        <td><span class="role-badge ${user.role === 'admin' ? 'admin' : 'user'}">${user.role}</span></td>
-                        <td>${new Date(user.created_at).toLocaleDateString()}</td>
-                        <td>
-                            ${user.id !== api.getUser()?.id ? 
-                                `<button class="btn-action btn-delete" data-action="delete-user" data-id="${user.id}">Delete</button>` : 
-                                '<span style="color:#999;font-size:12px">Cannot delete self</span>'
-                            }
-                        </td>
-                    </tr>
-                `).join('');
-                
-                // Event listener untuk tombol Delete User
-                tbody.querySelectorAll('[data-action="delete-user"]').forEach(btn => {
-                    btn.addEventListener('click', handleDeleteUserClick);
-                });
-                
-            } catch (error) {
-                console.error('Error loading users:', error);
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state" style="color: #EF4444;">Failed to load users. Check console.</td></tr>';
-            }
-        }
-
-        // ✅ HANDLER: Tombol Edit (menggantikan inline onclick)
-        function handleEditClick(e) {
-            const btn = e.currentTarget;
-            const id = parseInt(btn.dataset.id);
-            const title = JSON.parse(btn.dataset.title);
-            const description = JSON.parse(btn.dataset.description);
-            const instructor = JSON.parse(btn.dataset.instructor);
-            
-            console.log('Edit course:', { id, title, description, instructor });
-            editCourse(id, title, description, instructor);
-        }
-
-        // ✅ HANDLER: Tombol Delete Course
-        function handleDeleteClick(e) {
-            const btn = e.currentTarget;
-            const id = parseInt(btn.dataset.id);
-            deleteCourse(id);
-        }
-
-        // ✅ HANDLER: Tombol Delete User
-        function handleDeleteUserClick(e) {
-            const btn = e.currentTarget;
-            const id = parseInt(btn.dataset.id);
-            deleteUser(id);
-        }
-
-        // 🎯 Course Modal Functions
-        function openCourseModal(course = null) {
-            const modal = document.getElementById('courseModal');
-            const form = document.getElementById('courseForm');
-            const title = document.getElementById('modalTitle');
-            
-            if (course) {
-                title.textContent = 'Edit Course';
-                document.getElementById('courseId').value = course.id;
-                document.getElementById('courseTitle').value = course.title || '';
-                document.getElementById('courseDescription').value = course.description || '';
-                document.getElementById('courseInstructor').value = course.instructor || '';
-            } else {
-                title.textContent = 'Add New Course';
-                form.reset();
-                document.getElementById('courseId').value = '';
-            }
-            
-            modal.classList.add('active');
-        }
-
-        function closeCourseModal() {
-            document.getElementById('courseModal').classList.remove('active');
-        }
-
-        // ✅ editCourse sekarang menerima parameter langsung (bukan dari string onclick)
-        function editCourse(id, title, description, instructor) {
-            openCourseModal({ id, title, description, instructor });
-        }
-
-        // 💾 Handle Course Form Submit
-        async function handleCourseSubmit(e) {
-            e.preventDefault();
-            
-            const courseId = document.getElementById('courseId').value;
-            const courseData = {
-                title: document.getElementById('courseTitle').value.trim(),
-                description: document.getElementById('courseDescription').value.trim(),
-                instructor: document.getElementById('courseInstructor').value.trim(),
             };
             
-            const btnSave = e.target.querySelector('.btn-save');
-            const originalText = btnSave.textContent;
-            btnSave.textContent = 'Saving...';
-            btnSave.disabled = true;
-            
-            const token = api.getToken();
-            
-            try {
-                const url = courseId 
-                    ? `${ADMIN_API_BASE}/admin/courses/${courseId}`
-                    : `${ADMIN_API_BASE}/admin/courses`;
-                    
-                const method = courseId ? 'PUT' : 'POST';
-                
-                const res = await fetch(url, {
-                    method,
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(courseData)
-                });
-                
-                if (!res.ok) {
-                    const errorData = await res.json().catch(() => ({}));
-                    throw new Error(errorData.message || `HTTP ${res.status}`);
-                }
-                
-                showNotification(courseId ? '✅ Course updated successfully!' : '✅ Course created successfully!', 'success');
-                closeCourseModal();
-                loadCourses();
-                
-            } catch (error) {
-                console.error('Error saving course:', error);
-                showNotification(`❌ Failed: ${error.message}`, 'error');
-            } finally {
-                btnSave.textContent = 'Save Course';
-                btnSave.disabled = false;
-            }
+        } catch (error) {
+            console.error('Error loading courses for content:', error);
+            select.innerHTML = '<option value="">-- Error loading courses --</option>';
         }
+    }
 
-        // 🗑️ Delete Course
-        async function deleteCourse(courseId) {
-            if (!confirm('Are you sure you want to delete this course? This action cannot be undone.')) return;
+    // Load meetings/lessons for selected course
+    async function loadMeetingsForCourse(courseId) {
+        const tbody = document.getElementById('meetingsTableBody');
+        const token = api.getToken();
+        
+        tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div> Loading...</td></tr>';
+        
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/courses/${courseId}`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
             
-            const token = api.getToken();
+            if (!res.ok) throw new Error('Failed to fetch course content');
             
-            try {
-                const res = await fetch(`${ADMIN_API_BASE}/admin/courses/${courseId}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (!res.ok) {
-                    const errorData = await res.json().catch(() => ({}));
-                    throw new Error(errorData.message || `HTTP ${res.status}`);
-                }
-                
-                showNotification('✅ Course deleted successfully!', 'success');
-                loadCourses();
-                
-            } catch (error) {
-                console.error('Error deleting course:', error);
-                showNotification(`❌ Failed: ${error.message}`, 'error');
-            }
-        }
-
-        // 🗑️ Delete User
-        async function deleteUser(userId) {
-            const currentUser = api.getUser();
-            if (userId === currentUser?.id) {
-                showNotification('❌ Cannot delete your own account', 'error');
+            const course = await res.json();
+            const items = course.meetings || [];
+            
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No content found. Click "+ Add Item" to start.</td></tr>';
                 return;
             }
             
-            if (!confirm('Are you sure you want to delete this user?')) return;
-            
-            const token = api.getToken();
-            
-            try {
-                const res = await fetch(`${ADMIN_API_BASE}/admin/users/${userId}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+            tbody.innerHTML = items.map(item => {
+                // Determine type label
+                let typeLabel = '📁 Meeting';
+                if (item.type === 'lesson' || item.type === 'normal') typeLabel = '📄 Lesson';
+                else if (item.type === 'test') typeLabel = '✍️ Quiz';
+                else if (item.type === 'final') typeLabel = '🏆 Final';
                 
-                if (!res.ok) {
-                    const errorData = await res.json().catch(() => ({}));
-                    throw new Error(errorData.message || `HTTP ${res.status}`);
-                }
+                // Format link display
+                const linkDisplay = item.content ? 
+                    `<a href="${item.content}" target="_blank" style="color:#667eea; text-decoration:none;">🔗 View</a>` : 
+                    '<span style="color:#999;">-</span>';
                 
-                showNotification('✅ User deleted successfully!', 'success');
-                loadUsers();
-                
-            } catch (error) {
-                console.error('Error deleting user:', error);
-                showNotification(`❌ Failed: ${error.message}`, 'error');
-            }
-        }
-
-        // 🔔 Show Notification (Toast)
-        function showNotification(message, type = 'success') {
-            const existing = document.querySelector('.notification');
-            if (existing) existing.remove();
-            
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 12px 20px;
-                border-radius: 8px;
-                color: white;
-                font-weight: 500;
-                font-size: 14px;
-                z-index: 9999;
-                animation: slideIn 0.3s ease;
-                background: ${type === 'success' ? '#10B981' : '#EF4444'};
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            `;
-            notification.textContent = message;
-            
-            if (!document.querySelector('#notification-styles')) {
-                const style = document.createElement('style');
-                style.id = 'notification-styles';
-                style.textContent = `
-                    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-                    @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+                return `
+                    <tr>
+                        <td><strong>${item.order_number}</strong></td>
+                        <td>${escapeHtml(item.title)}</td>
+                        <td><span style="font-size:12px;">${typeLabel}</span></td>
+                        <td>${linkDisplay}</td>
+                        <td>
+                            <button class="btn-action btn-edit" onclick="editContentItem(${item.id}, '${escapeHtml(item.title)}', '${item.type}', '${item.content || ''}', ${item.order_number})">Edit</button>
+                            <button class="btn-action btn-delete" onclick="deleteContentItem(${item.id})">Delete</button>
+                        </td>
+                    </tr>
                 `;
-                document.head.appendChild(style);
+            }).join('');
+            
+        } catch (error) {
+            console.error('Error loading meetings:', error);
+            tbody.innerHTML = '<tr><td colspan="5" class="empty-state" style="color:#EF4444;">Failed to load content.</td></tr>';
+        }
+    }
+
+    // Toggle Google Drive field based on item type
+    function toggleContentFields() {
+        const type = document.getElementById('contentItemType').value;
+        const driveGroup = document.getElementById('driveLinkGroup');
+        
+        if (type === 'meeting') {
+            driveGroup.style.display = 'none';
+            document.getElementById('contentDriveLink').required = false;
+        } else {
+            driveGroup.style.display = 'block';
+            document.getElementById('contentDriveLink').required = true;
+        }
+    }
+
+    // Open modal for adding new content item
+    function openMeetingModal() {
+        const courseId = document.getElementById('contentCourseId').value;
+        if (!courseId) {
+            showNotification('⚠️ Please select a course first', 'error');
+            return;
+        }
+        
+        document.getElementById('contentModal').classList.add('active');
+        document.getElementById('contentModalTitle').textContent = 'Add New Item';
+        document.getElementById('contentForm').reset();
+        document.getElementById('contentId').value = '';
+        document.getElementById('contentCourseId').value = courseId;
+        document.getElementById('contentItemType').value = 'meeting';
+        toggleContentFields();
+    }
+
+    function closeContentModal() {
+        document.getElementById('contentModal').classList.remove('active');
+    }
+
+    // Edit existing content item
+    function editContentItem(id, title, type, content, order_number) {
+        document.getElementById('contentModal').classList.add('active');
+        document.getElementById('contentModalTitle').textContent = 'Edit Item';
+        document.getElementById('contentId').value = id;
+        document.getElementById('contentTitle').value = title;
+        document.getElementById('contentItemType').value = type === 'normal' ? 'lesson' : type;
+        document.getElementById('contentDriveLink').value = content || '';
+        document.getElementById('contentOrder').value = order_number;
+        toggleContentFields();
+    }
+
+    // Handle content form submit (add/edit)
+    async function handleContentSubmit(e) {
+        e.preventDefault();
+        
+        const id = document.getElementById('contentId').value;
+        const courseId = document.getElementById('contentCourseId').value;
+        const itemType = document.getElementById('contentItemType').value;
+        
+        // Map frontend type to database ENUM
+        let dbType = 'normal';
+        if (itemType === 'meeting') dbType = 'normal';
+        else if (itemType === 'test') dbType = 'test';
+        else if (itemType === 'final') dbType = 'final';
+        else dbType = 'normal';
+        
+        // Convert Google Drive link to preview format
+        let driveLink = document.getElementById('contentDriveLink').value.trim();
+        if (driveLink && driveLink.includes('/view')) {
+            const match = driveLink.match(/\/d\/([^\/\?]+)/);
+            if (match && match[1]) {
+                driveLink = `https://drive.google.com/file/d/${match[1]}/preview`;
+            }
+        }
+        
+        const payload = {
+            title: document.getElementById('contentTitle').value.trim(),
+            type: dbType,
+            content: itemType === 'meeting' ? null : driveLink,
+            order_number: parseInt(document.getElementById('contentOrder').value)
+        };
+        
+        const btnSave = e.target.querySelector('.btn-save');
+        const originalText = btnSave.textContent;
+        btnSave.textContent = 'Saving...';
+        btnSave.disabled = true;
+        const token = api.getToken();
+        
+        try {
+            const url = id 
+                ? `${ADMIN_API_BASE}/admin/content/${id}`
+                : `${ADMIN_API_BASE}/admin/courses/${courseId}/content`;
+            const method = id ? 'PUT' : 'POST';
+            
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.message || `HTTP ${res.status}`);
             }
             
-            document.body.appendChild(notification);
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease forwards';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
+            showNotification(id ? '✅ Item updated!' : '✅ Item added!', 'success');
+            closeContentModal();
+            loadMeetingsForCourse(courseId);
+            
+        } catch (error) {
+            console.error('Error saving content:', error);
+            showNotification(`❌ Failed: ${error.message}`, 'error');
+        } finally {
+            btnSave.textContent = originalText;
+            btnSave.disabled = false;
         }
+    }
 
-        // 🔒 Escape HTML to prevent XSS
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+    // Delete content item
+    async function deleteContentItem(id) {
+        if (!confirm('Delete this item? This cannot be undone.')) return;
+        
+        const courseId = document.getElementById('contentCourseId').value;
+        const token = api.getToken();
+        
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/admin/content/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (!res.ok) throw new Error('Failed to delete');
+            
+            showNotification('✅ Item deleted!', 'success');
+            loadMeetingsForCourse(courseId);
+        } catch (error) {
+            console.error('Error deleting content:', error);
+            showNotification(`❌ Failed: ${error.message}`, 'error');
         }
+    }
 
-        // Close modal when clicking outside
-        document.getElementById('courseModal')?.addEventListener('click', (e) => {
-            if (e.target.id === 'courseModal') closeCourseModal();
-        });
+    /*
+    ========================================
+    UTILITIES
+    ========================================
+    */
+    
+    // Show toast notification
+    function showNotification(message, type = 'success') {
+        const existing = document.querySelector('.notification');
+        if (existing) existing.remove();
+        
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px; padding: 12px 20px;
+            border-radius: 8px; color: white; font-weight: 500; font-size: 14px;
+            z-index: 9999; animation: slideIn 0.3s ease;
+            background: ${type === 'success' ? '#10B981' : '#EF4444'};
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        `;
+        notification.textContent = message;
+        
+        if (!document.querySelector('#notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+                @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
     </script>
 </body>
 </html>
