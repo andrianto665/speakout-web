@@ -3,417 +3,479 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Teachers - SpeakOut E-Course</title>
 
-    <!-- FONT -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        :root {
+            --dark: #0f0f1a;
+            --dark2: #14142a;
+            --purple: #5b2d8e;
+            --purple-light: #7b4db5;
+            --purple-accent: #a67cda;
+            --blue: #0A4D9B;
+            --blue-light: #1565c0;
+            --blue-accent: #4a90d9;
+            --white: #ffffff;
+            --gray: #a0a0b8;
+            --surface: #1a1a35;
+            --surface2: #f4f4fc;
         }
 
-        body{
-            font-family:'Poppins',sans-serif;
-            background:#f7f7f7;
-            overflow-x:hidden;
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surface2);
+            color: #1f1f3a;
+            overflow-x: hidden;
         }
 
-        a{
-            text-decoration:none;
+        a { text-decoration: none; }
+
+        /* ===== HEADER ===== */
+        .header {
+            width: 100%;
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: rgba(10,15,35,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
 
-        /* ================= HEADER ================= */
-
-        .header{
-            width:100%;
-            background:white;
-            padding:18px 0;
-            position:sticky;
-            top:0;
-            z-index:999;
-            box-shadow:0 2px 15px rgba(0,0,0,0.04);
+        .header-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .header-container{
-            max-width:1200px;
-            margin:auto;
-            padding:0 20px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--white);
+            letter-spacing: -0.5px;
         }
 
-        .logo{
-            display:flex;
-            align-items:center;
-            gap:12px;
+        .logo span { color: var(--blue-accent); }
+
+        .nav-menu {
+            display: flex;
+            gap: 36px;
+            list-style: none;
         }
 
-        .logo-icon{
-            width:45px;
-            height:45px;
-            border-radius:12px;
-            background:linear-gradient(135deg,#ff8a00,#ff0058);
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            color:white;
-            font-size:22px;
-            font-weight:700;
-        }
-
-        .logo-text h1{
-            font-size:24px;
-            color:#252b72;
-            line-height:1;
-        }
-
-        .logo-text p{
-            font-size:12px;
-            color:#666;
-        }
-
-        .nav-menu{
-            display:flex;
-            gap:35px;
-            list-style:none;
-        }
-
-        .nav-menu a{
-            color:#222;
-            font-weight:500;
-            transition:0.3s;
+        .nav-menu a {
+            color: var(--gray);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: color 0.3s;
         }
 
         .nav-menu a:hover,
-        .nav-menu .active{
-            color:#5b4bff;
+        .nav-menu .active { color: var(--white); }
+
+        .btn-login {
+            background: var(--blue);
+            color: white;
+            padding: 11px 26px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
         }
 
-        .btn-login{
-            background:#1e73be;
-            color:white;
-            padding:14px 34px;
-            border-radius:4px;
-            font-weight:600;
-            transition:0.3s;
+        .btn-login:hover {
+            background: var(--blue-light);
+            transform: translateY(-1px);
         }
 
-        .btn-login:hover{
-            background:#125e9f;
+        /* ===== HERO ===== */
+        .hero {
+            width: 100%;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, var(--dark) 0%, #1a0a35 50%, #0a1a40 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* ================= HERO ================= */
-
-        .teachers-hero{
-            width:100%;
-            padding:90px 20px 70px;
-            position:relative;
-            overflow:hidden;
+        .hero::before {
+            content: "Teachers";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Playfair Display', serif;
+            font-size: 180px;
+            font-weight: 900;
+            color: rgba(255,255,255,0.03);
+            white-space: nowrap;
+            pointer-events: none;
         }
 
-        .teachers-hero::before{
-            content:"Teachers";
-            position:absolute;
-            left:-30px;
-            top:0;
-            font-size:220px;
-            font-weight:800;
-            color:rgba(0,0,0,0.03);
-            z-index:0;
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
         }
 
-        .hero-container{
-            max-width:1200px;
-            margin:auto;
-            position:relative;
-            z-index:2;
+        .hero-eyebrow-line {
+            width: 32px;
+            height: 2px;
+            background: var(--blue-accent);
         }
 
-        .page-header{
-            text-align:center;
-            margin-bottom:60px;
+        .hero-eyebrow span {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--blue-accent);
+            font-weight: 500;
         }
 
-        .page-header h1{
-            font-size:72px;
-            line-height:1.1;
-            color:#252b72;
-            margin-bottom:18px;
-            font-weight:800;
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 5vw, 64px);
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.1;
         }
 
-        .page-header p{
-            font-size:22px;
-            color:#444;
-            max-width:750px;
-            margin:auto;
-            line-height:1.7;
+        .hero h1 em {
+            font-style: italic;
+            color: var(--purple-accent);
         }
 
-        /* ================= TEACHERS GRID ================= */
-
-        .teachers-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-            gap:35px;
+        .hero p {
+            font-size: clamp(14px, 1.5vw, 17px);
+            line-height: 1.8;
+            color: var(--gray);
+            max-width: 600px;
+            margin: auto;
+            font-weight: 300;
         }
 
-        .teacher-card{
-            background:white;
-            border-radius:30px;
-            overflow:hidden;
-            box-shadow:0 15px 40px rgba(0,0,0,0.08);
-            transition:0.3s;
-            position:relative;
+        /* ===== SECTION ===== */
+        .teachers-section {
+            padding: 70px 20px;
         }
 
-        .teacher-card:hover{
-            transform:translateY(-10px);
+        .container {
+            max-width: 1200px;
+            margin: auto;
         }
 
-        .teacher-top{
-            height:140px;
-            background:linear-gradient(135deg,#2f7ac9,#7b00ff);
-            position:relative;
+        /* ===== LOADING ===== */
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
         }
 
-        .teacher-avatar{
-            width:110px;
-            height:110px;
-            border-radius:50%;
-            background:white;
-            position:absolute;
-            left:50%;
-            bottom:-55px;
-            transform:translateX(-50%);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:42px;
-            font-weight:700;
-            color:#5b4bff;
-            box-shadow:0 10px 30px rgba(0,0,0,0.12);
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(91,45,142,0.15);
+            border-top-color: var(--purple);
+            border-radius: 50%;
+            margin: auto auto 20px;
+            animation: spin 1s linear infinite;
         }
 
-        .teacher-content{
-            padding:80px 30px 30px;
-            text-align:center;
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== GRID ===== */
+        .teachers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
         }
 
-        .teacher-content h3{
-            font-size:28px;
-            color:#252b72;
-            margin-bottom:10px;
+        /* ===== CARD ===== */
+        .teacher-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(91,45,142,0.08);
+            border: 1px solid rgba(91,45,142,0.08);
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
         }
 
-        .teacher-role{
-            color:#666;
-            font-size:15px;
-            margin-bottom:30px;
+        .teacher-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(91,45,142,0.16);
         }
 
-        .teacher-stats{
-            display:flex;
-            justify-content:center;
-            gap:18px;
-            margin-bottom:30px;
+        /* Banner dengan foto profil */
+        .teacher-banner {
+            height: 160px;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
+            position: relative;
+            overflow: hidden;
         }
 
-        .stat-box{
-            background:#f3f5ff;
-            padding:18px 20px;
-            border-radius:18px;
-            min-width:110px;
+        .teacher-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
-        .stat-number{
-            display:block;
-            font-size:28px;
-            font-weight:700;
-            color:#5b4bff;
+        .teacher-avatar-wrap {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
         }
 
-        .stat-label{
-            font-size:14px;
-            color:#666;
+        .teacher-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            object-fit: cover;
+            background: #ddd;
+            display: block;
         }
 
-        .teacher-btn{
-            display:inline-block;
-            width:100%;
-            padding:16px;
-            border:none;
-            border-radius:18px;
-            background:linear-gradient(135deg,#e000ff,#7b00ff);
-            color:white;
-            font-size:16px;
-            font-weight:600;
-            cursor:pointer;
-            transition:0.3s;
-            box-shadow:0 10px 25px rgba(191,0,255,0.2);
+        /* Fallback avatar dengan inisial */
+        .teacher-avatar-fallback {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, var(--purple-accent), var(--blue-accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: white;
         }
 
-        .teacher-btn:hover{
-            transform:translateY(-3px);
+        .teacher-content {
+            padding: 52px 28px 28px;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* ================= LOADING ================= */
-
-        .loading{
-            text-align:center;
-            padding:80px 20px;
+        .teacher-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--dark);
+            font-weight: 700;
+            margin-bottom: 6px;
         }
 
-        .spinner{
-            width:70px;
-            height:70px;
-            border:6px solid #ececec;
-            border-top-color:#5b4bff;
-            border-radius:50%;
-            margin:auto auto 20px;
-            animation:spin 1s linear infinite;
+        .teacher-role {
+            font-size: 13px;
+            color: var(--purple);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
         }
 
-        @keyframes spin{
-            to{
-                transform:rotate(360deg);
-            }
+        /* ===== STATS ===== */
+        .teacher-stats {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 22px;
         }
 
-        /* ================= ERROR ================= */
-
-        .error-state{
-            text-align:center;
-            padding:80px 20px;
-            color:#ff3b3b;
-            font-size:22px;
-            font-weight:600;
+        .stat-box {
+            background: rgba(91,45,142,0.06);
+            padding: 14px 16px;
+            border-radius: 14px;
+            min-width: 90px;
+            border: 1px solid rgba(91,45,142,0.1);
         }
 
-        /* ================= RESPONSIVE ================= */
-
-        @media(max-width:992px){
-
-            .nav-menu{
-                display:none;
-            }
-
-            .page-header h1{
-                font-size:52px;
-            }
-
-            .page-header p{
-                font-size:18px;
-            }
+        .stat-number {
+            display: block;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--purple);
+            font-family: 'Playfair Display', serif;
         }
 
-        @media(max-width:600px){
-
-            .page-header h1{
-                font-size:42px;
-            }
-
-            .teachers-grid{
-                grid-template-columns:1fr;
-            }
-
-            .btn-login{
-                padding:12px 22px;
-            }
-
-            .teacher-content h3{
-                font-size:24px;
-            }
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            font-weight: 500;
         }
 
+        /* ===== SPECIALTIES ===== */
+        .teacher-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .teacher-tag {
+            background: rgba(10,77,155,0.08);
+            color: var(--blue);
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* ===== BUTTON ===== */
+        .teacher-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: auto;
+        }
+
+        .teacher-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(91,45,142,0.35);
+        }
+
+        /* ===== ERROR ===== */
+        .error-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #e53935;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width: 992px) {
+            .nav-menu { display: none; }
+            .teachers-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media(max-width: 768px) {
+            .header-container { padding: 0 24px; }
+            .hero::before { font-size: 80px; }
+        }
+
+        @media(max-width: 560px) {
+            .teachers-grid { grid-template-columns: 1fr; }
+            .btn-login { padding: 10px 20px; font-size: 13px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ================= HEADER ================= -->
+<!-- HEADER -->
+<header class="header">
+    <div class="header-container">
+        <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="courses.html">Course</a></li>
+                <li><a href="teachers.html" class="active">Teachers</a></li>
+            </ul>
+        </nav>
+        <a href="login.html" class="btn-login">Login</a>
+    </div>
+</header>
 
-    <header class="header">
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        <span>Tim Pengajar</span>
+        <div class="hero-eyebrow-line"></div>
+    </div>
+    <h1>Expert <em>Instructors</em></h1>
+    <p>
+        Belajar bersama mentor profesional SpeakOut untuk meningkatkan
+        skill public speaking dan bahasa Inggris secara aktif dan modern.
+    </p>
+</section>
 
-        <div class="header-container">
+<!-- TEACHERS -->
+<section class="teachers-section">
+    <div class="container">
 
-            <a href="index.html" class="logo">
-
-                <div class="logo-icon">S</div>
-
-                <div class="logo-text">
-                    <h1>SpeakOut</h1>
-                    <p>Ngomong Inggris Jadi Mudah</p>
-                </div>
-
-            </a>
-
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="courses.html">Course</a></li>
-                    <li><a href="teachers.html" class="active">Teachers</a></li>
-                    <li><a href="#">Informasi Akademik</a></li>
-                </ul>
-            </nav>
-
-            <a href="login.html" class="btn-login">
-                Login
-            </a>
-
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            <p>Loading teachers...</p>
         </div>
 
-    </header>
+        <div id="teachersList" class="teachers-grid"></div>
 
-    <!-- ================= HERO ================= -->
-
-    <section class="teachers-hero">
-
-        <div class="hero-container">
-
-            <div class="page-header">
-
-                <h1>
-                    Expert <br>
-                    Instructors
-                </h1>
-
-                <p>
-                    Belajar bersama mentor profesional SpeakOut
-                    untuk meningkatkan skill public speaking dan
-                    bahasa Inggris secara aktif dan modern.
-                </p>
-
-            </div>
-
-            <!-- LOADING -->
-            <div id="loadingState" class="loading">
-
-                <div class="spinner"></div>
-
-                <p>Loading teachers...</p>
-
-            </div>
-
-            <!-- TEACHERS -->
-            <div id="teachersList" class="teachers-grid"></div>
-
-            <!-- ERROR -->
-            <div id="errorState" class="error-state" style="display:none;">
-                Failed to load teachers
-            </div>
-
+        <div id="errorState" class="error-state" style="display:none;">
+            Gagal memuat data teachers.
         </div>
 
-    </section>
+    </div>
+</section>
 
-    <!-- JS -->
-    <script src="js/teachers.js"></script>
+<script src="js/teachers.js"></script>
+
+<script>
+    // Patch: tambah foto profil & stats ke card setelah teachers.js render
+    // Jalankan setelah teachers.js selesai load data
+    function enhanceTeacherCards() {
+        const cards = document.querySelectorAll('.teacher-card');
+        cards.forEach(card => {
+            const avatarWrap = card.querySelector('.teacher-avatar-wrap');
+            if (!avatarWrap) return;
+
+            const nameEl = card.querySelector('h3');
+            const name = nameEl ? nameEl.textContent.trim() : '?';
+            const initial = name.charAt(0).toUpperCase();
+
+            // Kalau img gagal load, tampilkan fallback inisial
+            const img = avatarWrap.querySelector('img');
+            if (img) {
+                img.onerror = function() {
+                    const fallback = document.createElement('div');
+                    fallback.className = 'teacher-avatar-fallback';
+                    fallback.textContent = initial;
+                    img.replaceWith(fallback);
+                };
+            }
+        });
+    }
+
+    // Observasi perubahan DOM untuk patch cards setelah JS load data
+    const observer = new MutationObserver(() => {
+        const list = document.getElementById('teachersList');
+        if (list && list.children.length > 0) {
+            enhanceTeacherCards();
+            observer.disconnect();
+        }
+    });
+    observer.observe(document.getElementById('teachersList') || document.body, { childList: true, subtree: true });
+</script>
 
 </body>
 </html>

@@ -103,6 +103,11 @@ function renderCourses(courses){
         const imageUrl =
             BASE_IMAGE_URL + imageName;
 
+        // ✅ FIX: handle null description
+        const description = course.description
+            ? course.description.substring(0, 180) + '...'
+            : 'Deskripsi belum tersedia.';
+
         /*
         ========================================
         CARD
@@ -140,7 +145,7 @@ function renderCourses(courses){
                     <div class="course-author">
                         by
                         <span>
-                            ${course.instructor}
+                            ${course.instructor || 'Unknown'}
                         </span>
                     </div>
 
@@ -161,9 +166,7 @@ function renderCourses(courses){
                     </div>
 
                     <div class="course-desc">
-
-                        ${course.description.substring(0, 180)}...
-
+                        ${description}
                     </div>
 
                 </div>

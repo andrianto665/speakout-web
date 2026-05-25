@@ -4,287 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - SpeakOut E-Course</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
     <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-        }
-
-        body{
-            font-family:'Poppins',sans-serif;
-            background:#f7f7f7;
-            overflow-x:hidden;
-        }
-
+        *{ margin:0; padding:0; box-sizing:border-box; }
+        body{ font-family:'Poppins',sans-serif; background:#f7f7f7; overflow-x:hidden; }
         a{ text-decoration:none; }
 
-        /* ================= HEADER ================= */
+        .header{ width:100%; background:white; padding:18px 0; position:sticky; top:0; z-index:999; box-shadow:0 2px 15px rgba(0,0,0,0.04); }
+        .header-container{ max-width:1200px; margin:auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
+        .logo{ display:flex; align-items:center; gap:12px; }
+        .logo-icon{ width:45px; height:45px; border-radius:12px; background:linear-gradient(135deg,#ff8a00,#ff0058); display:flex; justify-content:center; align-items:center; color:white; font-size:22px; font-weight:700; }
+        .logo-text h1{ font-size:24px; color:#252b72; line-height:1; }
+        .logo-text p{ font-size:12px; color:#666; }
+        .nav-menu{ display:flex; gap:30px; list-style:none; }
+        .nav-menu a{ color:#222; font-weight:500; transition:0.3s; }
+        .nav-menu a:hover{ color:#5b4bff; }
+        .btn-logout{ background:#ef4444; color:white; padding:12px 28px; border-radius:8px; font-weight:600; border:none; cursor:pointer; transition:0.3s; }
+        .btn-logout:hover{ background:#dc2626; }
 
-        .header{
-            width:100%;
-            background:white;
-            padding:18px 0;
-            position:sticky;
-            top:0;
-            z-index:999;
-            box-shadow:0 2px 15px rgba(0,0,0,0.04);
-        }
+        .dashboard-hero{ width:100%; padding:90px 20px 70px; position:relative; overflow:hidden; }
+        .dashboard-hero::before{ content:"Courses"; position:absolute; left:-30px; top:0; font-size:220px; font-weight:800; color:rgba(0,0,0,0.03); z-index:0; }
+        .hero-container{ max-width:1200px; margin:auto; position:relative; z-index:2; }
+        .page-header{ text-align:center; margin-bottom:60px; }
+        .page-header h1{ font-size:72px; color:#252b72; font-weight:800; margin-bottom:15px; }
+        .page-header p{ font-size:20px; color:#555; }
 
-        .header-container{
-            max-width:1200px;
-            margin:auto;
-            padding:0 20px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        }
+        .course-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:35px; }
 
-        .logo{
-            display:flex;
-            align-items:center;
-            gap:12px;
-        }
+        .course-card{ background:white; border-radius:28px; overflow:hidden; box-shadow:0 15px 40px rgba(0,0,0,0.08); transition:0.3s; padding:25px; position:relative; }
+        .course-card:hover{ transform:translateY(-10px); }
+        .course-card h3{ font-size:22px; color:#252b72; margin-bottom:10px; }
+        .description{ font-size:14px; color:#666; margin-bottom:15px; line-height:1.6; }
+        .instructor{ font-size:14px; color:#5b4bff; font-weight:500; margin-bottom:20px; display:block; }
 
-        .logo-icon{
-            width:45px;
-            height:45px;
-            border-radius:12px;
-            background:linear-gradient(135deg,#ff8a00,#ff0058);
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            color:white;
-            font-size:22px;
-            font-weight:700;
-        }
+        .progress-label{ display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px; color:#555; }
+        .progress-bar{ height:8px; background:#eee; border-radius:10px; overflow:hidden; margin-bottom:20px; }
+        .progress-fill{ height:100%; background:linear-gradient(135deg,#ff8a00,#ff0058); transition:0.5s; }
 
-        .logo-text h1{
-            font-size:24px;
-            color:#252b72;
-            line-height:1;
-        }
+        .btn-update{ width:100%; padding:14px; border:none; border-radius:14px; background:linear-gradient(135deg,#5b4bff,#7b00ff); color:white; font-weight:600; cursor:pointer; transition:0.3s; }
+        .btn-update:hover{ transform:translateY(-3px); }
+        .btn-update.completed{ background:linear-gradient(135deg,#10b981,#059669); }
+        .btn-update:disabled{ opacity:0.7; cursor:not-allowed; transform:none; }
 
-        .logo-text p{
-            font-size:12px;
-            color:#666;
-        }
+        .loading{ text-align:center; padding:80px 20px; }
+        .spinner{ width:70px; height:70px; border:6px solid #eee; border-top-color:#5b4bff; border-radius:50%; margin:auto; animation:spin 1s linear infinite; }
+        @keyframes spin{ to{ transform:rotate(360deg); } }
+        .empty-state{ text-align:center; padding:80px 20px; color:#666; }
+        .error-state{ text-align:center; padding:60px 20px; color:#ef4444; }
+        .error-state h3{ font-size:20px; margin-bottom:10px; }
+        .error-state p{ font-size:14px; color:#888; margin-bottom:20px; }
+        .btn-retry{ background:#5b4bff; color:white; padding:12px 28px; border-radius:8px; font-weight:600; border:none; cursor:pointer; }
 
-        .nav-menu{
-            display:flex;
-            gap:30px;
-            list-style:none;
-        }
-
-        .nav-menu a{
-            color:#222;
-            font-weight:500;
-            transition:0.3s;
-        }
-
-        .nav-menu a:hover{
-            color:#5b4bff;
-        }
-
-        .btn-logout{
-            background:#ef4444;
-            color:white;
-            padding:12px 28px;
-            border-radius:8px;
-            font-weight:600;
-            border:none;
-            cursor:pointer;
-            transition:0.3s;
-        }
-
-        .btn-logout:hover{
-            background:#dc2626;
-        }
-
-        /* ================= HERO ================= */
-
-        .dashboard-hero{
-            width:100%;
-            padding:90px 20px 70px;
-            position:relative;
-            overflow:hidden;
-        }
-
-        .dashboard-hero::before{
-            content:"Courses";
-            position:absolute;
-            left:-30px;
-            top:0;
-            font-size:220px;
-            font-weight:800;
-            color:rgba(0,0,0,0.03);
-            z-index:0;
-        }
-
-        .hero-container{
-            max-width:1200px;
-            margin:auto;
-            position:relative;
-            z-index:2;
-        }
-
-        .page-header{
-            text-align:center;
-            margin-bottom:60px;
-        }
-
-        .page-header h1{
-            font-size:72px;
-            color:#252b72;
-            font-weight:800;
-            margin-bottom:15px;
-        }
-
-        .page-header p{
-            font-size:20px;
-            color:#555;
-        }
-
-        /* ================= GRID ================= */
-
-        .course-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-            gap:35px;
-        }
-
-        /* ================= CARD ================= */
-
-        .course-card{
-            background:white;
-            border-radius:28px;
-            overflow:hidden;
-            box-shadow:0 15px 40px rgba(0,0,0,0.08);
-            transition:0.3s;
-            padding:25px;
-            position:relative;
-        }
-
-        .course-card:hover{
-            transform:translateY(-10px);
-        }
-
-        .course-card h3{
-            font-size:22px;
-            color:#252b72;
-            margin-bottom:10px;
-        }
-
-        .description{
-            font-size:14px;
-            color:#666;
-            margin-bottom:15px;
-            line-height:1.6;
-        }
-
-        .instructor{
-            font-size:14px;
-            color:#5b4bff;
-            font-weight:500;
-            margin-bottom:20px;
-            display:block;
-        }
-
-        /* ================= PROGRESS ================= */
-
-        .progress-label{
-            display:flex;
-            justify-content:space-between;
-            font-size:13px;
-            margin-bottom:8px;
-            color:#555;
-        }
-
-        .progress-bar{
-            height:8px;
-            background:#eee;
-            border-radius:10px;
-            overflow:hidden;
-            margin-bottom:20px;
-        }
-
-        .progress-fill{
-            height:100%;
-            background:linear-gradient(135deg,#ff8a00,#ff0058);
-            transition:0.5s;
-        }
-
-        /* ================= BUTTON ================= */
-
-        .btn-update{
-            width:100%;
-            padding:14px;
-            border:none;
-            border-radius:14px;
-            background:linear-gradient(135deg,#5b4bff,#7b00ff);
-            color:white;
-            font-weight:600;
-            cursor:pointer;
-            transition:0.3s;
-        }
-
-        .btn-update:hover{
-            transform:translateY(-3px);
-        }
-
-        .btn-update.completed{
-            background:linear-gradient(135deg,#10b981,#059669);
-        }
-
-        /* ================= STATES ================= */
-
-        .loading{
-            text-align:center;
-            padding:80px 20px;
-        }
-
-        .spinner{
-            width:70px;
-            height:70px;
-            border:6px solid #eee;
-            border-top-color:#5b4bff;
-            border-radius:50%;
-            margin:auto;
-            animation:spin 1s linear infinite;
-        }
-
-        @keyframes spin{
-            to{ transform:rotate(360deg); }
-        }
-
-        .empty-state{
-            text-align:center;
-            padding:80px 20px;
-            color:#666;
-        }
-
-        /* ================= RESPONSIVE ================= */
-
-        @media(max-width:992px){
-            .nav-menu{ display:none; }
-            .page-header h1{ font-size:52px; }
-        }
-
-        @media(max-width:600px){
-            .page-header h1{ font-size:42px; }
-        }
-
+        @media(max-width:992px){ .nav-menu{ display:none; } .page-header h1{ font-size:52px; } }
+        @media(max-width:600px){ .page-header h1{ font-size:42px; } }
     </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="header">
     <div class="header-container">
-
         <a href="index.html" class="logo">
             <div class="logo-icon">S</div>
             <div class="logo-text">
@@ -292,7 +70,6 @@
                 <p>Ngomong Inggris Jadi Mudah</p>
             </div>
         </a>
-
         <nav>
             <ul class="nav-menu">
                 <li><a href="index.html">Beranda</a></li>
@@ -301,126 +78,166 @@
                 <li><a href="#">Articles</a></li>
             </ul>
         </nav>
-
         <button id="logoutBtn" class="btn-logout">Logout</button>
-
     </div>
 </header>
 
-<!-- HERO -->
 <section class="dashboard-hero">
     <div class="hero-container">
-
         <div class="page-header">
             <h1>My Courses</h1>
             <p>Continue your learning journey and track your progress</p>
         </div>
 
-        <!-- LOADING -->
         <div id="loadingState" class="loading">
             <div class="spinner"></div>
             <p>Loading courses...</p>
         </div>
 
-        <!-- GRID -->
         <div id="courseList" class="course-grid"></div>
 
-        <!-- EMPTY -->
         <div id="emptyState" class="empty-state" style="display:none;">
             <h2>Belum ada course 😢</h2>
             <p>Silakan pilih course untuk mulai belajar</p>
         </div>
 
+        <div id="errorState" class="error-state" style="display:none;">
+            <h3>❌ Gagal memuat courses</h3>
+            <p id="errorMessage">Terjadi kesalahan saat menghubungi server.</p>
+            <button class="btn-retry" onclick="loadCourses()">Coba Lagi</button>
+        </div>
     </div>
 </section>
 
 <script src="js/api.js"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-
     if (!api.isLoggedIn()) {
         window.location.href = 'index.html';
         return;
     }
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        api.logout();
-    });
-
+    document.getElementById('logoutBtn').addEventListener('click', () => api.logout());
     loadCourses();
 });
 
-async function loadCourses(){
-    const loading = document.getElementById('loadingState');
-    const list = document.getElementById('courseList');
-    const empty = document.getElementById('emptyState');
+function normalizeCourses(response) {
+    if (!response) return [];
+    if (Array.isArray(response)) return response;
+    if (Array.isArray(response.data)) return response.data;
+    if (Array.isArray(response.courses)) return response.courses;
+    return [];
+}
 
-    try{
-        const courses = await api.getCourses();
+// Fetch progress per course dari GET api/courses/{id}/progress
+async function fetchProgress(courseId) {
+    const token = api.getToken();
+    try {
+        const res = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}/progress`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+        if (!res.ok) return 0;
+        const data = await res.json();
+        return data.progress ?? 0;
+    } catch {
+        return 0;
+    }
+}
+
+async function loadCourses() {
+    const loading = document.getElementById('loadingState');
+    const list    = document.getElementById('courseList');
+    const empty   = document.getElementById('emptyState');
+    const error   = document.getElementById('errorState');
+    const errMsg  = document.getElementById('errorMessage');
+
+    loading.style.display = 'block';
+    list.innerHTML        = '';
+    empty.style.display   = 'none';
+    error.style.display   = 'none';
+
+    try {
+        const raw     = await api.getCourses();
+        const courses = normalizeCourses(raw);
 
         loading.style.display = 'none';
 
-        if(!courses || courses.length === 0){
+        if (courses.length === 0) {
             empty.style.display = 'block';
             return;
         }
 
-        list.innerHTML = '';
+        // Fetch semua progress sekaligus (parallel)
+        const progressList = await Promise.all(
+            courses.map(c => fetchProgress(c.id))
+        );
 
-        courses.forEach(course => {
-
-            const progress = course.enrollment?.progress || 0;
+        courses.forEach((course, i) => {
+            const progress    = progressList[i];
+            const description = course.description
+                ? course.description.substring(0, 120) + (course.description.length > 120 ? '...' : '')
+                : 'No description available';
 
             const card = document.createElement('div');
             card.className = 'course-card';
-
             card.innerHTML = `
-                <h3>${course.title}</h3>
-                <p class="description">${course.description || 'No description'}</p>
+                <h3>${course.title || 'Untitled Course'}</h3>
+                <p class="description">${description}</p>
                 <span class="instructor">👨‍🏫 ${course.instructor || 'Unknown'}</span>
-
                 <div class="progress-label">
                     <span>Progress</span>
                     <span>${progress}%</span>
                 </div>
-
                 <div class="progress-bar">
                     <div class="progress-fill" style="width:${progress}%"></div>
                 </div>
-
                 <button class="btn-update ${progress >= 100 ? 'completed' : ''}"
                     onclick="updateProgress(${course.id}, this, ${progress})"
                     ${progress >= 100 ? 'disabled' : ''}>
-                    ${progress >= 100 ? 'Completed' : 'Continue Learning'}
+                    ${progress >= 100 ? '✅ Completed' : 'Continue Learning →'}
                 </button>
             `;
-
             list.appendChild(card);
         });
 
-    }catch(err){
-        loading.innerHTML = "Failed to load courses";
+    } catch (err) {
+        console.error('❌ loadCourses error:', err);
+        loading.style.display = 'none';
+        error.style.display   = 'block';
+        errMsg.textContent    = err.message || 'Tidak dapat terhubung ke server.';
     }
 }
 
-async function updateProgress(id, btn, current){
-    btn.disabled = true;
-    btn.innerText = "Saving...";
+async function updateProgress(id, btn, current) {
+    btn.disabled  = true;
+    btn.innerText = 'Saving...';
 
     const newProgress = current >= 50 ? 100 : 50;
 
-    await api.updateProgress(id, newProgress);
+    try {
+        await api.updateProgress(id, newProgress);
 
-    btn.innerText = "Completed";
-    btn.classList.add("completed");
+        const card = btn.closest('.course-card');
+        card.querySelector('.progress-fill').style.width = `${newProgress}%`;
+        card.querySelector('.progress-label span:last-child').innerText = `${newProgress}%`;
 
-    const card = btn.closest('.course-card');
-    card.querySelector('.progress-fill').style.width = "100%";
-    card.querySelector('.progress-label span:last-child').innerText = "100%";
+        if (newProgress >= 100) {
+            btn.innerText = '✅ Completed';
+            btn.classList.add('completed');
+            btn.disabled = true;
+        } else {
+            btn.innerText = 'Continue Learning →';
+            btn.disabled  = false;
+            btn.onclick   = () => updateProgress(id, btn, newProgress);
+        }
+    } catch (err) {
+        console.error('❌ updateProgress error:', err);
+        btn.innerText = 'Gagal, coba lagi';
+        btn.disabled  = false;
+    }
 }
-
 </script>
-
 </body>
 </html>
