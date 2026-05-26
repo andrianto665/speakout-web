@@ -34,7 +34,7 @@
         .admin-sidebar h3 { font-size: 16px; font-weight: 600; color: #666; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
         .admin-menu { list-style: none; }
         .admin-menu li { margin-bottom: 5px; }
-        .admin-menu a { display: flex; align-items: center; gap: 10px; padding: 12px 15px; color: #333; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.2s; }
+        .admin-menu a { display: flex; align-items: center; gap: 10px; padding: 12px 15px; color: #333; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.2s; cursor: pointer; }
         .admin-menu a:hover, .admin-menu a.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .admin-menu .icon { font-size: 18px; }
 
@@ -68,7 +68,6 @@
         tr:hover { background: #f8f9fa; }
         .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
         .status-badge.active { background: #DCFCE7; color: #166534; }
-        .status-badge.inactive { background: #FEE2E2; color: #991B1B; }
         .role-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
         .role-badge.admin { background: #667eea; color: white; }
         .role-badge.user { background: #e1e5eb; color: #333; }
@@ -130,7 +129,7 @@
     <!-- ===== HEADER ===== -->
     <header class="header">
         <div class="header-container">
-            <a href="#" class="logo">
+            <a href="index.html" class="logo">
                 <div class="logo-icon">S</div>
                 <div class="logo-text">
                     <h1>SpeakOut</h1>
@@ -142,9 +141,6 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="courses.html">Course</a></li>
                     <li><a href="teachers.html">Teachers</a></li>
-                    <li><a href="#">Record</a></li>
-                    <li><a href="#">Schedules</a></li>
-                    <li><a href="#">Articles</a></li>
                 </ul>
             </nav>
             <div class="user-info">
@@ -161,10 +157,10 @@
         <aside class="admin-sidebar">
             <h3>Admin Menu</h3>
             <ul class="admin-menu">
-                <li><a href="#" class="active" data-section="dashboard"><span class="icon">📊</span> Dashboard</a></li>
-                <li><a href="#" data-section="courses"><span class="icon">📚</span> Manage Courses</a></li>
-                <li><a href="#" data-section="users"><span class="icon">👥</span> Manage Users</a></li>
-                <li><a href="#" data-section="content"><span class="icon">📁</span> Manage Content</a></li>
+                <li><a class="active" data-section="dashboard"><span class="icon">📊</span> Dashboard</a></li>
+                <li><a data-section="courses"><span class="icon">📚</span> Manage Courses</a></li>
+                <li><a data-section="users"><span class="icon">👥</span> Manage Users</a></li>
+                <li><a data-section="content"><span class="icon">📁</span> Manage Content</a></li>
             </ul>
         </aside>
 
@@ -271,7 +267,7 @@
                 </div>
             </div>
 
-            <!-- ===== MANAGE CONTENT SECTION (NEW) ===== -->
+            <!-- ===== MANAGE CONTENT SECTION ===== -->
             <div id="content" class="section">
                 <div class="admin-header">
                     <div class="breadcrumb">
@@ -284,12 +280,12 @@
                 <!-- Step 1: Pilih Course -->
                 <div class="form-group">
                     <label for="contentCourseSelect">Select Course *</label>
-                    <select id="contentCourseSelect" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                    <select id="contentCourseSelect">
                         <option value="">-- Select a Course --</option>
                     </select>
                 </div>
 
-                <!-- Step 2: List Meetings (setelah course dipilih) -->
+                <!-- Step 2: List Meetings -->
                 <div id="meetingsSection" style="display:none; margin-top:30px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                         <h3 style="font-size:18px; font-weight:600;">Meetings & Lessons</h3>
@@ -360,24 +356,21 @@
                 <input type="hidden" id="contentId">
                 <input type="hidden" id="contentCourseId">
                 
-                <!-- Title -->
                 <div class="form-group">
                     <label for="contentTitle">Title *</label>
                     <input type="text" id="contentTitle" required placeholder="e.g., Family 1 / Lesson 1: Greeting">
                 </div>
 
-                <!-- Type -->
                 <div class="form-group">
                     <label for="contentItemType">Item Type *</label>
                     <select id="contentItemType" required onchange="toggleContentFields()">
-                        <option value="meeting">📁 Meeting Header (Family 1, Family 2, etc.)</option>
+                        <option value="meeting">📁 Meeting Header</option>
                         <option value="lesson">📄 Lesson / Material</option>
                         <option value="test">✍️ Quiz / Test</option>
                         <option value="final">🏆 Final Test</option>
                     </select>
                 </div>
 
-                <!-- Google Drive Link (conditional) -->
                 <div class="form-group" id="driveLinkGroup" style="display:none;">
                     <label for="contentDriveLink">Google Drive Link</label>
                     <input type="url" id="contentDriveLink" placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
@@ -386,10 +379,9 @@
                     </small>
                 </div>
 
-                <!-- Order Number -->
                 <div class="form-group">
                     <label for="contentOrder">Order Number *</label>
-                    <input type="number" id="contentOrder" required min="1" placeholder="e.g., 1, 2, 3 (urutan tampil)">
+                    <input type="number" id="contentOrder" required min="1" placeholder="e.g., 1, 2, 3">
                 </div>
 
                 <div class="modal-actions">
@@ -402,20 +394,20 @@
 
     <!-- ===== JAVASCRIPT ===== -->
     <script src="js/api.js"></script>
-    
     <script>
-    /*
-    ========================================
-    CONFIG & GLOBAL VARIABLES
-    ========================================
-    */
+    /**
+     * 📁 admin.html - Admin Dashboard Logic
+     * 🎯 Handle admin features: stats, courses, users, content management
+     */
+
+    // ========================================================================
+    // CONFIG & GLOBAL VARIABLES
+    // ========================================================================
     const ADMIN_API_BASE = 'http://127.0.0.1:8000/api';
 
-    /*
-    ========================================
-    INIT: DOM Loaded
-    ========================================
-    */
+    // ========================================================================
+    // INIT: DOM Loaded
+    // ========================================================================
     document.addEventListener('DOMContentLoaded', () => {
         // 🔐 Auth Check
         if (!api.isLoggedIn()) {
@@ -430,6 +422,7 @@
             return;
         }
         
+        // Set user name in header
         if (user?.name) {
             document.getElementById('userName').textContent = user.name.split(' ')[0];
         }
@@ -440,7 +433,7 @@
         document.getElementById('courseForm').addEventListener('submit', handleCourseSubmit);
         document.getElementById('contentForm').addEventListener('submit', handleContentSubmit);
         
-        // Close modals when clicking outside
+        // Setup modal close on outside click
         setupModalClose('courseModal');
         setupModalClose('contentModal');
         
@@ -450,17 +443,15 @@
         loadUsers();
     });
 
-    /*
-    ========================================
-    NAVIGATION & UI
-    ========================================
-    */
+    // ========================================================================
+    // NAVIGATION & UI HELPERS
+    // ========================================================================
     function setupNavigation() {
         document.querySelectorAll('.admin-menu a').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 
-                // Update active menu
+                // Update active menu item
                 document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
                 e.currentTarget.classList.add('active');
                 
@@ -469,7 +460,7 @@
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
                 document.getElementById(sectionId).classList.add('active');
                 
-                // Load data for content section
+                // Load data for content section when activated
                 if (sectionId === 'content') {
                     loadCoursesForContent();
                 }
@@ -492,11 +483,53 @@
         }
     }
 
-    /*
-    ========================================
-    DASHBOARD STATS
-    ========================================
-    */
+    function showNotification(message, type = 'success') {
+        // Remove existing notification
+        const existing = document.querySelector('.admin-notification');
+        if (existing) existing.remove();
+        
+        // Create new notification
+        const notification = document.createElement('div');
+        notification.className = `admin-notification`;
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px; padding: 12px 20px;
+            border-radius: 8px; color: white; font-weight: 500; font-size: 14px;
+            z-index: 9999; animation: slideIn 0.3s ease;
+            background: ${type === 'success' ? '#10B981' : '#EF4444'};
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        `;
+        notification.textContent = message;
+        
+        // Add animation styles if not exists
+        if (!document.querySelector('#admin-notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'admin-notification-styles';
+            style.textContent = `
+                @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+                @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(notification);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ========================================================================
+    // DASHBOARD STATS
+    // ========================================================================
     async function loadDashboardStats() {
         const token = api.getToken();
         if (!token) return;
@@ -509,10 +542,10 @@
             if (!res.ok) throw new Error('Failed to fetch stats');
             
             const data = await res.json();
-            document.getElementById('totalUsers').textContent = data.total_users || 0;
-            document.getElementById('totalCourses').textContent = data.total_courses || 0;
-            document.getElementById('totalEnrollments').textContent = data.total_enrollments || 0;
-            document.getElementById('completedCourses').textContent = data.completed_courses || 0;
+            document.getElementById('totalUsers').textContent = data.total_users ?? '-';
+            document.getElementById('totalCourses').textContent = data.total_courses ?? '-';
+            document.getElementById('totalEnrollments').textContent = data.total_enrollments ?? '-';
+            document.getElementById('completedCourses').textContent = data.completed_courses ?? '-';
             
         } catch (error) {
             console.error('Error loading stats:', error);
@@ -522,11 +555,9 @@
         }
     }
 
-    /*
-    ========================================
-    MANAGE COURSES
-    ========================================
-    */
+    // ========================================================================
+    // MANAGE COURSES
+    // ========================================================================
     async function loadCourses() {
         const tbody = document.getElementById('coursesTableBody');
         const token = api.getToken();
@@ -536,60 +567,48 @@
             return;
         }
         
+        tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div> Loading courses...</td></tr>';
+        
         try {
             const res = await fetch(`${ADMIN_API_BASE}/admin/courses`, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             
-            if (!res.ok) throw new Error('Failed to fetch courses');
+            if (!res.ok) {
+                if (res.status === 401 || res.status === 403) {
+                    api.clearToken();
+                    window.location.href = 'login.html';
+                    return;
+                }
+                throw new Error(`HTTP ${res.status}`);
+            }
             
-            const courses = await res.json();
+            const data = await res.json();
+            const courses = data.data || data || [];
             
             if (!courses || courses.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No courses found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No courses found. Click "+ Add New Course" to create one.</td></tr>';
                 return;
             }
             
             tbody.innerHTML = courses.map(course => `
-                <tr data-course-id="${course.id}">
+                <tr>
                     <td>${course.id}</td>
                     <td><strong>${escapeHtml(course.title)}</strong></td>
                     <td>${escapeHtml(course.instructor || '-')}</td>
-                    <td>${course.lessons_count || course.lessons?.length || 0}</td>
+                    <td>${course.total_lessons || course.lessons_count || 0}</td>
                     <td><span class="status-badge active">Active</span></td>
                     <td>
-                        <button class="btn-action btn-edit" data-action="edit"
-                            data-id="${course.id}"
-                            data-title='${JSON.stringify(course.title)}'
-                            data-description='${JSON.stringify(course.description || "")}'
-                            data-instructor='${JSON.stringify(course.instructor || "")}'>Edit</button>
-                        <button class="btn-action btn-delete" data-action="delete" data-id="${course.id}">Delete</button>
+                        <button class="btn-action btn-edit" onclick="editCourse(${course.id}, '${escapeHtml(course.title)}', '${escapeHtml(course.description || "")}', '${escapeHtml(course.instructor || "")}')">Edit</button>
+                        <button class="btn-action btn-delete" onclick="deleteCourse(${course.id})">Delete</button>
                     </td>
                 </tr>
             `).join('');
             
-            // Add event listeners
-            tbody.querySelectorAll('[data-action="edit"]').forEach(btn => btn.addEventListener('click', handleEditClick));
-            tbody.querySelectorAll('[data-action="delete"]').forEach(btn => btn.addEventListener('click', handleDeleteClick));
-            
         } catch (error) {
             console.error('Error loading courses:', error);
-            tbody.innerHTML = '<tr><td colspan="6" class="empty-state" style="color:#EF4444;">Failed to load courses.</td></tr>';
+            tbody.innerHTML = `<tr><td colspan="6" class="empty-state" style="color:#EF4444;">❌ Failed to load courses. ${error.message}</td></tr>`;
         }
-    }
-
-    function handleEditClick(e) {
-        const btn = e.currentTarget;
-        editCourse(
-            parseInt(btn.dataset.id),
-            JSON.parse(btn.dataset.title),
-            JSON.parse(btn.dataset.description),
-            JSON.parse(btn.dataset.instructor)
-        );
-    }
-
-    function handleDeleteClick(e) {
-        deleteCourse(parseInt(e.currentTarget.dataset.id));
     }
 
     function openCourseModal(course = null) {
@@ -631,8 +650,9 @@
         
         const btnSave = e.target.querySelector('.btn-save');
         const originalText = btnSave.textContent;
-        btnSave.textContent = 'Saving...';
+        btnSave.textContent = courseId ? 'Updating...' : 'Creating...';
         btnSave.disabled = true;
+        
         const token = api.getToken();
         
         try {
@@ -651,9 +671,10 @@
                 body: JSON.stringify(courseData)
             });
             
+            const data = await res.json();
+            
             if (!res.ok) {
-                const errorData = await res.json().catch(() => ({}));
-                throw new Error(errorData.message || `HTTP ${res.status}`);
+                throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
             }
             
             showNotification(courseId ? '✅ Course updated!' : '✅ Course created!', 'success');
@@ -670,30 +691,34 @@
     }
 
     async function deleteCourse(courseId) {
-        if (!confirm('Delete this course? This cannot be undone.')) return;
+        if (!confirm('Delete this course? This action cannot be undone.')) return;
         
         const token = api.getToken();
+        
         try {
             const res = await fetch(`${ADMIN_API_BASE}/admin/courses/${courseId}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             
-            if (!res.ok) throw new Error('Failed to delete');
+            const data = await res.json();
+            
+            if (!res.ok) {
+                throw new Error(data.message || 'Failed to delete course');
+            }
             
             showNotification('✅ Course deleted!', 'success');
             loadCourses();
+            
         } catch (error) {
             console.error('Error deleting course:', error);
             showNotification(`❌ Failed: ${error.message}`, 'error');
         }
     }
 
-    /*
-    ========================================
-    MANAGE USERS
-    ========================================
-    */
+    // ========================================================================
+    // MANAGE USERS
+    // ========================================================================
     async function loadUsers() {
         const tbody = document.getElementById('usersTableBody');
         const token = api.getToken();
@@ -703,14 +728,24 @@
             return;
         }
         
+        tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div> Loading users...</td></tr>';
+        
         try {
             const res = await fetch(`${ADMIN_API_BASE}/admin/users`, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             
-            if (!res.ok) throw new Error('Failed to fetch users');
+            if (!res.ok) {
+                if (res.status === 401 || res.status === 403) {
+                    api.clearToken();
+                    window.location.href = 'login.html';
+                    return;
+                }
+                throw new Error(`HTTP ${res.status}`);
+            }
             
-            const users = await res.json();
+            const data = await res.json();
+            const users = data.data || data || [];
             
             if (!users || users.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users found.</td></tr>';
@@ -728,20 +763,16 @@
                     <td>${new Date(user.created_at).toLocaleDateString()}</td>
                     <td>
                         ${user.id !== currentUserId ? 
-                            `<button class="btn-action btn-delete" data-action="delete-user" data-id="${user.id}">Delete</button>` : 
+                            `<button class="btn-action btn-delete" onclick="deleteUser(${user.id})">Delete</button>` : 
                             '<span style="color:#999;font-size:12px">Cannot delete self</span>'
                         }
                     </td>
                 </tr>
             `).join('');
             
-            tbody.querySelectorAll('[data-action="delete-user"]').forEach(btn => 
-                btn.addEventListener('click', (e) => deleteUser(parseInt(e.currentTarget.dataset.id)))
-            );
-            
         } catch (error) {
             console.error('Error loading users:', error);
-            tbody.innerHTML = '<tr><td colspan="6" class="empty-state" style="color:#EF4444;">Failed to load users.</td></tr>';
+            tbody.innerHTML = `<tr><td colspan="6" class="empty-state" style="color:#EF4444;">❌ Failed to load users. ${error.message}</td></tr>`;
         }
     }
 
@@ -752,32 +783,34 @@
             return;
         }
         
-        if (!confirm('Delete this user?')) return;
+        if (!confirm('Delete this user? This action cannot be undone.')) return;
         
         const token = api.getToken();
+        
         try {
             const res = await fetch(`${ADMIN_API_BASE}/admin/users/${userId}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             
-            if (!res.ok) throw new Error('Failed to delete');
+            const data = await res.json();
+            
+            if (!res.ok) {
+                throw new Error(data.message || 'Failed to delete user');
+            }
             
             showNotification('✅ User deleted!', 'success');
             loadUsers();
+            
         } catch (error) {
             console.error('Error deleting user:', error);
             showNotification(`❌ Failed: ${error.message}`, 'error');
         }
     }
 
-    /*
-    ========================================
-    MANAGE CONTENT (NEW FEATURE)
-    ========================================
-    */
-    
-    // Load courses into dropdown for content management
+    // ========================================================================
+    // MANAGE CONTENT (Course Meetings/Lessons)
+    // ========================================================================
     async function loadCoursesForContent() {
         const select = document.getElementById('contentCourseSelect');
         const token = api.getToken();
@@ -813,7 +846,6 @@
         }
     }
 
-    // Load meetings/lessons for selected course
     async function loadMeetingsForCourse(courseId) {
         const tbody = document.getElementById('meetingsTableBody');
         const token = api.getToken();
@@ -863,11 +895,10 @@
             
         } catch (error) {
             console.error('Error loading meetings:', error);
-            tbody.innerHTML = '<tr><td colspan="5" class="empty-state" style="color:#EF4444;">Failed to load content.</td></tr>';
+            tbody.innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#EF4444;">❌ Failed to load content. ${error.message}</td></tr>`;
         }
     }
 
-    // Toggle Google Drive field based on item type
     function toggleContentFields() {
         const type = document.getElementById('contentItemType').value;
         const driveGroup = document.getElementById('driveLinkGroup');
@@ -881,7 +912,6 @@
         }
     }
 
-    // Open modal for adding new content item
     function openMeetingModal() {
         const courseId = document.getElementById('contentCourseId').value;
         if (!courseId) {
@@ -902,7 +932,6 @@
         document.getElementById('contentModal').classList.remove('active');
     }
 
-    // Edit existing content item
     function editContentItem(id, title, type, content, order_number) {
         document.getElementById('contentModal').classList.add('active');
         document.getElementById('contentModalTitle').textContent = 'Edit Item';
@@ -914,7 +943,6 @@
         toggleContentFields();
     }
 
-    // Handle content form submit (add/edit)
     async function handleContentSubmit(e) {
         e.preventDefault();
         
@@ -947,8 +975,9 @@
         
         const btnSave = e.target.querySelector('.btn-save');
         const originalText = btnSave.textContent;
-        btnSave.textContent = 'Saving...';
+        btnSave.textContent = id ? 'Updating...' : 'Creating...';
         btnSave.disabled = true;
+        
         const token = api.getToken();
         
         try {
@@ -967,9 +996,10 @@
                 body: JSON.stringify(payload)
             });
             
+            const data = await res.json();
+            
             if (!res.ok) {
-                const errorData = await res.json().catch(() => ({}));
-                throw new Error(errorData.message || `HTTP ${res.status}`);
+                throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
             }
             
             showNotification(id ? '✅ Item updated!' : '✅ Item added!', 'success');
@@ -985,9 +1015,8 @@
         }
     }
 
-    // Delete content item
     async function deleteContentItem(id) {
-        if (!confirm('Delete this item? This cannot be undone.')) return;
+        if (!confirm('Delete this item? This action cannot be undone.')) return;
         
         const courseId = document.getElementById('contentCourseId').value;
         const token = api.getToken();
@@ -995,64 +1024,22 @@
         try {
             const res = await fetch(`${ADMIN_API_BASE}/admin/content/${id}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             
-            if (!res.ok) throw new Error('Failed to delete');
+            const data = await res.json();
+            
+            if (!res.ok) {
+                throw new Error(data.message || 'Failed to delete content');
+            }
             
             showNotification('✅ Item deleted!', 'success');
             loadMeetingsForCourse(courseId);
+            
         } catch (error) {
             console.error('Error deleting content:', error);
             showNotification(`❌ Failed: ${error.message}`, 'error');
         }
-    }
-
-    /*
-    ========================================
-    UTILITIES
-    ========================================
-    */
-    
-    // Show toast notification
-    function showNotification(message, type = 'success') {
-        const existing = document.querySelector('.notification');
-        if (existing) existing.remove();
-        
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.style.cssText = `
-            position: fixed; top: 20px; right: 20px; padding: 12px 20px;
-            border-radius: 8px; color: white; font-weight: 500; font-size: 14px;
-            z-index: 9999; animation: slideIn 0.3s ease;
-            background: ${type === 'success' ? '#10B981' : '#EF4444'};
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        `;
-        notification.textContent = message;
-        
-        if (!document.querySelector('#notification-styles')) {
-            const style = document.createElement('style');
-            style.id = 'notification-styles';
-            style.textContent = `
-                @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-                @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        document.body.appendChild(notification);
-        setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease forwards';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
-    }
-
-    // Escape HTML to prevent XSS
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
     </script>
 </body>

@@ -500,12 +500,14 @@
     <!-- API & Logic -->
     <script src="js/api.js"></script>
     <script>
-    /*
-    ========================================
-    DASHBOARD LOGIC - PREMIUM VERSION
-    ========================================
-    */
+    /**
+     * 📁 dashboard.html - Premium Dashboard Logic
+     * 🎯 Handle user dashboard with course tracking & certificate download
+     */
 
+    // ========================================================================
+    // INITIALIZATION
+    // ========================================================================
     document.addEventListener('DOMContentLoaded', () => {
         // Auth check
         if (!api.isLoggedIn()) {
@@ -514,16 +516,19 @@
         }
 
         // Setup logout
-        document.getElementById('logoutBtn').addEventListener('click', () => {
+        document.getElementById('logoutBtn')?.addEventListener('click', () => {
             if (confirm('Are you sure you want to logout?')) {
                 api.logout();
             }
         });
 
-        // Load dashboard
+        // Load dashboard data
         loadDashboard();
     });
 
+    // ========================================================================
+    // DASHBOARD LOADING
+    // ========================================================================
     async function loadDashboard() {
         const loading = document.getElementById('loadingState');
         const error = document.getElementById('errorState');
@@ -531,6 +536,7 @@
         const enrolledSection = document.getElementById('enrolledSection');
         const availableSection = document.getElementById('availableSection');
 
+        // Show loading state
         loading.style.display = 'block';
         error.style.display = 'none';
         empty.style.display = 'none';
@@ -538,14 +544,15 @@
         availableSection.style.display = 'none';
 
         try {
-            // Get user info
+            // Get user info for welcome message
             const user = api.getUser();
             if (user?.name) {
-                document.getElementById('userName').textContent = user.name.split(' ')[0];
-                document.getElementById('welcomeName').textContent = user.name.split(' ')[0];
+                const firstName = user.name.split(' ')[0];
+                document.getElementById('userName').textContent = firstName;
+                document.getElementById('welcomeName').textContent = firstName;
             }
 
-            // Fetch dashboard summary
+            // Fetch dashboard summary from API
             const token = api.getToken();
             const res = await fetch('http://127.0.0.1:8000/api/user/dashboard', {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
@@ -556,24 +563,24 @@
             const data = await res.json();
             loading.style.display = 'none';
 
-            // Update stats
+            // Update stats display
             document.getElementById('statEnrolled').textContent = data.stats.total_enrolled;
             document.getElementById('statInProgress').textContent = data.stats.in_progress;
             document.getElementById('statCompleted').textContent = data.stats.total_completed;
 
-            // Render enrolled courses
+            // Render enrolled courses if any
             if (data.in_progress_courses?.length > 0) {
                 enrolledSection.style.display = 'block';
                 renderEnrolledCourses(data.in_progress_courses);
             }
 
-            // Render available courses
+            // Render available courses if any
             if (data.available_courses?.length > 0) {
                 availableSection.style.display = 'block';
                 renderAvailableCourses(data.available_courses);
             }
 
-            // Show empty state if no courses
+            // Show empty state if no courses at all
             if (!data.in_progress_courses?.length && !data.available_courses?.length) {
                 empty.style.display = 'block';
             }
@@ -586,18 +593,27 @@
         }
     }
 
+    // ========================================================================
+    // RENDER FUNCTIONS
+    // ========================================================================
+    
+    /**
+     * Render enrolled courses with conditional button logic
+     * @param {Array} courses - List of enrolled courses with progress
+     */
     function renderEnrolledCourses(courses) {
         const grid = document.getElementById('courseGrid');
         grid.innerHTML = '';
 
         courses.forEach(course => {
-            const isCompleted = course.progress >= 100;
+            // ✅ Use API field is_completed if available, fallback to progress check
+            const isCompleted = course.is_completed || course.progress >= 100;
             const statusClass = isCompleted ? 'completed' : 'in-progress';
-            const badgeText = isCompleted ? 'Completed ✓' : `${course.progress}%`;
-            const btnText = isCompleted ? '✅ View Certificate' : '▶ Continue Learning';
-            const btnDisabled = isCompleted ? '' : '';
+            const badgeText = isCompleted ? '🏆 Completed' : `${course.progress}%`;
+            const btnText = isCompleted ? '📄 View Certificate' : '▶ Continue Learning';
+            const btnClass = isCompleted ? 'completed' : '';
             
-            // Get last lesson info
+            // Get last lesson info for preview
             const lastLesson = course.last_lesson;
             const lessonPreview = lastLesson ? `
                 <div class="lesson-preview">
@@ -612,11 +628,16 @@
                 </div>
             ` : '';
 
+            // ✅ Conditional onclick: download certificate OR continue learning
+            const buttonOnclick = isCompleted 
+                ? `downloadCertificate(${course.id})`
+                : `continueLearning(${course.id}, ${lastLesson?.id || 'null'})`;
+
             const card = document.createElement('div');
             card.className = `course-card ${statusClass}`;
             card.innerHTML = `
                 <div class="course-thumbnail">
-                    ${course.thumbnail ? `<img src="${course.thumbnail}" alt="${course.title}">` : '📚'}
+                    ${course.thumbnail ? `<img src="${course.thumbnail}" alt="${escapeHtml(course.title)}">` : '📚'}
                     <span class="course-badge">${badgeText}</span>
                 </div>
                 <div class="course-content">
@@ -638,9 +659,9 @@
 
                     ${lessonPreview}
 
-                    <button class="btn-continue ${isCompleted ? 'completed' : ''}" 
-                            onclick="continueLearning(${course.id}, ${lastLesson?.id || 'null'})"
-                            ${btnDisabled}>
+                    <button class="btn-continue ${btnClass}" 
+                            onclick="${buttonOnclick}"
+                            ${isCompleted ? '' : ''}>
                         ${btnText}
                     </button>
                 </div>
@@ -649,6 +670,10 @@
         });
     }
 
+    /**
+     * Render available courses for enrollment
+     * @param {Array} courses - List of available courses
+     */
     function renderAvailableCourses(courses) {
         const grid = document.getElementById('availableGrid');
         grid.innerHTML = '';
@@ -670,16 +695,27 @@
         });
     }
 
+    // ========================================================================
+    // ACTION FUNCTIONS
+    // ========================================================================
+
+    /**
+     * Navigate to course details page
+     * @param {number} courseId - Course ID
+     * @param {number|null} lessonId - Optional lesson ID to jump to
+     */
     async function continueLearning(courseId, lessonId) {
-        // If lessonId is provided, go directly to that lesson in course-details
-        // Otherwise, go to course overview
         const url = lessonId 
             ? `course-details.html?course_id=${courseId}&lesson_id=${lessonId}`
             : `course-details.html?course_id=${courseId}`;
-        
         window.location.href = url;
     }
 
+    /**
+     * Enroll user in a course
+     * @param {number} courseId - Course ID to enroll
+     * @param {HTMLElement} btn - The enroll button element
+     */
     async function enrollCourse(courseId, btn) {
         const originalText = btn.textContent;
         btn.textContent = 'Enrolling...';
@@ -702,9 +738,7 @@
             }
 
             alert(`✅ Successfully enrolled in "${data.course.title}"!`);
-            
-            // Refresh dashboard
-            loadDashboard();
+            loadDashboard(); // Refresh to show newly enrolled course
 
         } catch (err) {
             console.error('Enroll error:', err);
@@ -714,7 +748,80 @@
         }
     }
 
-    // Helper: Get icon based on lesson type
+    /**
+     * Download certificate PDF for a completed course
+     * @param {number} courseId - The course ID
+     */
+    async function downloadCertificate(courseId) {
+        const token = api.getToken();
+        if (!token) {
+            alert('Please login first');
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        try {
+            // Show loading state on button
+            const btn = event?.target;
+            const originalText = btn?.textContent;
+            if (btn) {
+                btn.textContent = '⏳ Downloading...';
+                btn.disabled = true;
+            }
+            
+            // ✅ Sesudah (tambah Accept: application/json agar Laravel tahu ini API request):
+const response = await fetch(`http://127.0.0.1:8000/api/user/certificates/${courseId}/download`, {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',  // ← WAJIB: agar expectsJson() = true
+    }
+});
+            
+            if (!response.ok) {
+                if (response.status === 404) {
+                    alert('📋 Certificate not ready yet. Please complete all lessons first!');
+                    return;
+                }
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            // Trigger file download via blob
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `SpeakOut-Certificate-${courseId}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            
+            // Show success message
+            alert('🎉 Certificate downloaded successfully! Check your Downloads folder.');
+            
+        } catch (error) {
+            console.error('Download certificate error:', error);
+            alert('❌ Failed to download certificate. Please try again.');
+        } finally {
+            // Restore button state
+            const btn = event?.target;
+            if (btn && originalText) {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+    }
+
+    // ========================================================================
+    // HELPER FUNCTIONS
+    // ========================================================================
+
+    /**
+     * Get icon emoji based on lesson type
+     * @param {string} type - Lesson type
+     * @returns {string} Emoji icon
+     */
     function getLessonIcon(type) {
         const icons = {
             'video': '🎬',
@@ -722,12 +829,17 @@
             'pdf': '📄',
             'quiz': '✍️',
             'test': '✍️',
-            'final': '🏆'
+            'final': '🏆',
+            'normal': '📚'
         };
         return icons[type] || '📄';
     }
 
-    // Helper: Escape HTML to prevent XSS
+    /**
+     * Escape HTML to prevent XSS attacks
+     * @param {string} text - Text to escape
+     * @returns {string} Escaped HTML
+     */
     function escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');

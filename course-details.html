@@ -561,7 +561,8 @@ async function toggleLessonComplete(courseId, meetingId, isCompleted) {
         // 1. Update progress for this lesson
         await api.updateProgress(courseId, meetingId, isCompleted);
         
-        // 2. ✅ Check if course is now fully completed
+        // 2. ✅ ALWAYS check if course is now fully completed
+        //    This ensures certificate is generated for ANY user/course
         const response = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}/check-completion`, {
             method: 'POST',
             headers: {
@@ -583,6 +584,15 @@ async function toggleLessonComplete(courseId, meetingId, isCompleted) {
             checkbox.nextElementSibling.style.color = isCompleted ? 'var(--success)' : 'var(--gray)';
             checkbox.nextElementSibling.textContent = isCompleted ? '✓ Done' : 'Mark Done';
         }
+
+        // 5. ✅ DEBUG LOG (bisa dihapus nanti)
+        console.log('🔍 Completion check:', {
+            courseId,
+            meetingId,
+            isCompleted,
+            course_completed: data.course_completed,
+            progress: data.progress
+        });
         
     } catch (error) {
         console.error('Error toggling lesson complete:', error);
