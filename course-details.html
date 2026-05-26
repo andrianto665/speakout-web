@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Details - SpeakOut</title>
 
-    <!-- Fonts: Sama persis dengan courses.html -->
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
-        /* ===== COPY CSS VARIABLES DARI courses.html ===== */
+        /* ===== CSS VARIABLES ===== */
         :root {
             --dark: #0f0f1a;
             --dark2: #14142a;
@@ -23,20 +23,20 @@
             --gray: #a0a0b8;
             --surface: #1a1a35;
             --surface2: #f4f4fc;
+            --success: #10b981;
+            --success-light: #d1fae5;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; }
-
         body {
             font-family: 'DM Sans', sans-serif;
             background: var(--surface2);
             color: #1f1f3a;
             overflow-x: hidden;
         }
-
         a { text-decoration: none; }
 
-        /* ===== HEADER (Sama persis) ===== */
+        /* ===== HEADER ===== */
         .header {
             width: 100%;
             padding: 18px 0;
@@ -47,7 +47,6 @@
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255,255,255,0.06);
         }
-
         .header-container {
             max-width: 1200px;
             margin: auto;
@@ -56,7 +55,6 @@
             justify-content: space-between;
             align-items: center;
         }
-
         .logo {
             font-family: 'Playfair Display', serif;
             font-size: 24px;
@@ -65,7 +63,6 @@
             letter-spacing: -0.5px;
         }
         .logo span { color: var(--blue-accent); }
-
         .nav-menu { display: flex; gap: 36px; list-style: none; }
         .nav-menu a {
             color: var(--gray);
@@ -76,7 +73,6 @@
             transition: color 0.3s;
         }
         .nav-menu a:hover, .nav-menu .active { color: var(--white); }
-
         .btn-login {
             background: var(--blue);
             color: white;
@@ -85,10 +81,12 @@
             font-size: 14px;
             font-weight: 600;
             transition: 0.3s;
+            cursor: pointer;
+            border: none;
         }
         .btn-login:hover { background: var(--blue-light); transform: translateY(-1px); }
 
-        /* ===== HERO MINI (Konsisten dengan courses.html) ===== */
+        /* ===== HERO ===== */
         .page-hero {
             width: 100%;
             padding: 50px 20px;
@@ -104,7 +102,7 @@
         }
         .page-hero p { color: var(--gray); font-size: 16px; }
 
-        /* ===== LAYOUT DETAIL COURSE ===== */
+        /* ===== LAYOUT ===== */
         .course-detail-container {
             max-width: 1200px;
             margin: 40px auto;
@@ -115,7 +113,7 @@
             min-height: 60vh;
         }
 
-        /* Sidebar Kiri */
+        /* Sidebar */
         .sidebar {
             background: white;
             border-radius: 20px;
@@ -150,7 +148,7 @@
             font-weight: 600;
         }
 
-        /* Content Kanan */
+        /* Content */
         .content-area {
             background: white;
             border-radius: 20px;
@@ -176,7 +174,7 @@
             letter-spacing: 1px;
         }
 
-        /* List Lesson */
+        /* Lesson List */
         .lesson-list { list-style: none; }
         .lesson-item {
             padding: 16px 0;
@@ -196,17 +194,22 @@
             color: var(--purple);
             font-weight: bold;
             font-size: 14px;
+            flex-shrink: 0;
         }
         .lesson-link {
             color: var(--blue);
             font-weight: 500;
             font-size: 16px;
             transition: color 0.2s;
+            flex: 1;
         }
         .lesson-link:hover { color: var(--purple); text-decoration: underline; }
-        
+        .lesson-link.disabled {
+            color: var(--gray);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
         .lesson-tag {
-            margin-left: auto;
             background: rgba(10,77,155,0.1);
             color: var(--blue);
             padding: 4px 12px;
@@ -214,9 +217,36 @@
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        
+        /* ✅ Checkbox "Mark Done" */
+        .lesson-complete {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+        .lesson-complete input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--success);
+        }
+        .lesson-complete label {
+            font-size: 13px;
+            color: var(--gray);
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s;
+        }
+        .lesson-complete input:checked + label {
+            color: var(--success);
+            font-weight: 500;
         }
 
-        /* Loading State */
+        /* Loading */
         .loading-detail { text-align: center; padding: 60px 20px; }
         .spinner {
             width: 50px; height: 50px;
@@ -228,6 +258,57 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ✅ Celebration Overlay */
+        .celebration-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .celebration-overlay .emoji { font-size: 72px; margin-bottom: 20px; animation: bounce 0.6s ease infinite alternate; }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+        .celebration-overlay h2 { font-size: 32px; margin-bottom: 12px; font-family: 'Playfair Display', serif; }
+        .celebration-overlay p { font-size: 18px; color: var(--gray); margin-bottom: 30px; }
+        .celebration-overlay .btn-group { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+        .celebration-overlay .btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s;
+        }
+        .celebration-overlay .btn-primary {
+            background: var(--success);
+            color: white;
+        }
+        .celebration-overlay .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        .celebration-overlay .btn:hover { transform: translateY(-2px); }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px; height: 10px;
+            border-radius: 2px;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
         /* Responsive */
         @media(max-width: 992px) {
             .course-detail-container { grid-template-columns: 1fr; }
@@ -237,12 +318,14 @@
             .header-container { padding: 0 24px; }
             .course-detail-container { padding: 0 24px; margin: 20px auto; }
             .content-area { padding: 24px; }
+            .lesson-item { flex-wrap: wrap; }
+            .lesson-complete { margin-left: 51px; margin-top: 8px; }
         }
     </style>
 </head>
 <body>
 
-<!-- HEADER (Sama persis dengan courses.html) -->
+<!-- HEADER -->
 <header class="header">
     <div class="header-container">
         <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
@@ -253,13 +336,13 @@
                 <li><a href="teachers.html">Teachers</a></li>
             </ul>
         </nav>
-        <a href="login.html" class="btn-login">Login</a>
+        <button id="logoutBtn" class="btn-login">Logout</button>
     </div>
 </header>
 
-<!-- HERO MINI -->
+<!-- HERO -->
 <section class="page-hero">
-    <h1 id="page-title">English For Family</h1>
+    <h1 id="page-title">Loading...</h1>
     <p>Pilih pertemuan di sebelah kiri untuk melihat materi</p>
 </section>
 
@@ -270,7 +353,6 @@
     <aside class="sidebar">
         <h3>Daftar Pertemuan</h3>
         <div id="meeting-list">
-            <!-- Nanti diisi oleh JavaScript -->
             <div class="loading-detail"><div class="spinner"></div></div>
         </div>
     </aside>
@@ -279,19 +361,332 @@
     <main class="content-area">
         <div class="content-header">
             <span id="meeting-label">Pertemuan 1</span>
-            <h2 id="meeting-title">Family 1</h2>
+            <h2 id="meeting-title">Loading...</h2>
         </div>
         
         <ul class="lesson-list" id="lesson-list">
-            <!-- Nanti diisi oleh JavaScript -->
             <div class="loading-detail"><div class="spinner"></div></div>
         </ul>
     </main>
 
 </div>
 
-<!-- Script: Nanti kita buat file js/course-details.js -->
-<script src="js/course-details.js"></script>
+<!-- API Service -->
+<script src="js/api.js"></script>
+
+<!-- Course Details Logic -->
+<script>
+/**
+ * 📁 course-details.html - Logic
+ * 🎯 Handle course detail view with lesson tracking
+ */
+
+// Global state
+let currentCourseId = null;
+let currentCourseTitle = null;
+let courseLessons = []; // Store lessons with completion status
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Auth check
+    if (!api.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Setup logout
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+            api.logout();
+        }
+    });
+
+    // Get course params from URL
+    const params = new URLSearchParams(window.location.search);
+    currentCourseId = parseInt(params.get('course_id'));
+    currentCourseTitle = params.get('title') || 'Course';
+
+    if (!currentCourseId) {
+        document.getElementById('page-title').textContent = 'Course Not Found';
+        return;
+    }
+
+    // Load course data
+    document.getElementById('page-title').textContent = currentCourseTitle;
+    loadCourseDetails();
+});
+
+/**
+ * Load course details and meetings from API
+ */
+async function loadCourseDetails() {
+    const token = api.getToken();
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        // Fetch course details with meetings
+        const response = await fetch(`http://127.0.0.1:8000/api/courses/${currentCourseId}`, {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error('Failed to load course');
+
+        const course = await response.json();
+        
+        // Update UI
+        document.getElementById('page-title').textContent = course.title;
+        
+        // Render meetings in sidebar
+        renderMeetings(course.meetings || []);
+        
+        // Store lessons for completion tracking
+        courseLessons = (course.meetings || []).filter(m => m.content !== null);
+        
+        // Load first meeting by default
+        if (course.meetings?.length > 0) {
+            selectMeeting(course.meetings[0]);
+        }
+        
+    } catch (error) {
+        console.error('Error loading course:', error);
+        document.getElementById('meeting-list').innerHTML = 
+            '<p style="color:#ef4444; text-align:center; padding:20px;">Failed to load course. Please try again.</p>';
+    }
+}
+
+/**
+ * Render meeting list in sidebar
+ */
+function renderMeetings(meetings) {
+    const container = document.getElementById('meeting-list');
+    
+    if (!meetings.length) {
+        container.innerHTML = '<p style="color:var(--gray); text-align:center; padding:20px;">No meetings found.</p>';
+        return;
+    }
+    
+    container.innerHTML = meetings.map((meeting, index) => `
+        <div class="meeting-item ${index === 0 ? 'active' : ''}" 
+             onclick="selectMeeting(${JSON.stringify(meeting).replace(/"/g, '&quot;')})"
+             data-meeting-id="${meeting.id}">
+            ${escapeHtml(meeting.title || `Meeting ${index + 1}`)}
+        </div>
+    `).join('');
+}
+
+/**
+ * Select a meeting and render its lessons
+ */
+function selectMeeting(meeting) {
+    // Update active state in sidebar
+    document.querySelectorAll('.meeting-item').forEach(item => item.classList.remove('active'));
+    const activeItem = document.querySelector(`.meeting-item[data-meeting-id="${meeting.id}"]`);
+    if (activeItem) activeItem.classList.add('active');
+    
+    // Update header
+    document.getElementById('meeting-label').textContent = `Pertemuan ${meeting.order_number || 1}`;
+    document.getElementById('meeting-title').textContent = meeting.title || 'Untitled';
+    
+    // Render lessons for this meeting
+    renderLessons(meeting);
+}
+
+/**
+ * Render lessons list with completion checkboxes
+ */
+function renderLessons(meeting) {
+    const container = document.getElementById('lesson-list');
+    
+    // Get lessons for this meeting (items with content)
+    const lessons = courseLessons.filter(l => 
+        l.order_number === meeting.order_number || 
+        (l.content && l.title?.toLowerCase().includes(meeting.title?.toLowerCase()))
+    );
+    
+    // If no specific lessons, show all course lessons
+    const displayLessons = lessons.length > 0 ? lessons : courseLessons;
+    
+    if (!displayLessons.length) {
+        container.innerHTML = '<p style="color:var(--gray); text-align:center; padding:20px;">No lessons available for this meeting.</p>';
+        return;
+    }
+    
+    container.innerHTML = displayLessons.map(lesson => {
+        const isCompleted = lesson.is_completed || false;
+        const icon = getLessonIcon(lesson.type);
+        const tag = getLessonTag(lesson.type);
+        const lessonLink = lesson.content ? lesson.content : '#';
+        const isDisabled = !lesson.content;
+        
+        return `
+            <li class="lesson-item">
+                <div class="lesson-icon">${icon}</div>
+                <a href="${lessonLink}" 
+                   class="lesson-link ${isDisabled ? 'disabled' : ''}" 
+                   target="_blank"
+                   ${isDisabled ? 'onclick="return false"' : ''}>
+                    ${escapeHtml(lesson.title || 'Untitled Lesson')}
+                </a>
+                <span class="lesson-tag">${tag}</span>
+                
+                <!-- ✅ Checkbox: Mark lesson as done -->
+                <div class="lesson-complete">
+                    <input type="checkbox" 
+                           id="lesson-${lesson.id}" 
+                           class="lesson-checkbox"
+                           data-meeting-id="${lesson.id}"
+                           ${isCompleted ? 'checked' : ''}
+                           onchange="toggleLessonComplete(${currentCourseId}, ${lesson.id}, this.checked)">
+                    <label for="lesson-${lesson.id}">${isCompleted ? '✓ Done' : 'Mark Done'}</label>
+                </div>
+            </li>
+        `;
+    }).join('');
+}
+
+/**
+ * Toggle lesson completion status & check course completion
+ */
+async function toggleLessonComplete(courseId, meetingId, isCompleted) {
+    const token = api.getToken();
+    if (!token) {
+        alert('Please login first');
+        return;
+    }
+    
+    try {
+        // 1. Update progress for this lesson
+        await api.updateProgress(courseId, meetingId, isCompleted);
+        
+        // 2. ✅ Check if course is now fully completed
+        const response = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}/check-completion`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        // 3. If course completed, show celebration!
+        if (data.course_completed) {
+            showCourseCompletedCelebration(courseId);
+        }
+        
+        // 4. Update checkbox label color
+        const checkbox = document.getElementById(`lesson-${meetingId}`);
+        if (checkbox) {
+            checkbox.nextElementSibling.style.color = isCompleted ? 'var(--success)' : 'var(--gray)';
+            checkbox.nextElementSibling.textContent = isCompleted ? '✓ Done' : 'Mark Done';
+        }
+        
+    } catch (error) {
+        console.error('Error toggling lesson complete:', error);
+        alert('Failed to update progress. Please try again.');
+        
+        // Revert checkbox state on error
+        const checkbox = document.getElementById(`lesson-${meetingId}`);
+        if (checkbox) checkbox.checked = !isCompleted;
+    }
+}
+
+/**
+ * Show celebration animation when course is completed
+ */
+function showCourseCompletedCelebration(courseId) {
+    // Remove existing overlay if any
+    const existing = document.querySelector('.celebration-overlay');
+    if (existing) existing.remove();
+    
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'celebration-overlay';
+    overlay.innerHTML = `
+        <div class="emoji">🎉</div>
+        <h2>Course Completed!</h2>
+        <p>Congratulations! You've earned your certificate. 🏆</p>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">
+                View Dashboard
+            </button>
+            <button class="btn btn-secondary" onclick="this.closest('.celebration-overlay').remove()">
+                Keep Learning
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // Add confetti
+    createConfetti(overlay);
+}
+
+/**
+ * Create falling confetti animation
+ */
+function createConfetti(container) {
+    const colors = ['#f59e0b', '#10b981', '#3b82f6', '#a67cda', '#ef4444'];
+    
+    for (let i = 0; i < 60; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.cssText = `
+            background: ${colors[i % colors.length]};
+            left: ${Math.random() * 100}%;
+            top: -10px;
+            animation-duration: ${2 + Math.random() * 3}s;
+            animation-delay: ${Math.random() * 0.5}s;
+        `;
+        container.appendChild(confetti);
+    }
+}
+
+/**
+ * Get icon emoji based on lesson type
+ */
+function getLessonIcon(type) {
+    const icons = {
+        'video': '🎬',
+        'audio': '🎧',
+        'pdf': '📄',
+        'quiz': '✍️',
+        'test': '✍️',
+        'final': '🏆',
+        'normal': '📚'
+    };
+    return icons[type] || '📄';
+}
+
+/**
+ * Get tag text based on lesson type
+ */
+function getLessonTag(type) {
+    const tags = {
+        'video': 'Video',
+        'audio': 'Audio',
+        'pdf': 'PDF',
+        'quiz': 'Quiz',
+        'test': 'Test',
+        'final': 'Final',
+        'normal': 'Lesson'
+    };
+    return tags[type] || 'Material';
+}
+
+/**
+ * Escape HTML to prevent XSS
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+</script>
 
 </body>
 </html>

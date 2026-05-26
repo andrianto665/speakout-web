@@ -4,251 +4,736 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - SpeakOut E-Course</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        *{ margin:0; padding:0; box-sizing:border-box; }
-        body{ font-family:'Poppins',sans-serif; background:#f7f7f7; overflow-x:hidden; }
-        a{ text-decoration:none; }
+        :root {
+            --dark: #0f0f1a;
+            --dark2: #14142a;
+            --purple: #5b2d8e;
+            --purple-light: #7b4db5;
+            --purple-accent: #a67cda;
+            --blue: #0A4D9B;
+            --blue-light: #1565c0;
+            --blue-accent: #4a90d9;
+            --white: #ffffff;
+            --gray: #a0a0b8;
+            --gray-light: #f5f5f5;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
 
-        .header{ width:100%; background:white; padding:18px 0; position:sticky; top:0; z-index:999; box-shadow:0 2px 15px rgba(0,0,0,0.04); }
-        .header-container{ max-width:1200px; margin:auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
-        .logo{ display:flex; align-items:center; gap:12px; }
-        .logo-icon{ width:45px; height:45px; border-radius:12px; background:linear-gradient(135deg,#ff8a00,#ff0058); display:flex; justify-content:center; align-items:center; color:white; font-size:22px; font-weight:700; }
-        .logo-text h1{ font-size:24px; color:#252b72; line-height:1; }
-        .logo-text p{ font-size:12px; color:#666; }
-        .nav-menu{ display:flex; gap:30px; list-style:none; }
-        .nav-menu a{ color:#222; font-weight:500; transition:0.3s; }
-        .nav-menu a:hover{ color:#5b4bff; }
-        .btn-logout{ background:#ef4444; color:white; padding:12px 28px; border-radius:8px; font-weight:600; border:none; cursor:pointer; transition:0.3s; }
-        .btn-logout:hover{ background:#dc2626; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; }
 
-        .dashboard-hero{ width:100%; padding:90px 20px 70px; position:relative; overflow:hidden; }
-        .dashboard-hero::before{ content:"Courses"; position:absolute; left:-30px; top:0; font-size:220px; font-weight:800; color:rgba(0,0,0,0.03); z-index:0; }
-        .hero-container{ max-width:1200px; margin:auto; position:relative; z-index:2; }
-        .page-header{ text-align:center; margin-bottom:60px; }
-        .page-header h1{ font-size:72px; color:#252b72; font-weight:800; margin-bottom:15px; }
-        .page-header p{ font-size:20px; color:#555; }
+        /* ===== HEADER ===== */
+        .header {
+            width: 100%;
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: rgba(10, 15, 35, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--white);
+        }
+        .logo span { color: var(--blue-accent); }
+        .nav-menu { display: flex; gap: 30px; list-style: none; }
+        .nav-menu a {
+            color: var(--gray);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        .nav-menu a:hover, .nav-menu a.active { color: var(--white); }
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .user-name { font-size: 14px; color: var(--gray); }
+        .btn-logout {
+            background: transparent;
+            color: var(--gray);
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+        }
 
-        .course-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:35px; }
+        /* ===== DASHBOARD HERO ===== */
+        .dashboard-hero {
+            width: 100%;
+            padding: 80px 0 40px;
+            background: linear-gradient(135deg, var(--dark2) 0%, var(--dark) 100%);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .hero-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 40px;
+        }
+        .welcome-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .welcome-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .welcome-text p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+        .stats-bar {
+            display: flex;
+            gap: 24px;
+            background: rgba(255,255,255,0.04);
+            padding: 16px 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .stat-item {
+            text-align: center;
+            padding: 0 12px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--purple-accent);
+        }
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-        .course-card{ background:white; border-radius:28px; overflow:hidden; box-shadow:0 15px 40px rgba(0,0,0,0.08); transition:0.3s; padding:25px; position:relative; }
-        .course-card:hover{ transform:translateY(-10px); }
-        .course-card h3{ font-size:22px; color:#252b72; margin-bottom:10px; }
-        .description{ font-size:14px; color:#666; margin-bottom:15px; line-height:1.6; }
-        .instructor{ font-size:14px; color:#5b4bff; font-weight:500; margin-bottom:20px; display:block; }
+        /* ===== COURSE CARD ===== */
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 40px 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--purple-accent), transparent);
+        }
 
-        .progress-label{ display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px; color:#555; }
-        .progress-bar{ height:8px; background:#eee; border-radius:10px; overflow:hidden; margin-bottom:20px; }
-        .progress-fill{ height:100%; background:linear-gradient(135deg,#ff8a00,#ff0058); transition:0.5s; }
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
 
-        .btn-update{ width:100%; padding:14px; border:none; border-radius:14px; background:linear-gradient(135deg,#5b4bff,#7b00ff); color:white; font-weight:600; cursor:pointer; transition:0.3s; }
-        .btn-update:hover{ transform:translateY(-3px); }
-        .btn-update.completed{ background:linear-gradient(135deg,#10b981,#059669); }
-        .btn-update:disabled{ opacity:0.7; cursor:not-allowed; transform:none; }
+        .course-card {
+            background: var(--dark2);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .course-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--purple-accent);
+            box-shadow: 0 20px 40px rgba(91, 45, 142, 0.2);
+        }
+        .course-card.completed {
+            border-color: var(--success);
+        }
+        .course-card.completed .progress-fill {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
 
-        .loading{ text-align:center; padding:80px 20px; }
-        .spinner{ width:70px; height:70px; border:6px solid #eee; border-top-color:#5b4bff; border-radius:50%; margin:auto; animation:spin 1s linear infinite; }
-        @keyframes spin{ to{ transform:rotate(360deg); } }
-        .empty-state{ text-align:center; padding:80px 20px; color:#666; }
-        .error-state{ text-align:center; padding:60px 20px; color:#ef4444; }
-        .error-state h3{ font-size:20px; margin-bottom:10px; }
-        .error-state p{ font-size:14px; color:#888; margin-bottom:20px; }
-        .btn-retry{ background:#5b4bff; color:white; padding:12px 28px; border-radius:8px; font-weight:600; border:none; cursor:pointer; }
+        .course-thumbnail {
+            height: 180px;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        .course-thumbnail::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+        .course-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .course-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .course-card.completed .course-badge {
+            background: var(--success);
+        }
+        .course-card.in-progress .course-badge {
+            background: var(--warning);
+        }
 
-        @media(max-width:992px){ .nav-menu{ display:none; } .page-header h1{ font-size:52px; } }
-        @media(max-width:600px){ .page-header h1{ font-size:42px; } }
+        .course-content {
+            padding: 24px;
+        }
+        .course-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .course-instructor {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .course-instructor::before {
+            content: '👨‍🏫';
+        }
+
+        .progress-section {
+            margin-bottom: 20px;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .progress-label { color: var(--gray); }
+        .progress-value {
+            color: var(--purple-accent);
+            font-weight: 600;
+        }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .lesson-preview {
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .lesson-preview-title {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        .lesson-icon {
+            font-size: 16px;
+        }
+        .lesson-status {
+            margin-left: auto;
+            font-size: 14px;
+        }
+        .lesson-status.completed { color: var(--success); }
+        .lesson-status.locked { color: var(--gray); }
+
+        .btn-continue {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(91, 45, 142, 0.4);
+        }
+        .btn-continue:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-continue.completed {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        /* ===== AVAILABLE COURSES ===== */
+        .available-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .available-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s;
+        }
+        .available-card:hover {
+            border-color: var(--purple-accent);
+            background: rgba(255,255,255,0.08);
+        }
+        .available-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .available-desc {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .btn-enroll {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            color: var(--purple-accent);
+            border: 1px solid var(--purple-accent);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-enroll:hover {
+            background: var(--purple-accent);
+            color: white;
+        }
+
+        /* ===== EMPTY & LOADING STATES ===== */
+        .loading, .empty-state, .error-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+        .empty-state h3, .error-state h3 {
+            color: var(--white);
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: var(--purple-accent);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .header-container, .hero-container { padding: 0 24px; }
+            .nav-menu { display: none; }
+            .stats-bar { width: 100%; justify-content: space-around; }
+        }
+        @media (max-width: 600px) {
+            .welcome-section { flex-direction: column; }
+            .stats-bar { flex-wrap: wrap; }
+            .course-grid, .available-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-<header class="header">
-    <div class="header-container">
-        <a href="index.html" class="logo">
-            <div class="logo-icon">S</div>
-            <div class="logo-text">
-                <h1>SpeakOut</h1>
-                <p>Ngomong Inggris Jadi Mudah</p>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Beranda</a></li>
+                    <li><a href="dashboard.html" class="active">My Course</a></li>
+                    <li><a href="courses.html">All Courses</a></li>
+                    <li><a href="teachers.html">Teachers</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name" id="userName">Loading...</span>
+                <button class="btn-logout" id="logoutBtn">Logout</button>
             </div>
-        </a>
-        <nav>
-            <ul class="nav-menu">
-                <li><a href="index.html">Beranda</a></li>
-                <li><a href="dashboard.html">My Course</a></li>
-                <li><a href="teachers.html">Teachers</a></li>
-                <li><a href="#">Articles</a></li>
-            </ul>
-        </nav>
-        <button id="logoutBtn" class="btn-logout">Logout</button>
-    </div>
-</header>
-
-<section class="dashboard-hero">
-    <div class="hero-container">
-        <div class="page-header">
-            <h1>My Courses</h1>
-            <p>Continue your learning journey and track your progress</p>
         </div>
+    </header>
 
+    <!-- DASHBOARD HERO -->
+    <section class="dashboard-hero">
+        <div class="hero-container">
+            <div class="welcome-section">
+                <div class="welcome-text">
+                    <h1>Welcome back, <span id="welcomeName">Student</span>! 👋</h1>
+                    <p>Continue your learning journey and track your progress</p>
+                </div>
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <div class="stat-value" id="statEnrolled">0</div>
+                        <div class="stat-label">Enrolled</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statInProgress">0</div>
+                        <div class="stat-label">In Progress</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statCompleted">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="hero-container">
+
+        <!-- Loading State -->
         <div id="loadingState" class="loading">
             <div class="spinner"></div>
-            <p>Loading courses...</p>
+            <p>Loading your courses...</p>
         </div>
 
-        <div id="courseList" class="course-grid"></div>
-
-        <div id="emptyState" class="empty-state" style="display:none;">
-            <h2>Belum ada course 😢</h2>
-            <p>Silakan pilih course untuk mulai belajar</p>
-        </div>
-
+        <!-- Error State -->
         <div id="errorState" class="error-state" style="display:none;">
-            <h3>❌ Gagal memuat courses</h3>
-            <p id="errorMessage">Terjadi kesalahan saat menghubungi server.</p>
-            <button class="btn-retry" onclick="loadCourses()">Coba Lagi</button>
+            <h3>❌ Failed to load courses</h3>
+            <p id="errorMessage">Please check your connection and try again.</p>
+            <button class="btn-enroll" onclick="loadDashboard()" style="margin-top:16px; width:auto; padding:10px 24px;">Retry</button>
         </div>
-    </div>
-</section>
 
-<script src="js/api.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    if (!api.isLoggedIn()) {
-        window.location.href = 'index.html';
-        return;
-    }
-    document.getElementById('logoutBtn').addEventListener('click', () => api.logout());
-    loadCourses();
-});
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display:none;">
+            <h3>🎓 Start Your Learning Journey!</h3>
+            <p>You haven't enrolled in any courses yet.</p>
+            <p style="margin-top:8px; color:var(--gray);">Explore our courses and find the perfect one for you.</p>
+            <a href="courses.html" class="btn-enroll" style="margin-top:20px; width:auto; padding:12px 32px; background:var(--purple-accent); color:white; border:none;">Browse Courses →</a>
+        </div>
 
-function normalizeCourses(response) {
-    if (!response) return [];
-    if (Array.isArray(response)) return response;
-    if (Array.isArray(response.data)) return response.data;
-    if (Array.isArray(response.courses)) return response.courses;
-    return [];
-}
+        <!-- Enrolled Courses Section -->
+        <div id="enrolledSection" style="display:none;">
+            <h2 class="section-title">📚 My Courses</h2>
+            <div id="courseGrid" class="course-grid"></div>
+        </div>
 
-// Fetch progress per course dari GET api/courses/{id}/progress
-async function fetchProgress(courseId) {
-    try {
-        const data = await api.getCourseProgress(courseId);
-        return data.progress ?? 0;
-    } catch (error) {
-        console.warn(`Failed to fetch progress for course ${courseId}:`, error);
-        return 0;
-    }
-}
+        <!-- Available Courses Section -->
+        <div id="availableSection" style="display:none;">
+            <h2 class="section-title">🔓 Unlock More Courses</h2>
+            <p style="color:var(--gray); margin-bottom:20px;">Expand your skills with these popular courses</p>
+            <div id="availableGrid" class="available-grid"></div>
+        </div>
 
-async function loadCourses() {
-    const loading = document.getElementById('loadingState');
-    const list    = document.getElementById('courseList');
-    const empty   = document.getElementById('emptyState');
-    const error   = document.getElementById('errorState');
-    const errMsg  = document.getElementById('errorMessage');
+    </main>
 
-    loading.style.display = 'block';
-    list.innerHTML        = '';
-    empty.style.display   = 'none';
-    error.style.display   = 'none';
+    <!-- API & Logic -->
+    <script src="js/api.js"></script>
+    <script>
+    /*
+    ========================================
+    DASHBOARD LOGIC - PREMIUM VERSION
+    ========================================
+    */
 
-    try {
-        const raw     = await api.getCourses();
-        const courses = normalizeCourses(raw);
-
-        loading.style.display = 'none';
-
-        if (courses.length === 0) {
-            empty.style.display = 'block';
+    document.addEventListener('DOMContentLoaded', () => {
+        // Auth check
+        if (!api.isLoggedIn()) {
+            window.location.href = 'login.html';
             return;
         }
 
-        // Fetch semua progress sekaligus (parallel)
-        const progressList = await Promise.all(
-            courses.map(c => fetchProgress(c.id))
-        );
-
-        courses.forEach((course, i) => {
-            const progress    = progressList[i];
-            const description = course.description
-                ? course.description.substring(0, 120) + (course.description.length > 120 ? '...' : '')
-                : 'No description available';
-
-            const card = document.createElement('div');
-            card.className = 'course-card';
-            card.innerHTML = `
-                <h3>${course.title || 'Untitled Course'}</h3>
-                <p class="description">${description}</p>
-                <span class="instructor">👨‍🏫 ${course.instructor || 'Unknown'}</span>
-                <div class="progress-label">
-                    <span>Progress</span>
-                    <span>${progress}%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:${progress}%"></div>
-                </div>
-                <button class="btn-update ${progress >= 100 ? 'completed' : ''}"
-                    onclick="updateProgress(${course.id}, this, ${progress})"
-                    ${progress >= 100 ? 'disabled' : ''}>
-                    ${progress >= 100 ? '✅ Completed' : 'Continue Learning →'}
-                </button>
-            `;
-            list.appendChild(card);
+        // Setup logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to logout?')) {
+                api.logout();
+            }
         });
 
-    } catch (err) {
-        console.error('❌ loadCourses error:', err);
-        loading.style.display = 'none';
-        error.style.display   = 'block';
-        errMsg.textContent    = err.message || 'Tidak dapat terhubung ke server.';
-    }
-}
+        // Load dashboard
+        loadDashboard();
+    });
 
-async function updateProgress(courseId, btn, currentProgress) {
-    btn.disabled = true;
-    btn.innerText = 'Saving...';
-    
-    try {
-        // Untuk demo: toggle progress 50% ↔ 100%
-        // Nanti bisa diganti dengan logic per-lesson yang lebih detail
-        const newProgress = currentProgress >= 100 ? 0 : 100;
-        const isCompleted = newProgress >= 100;
-        
-        // Ambil meeting_id pertama yang merupakan lesson (bukan header)
-        // Ini temporary - nanti bisa diimprove dengan pilih lesson spesifik
-        const courseRes = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}`);
-        const courseData = await courseRes.json();
-        
-        // Cari lesson pertama yang belum completed
-        const lessons = (courseData.meetings || []).filter(m => m.content !== null);
-        const firstLesson = lessons.find(l => !l.is_completed) || lessons[0];
-        
-        if (firstLesson) {
-            // Update progress untuk lesson tersebut
-            await api.updateCourseProgress(courseId, firstLesson.id, isCompleted);
+    async function loadDashboard() {
+        const loading = document.getElementById('loadingState');
+        const error = document.getElementById('errorState');
+        const empty = document.getElementById('emptyState');
+        const enrolledSection = document.getElementById('enrolledSection');
+        const availableSection = document.getElementById('availableSection');
+
+        loading.style.display = 'block';
+        error.style.display = 'none';
+        empty.style.display = 'none';
+        enrolledSection.style.display = 'none';
+        availableSection.style.display = 'none';
+
+        try {
+            // Get user info
+            const user = api.getUser();
+            if (user?.name) {
+                document.getElementById('userName').textContent = user.name.split(' ')[0];
+                document.getElementById('welcomeName').textContent = user.name.split(' ')[0];
+            }
+
+            // Fetch dashboard summary
+            const token = api.getToken();
+            const res = await fetch('http://127.0.0.1:8000/api/user/dashboard', {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+
+            if (!res.ok) throw new Error('Failed to fetch dashboard');
+
+            const data = await res.json();
+            loading.style.display = 'none';
+
+            // Update stats
+            document.getElementById('statEnrolled').textContent = data.stats.total_enrolled;
+            document.getElementById('statInProgress').textContent = data.stats.in_progress;
+            document.getElementById('statCompleted').textContent = data.stats.total_completed;
+
+            // Render enrolled courses
+            if (data.in_progress_courses?.length > 0) {
+                enrolledSection.style.display = 'block';
+                renderEnrolledCourses(data.in_progress_courses);
+            }
+
+            // Render available courses
+            if (data.available_courses?.length > 0) {
+                availableSection.style.display = 'block';
+                renderAvailableCourses(data.available_courses);
+            }
+
+            // Show empty state if no courses
+            if (!data.in_progress_courses?.length && !data.available_courses?.length) {
+                empty.style.display = 'block';
+            }
+
+        } catch (err) {
+            console.error('Dashboard error:', err);
+            loading.style.display = 'none';
+            error.style.display = 'block';
+            document.getElementById('errorMessage').textContent = err.message || 'Connection error';
         }
-        
-        // Update UI
-        const card = btn.closest('.course-card');
-        card.querySelector('.progress-fill').style.width = `${newProgress}%`;
-        card.querySelector('.progress-label span:last-child').innerText = `${newProgress}%`;
-        
-        if (newProgress >= 100) {
-            btn.innerText = '✅ Completed';
-            btn.classList.add('completed');
-            btn.disabled = true;
-        } else {
-            btn.innerText = 'Continue Learning →';
-            btn.classList.remove('completed');
-            btn.disabled = false;
-            btn.onclick = () => updateProgress(courseId, btn, newProgress);
-        }
-        
-    } catch (err) {
-        console.error('❌ updateProgress error:', err);
-        btn.innerText = 'Gagal, coba lagi';
-        btn.disabled = false;
     }
-}
-</script>
+
+    function renderEnrolledCourses(courses) {
+        const grid = document.getElementById('courseGrid');
+        grid.innerHTML = '';
+
+        courses.forEach(course => {
+            const isCompleted = course.progress >= 100;
+            const statusClass = isCompleted ? 'completed' : 'in-progress';
+            const badgeText = isCompleted ? 'Completed ✓' : `${course.progress}%`;
+            const btnText = isCompleted ? '✅ View Certificate' : '▶ Continue Learning';
+            const btnDisabled = isCompleted ? '' : '';
+            
+            // Get last lesson info
+            const lastLesson = course.last_lesson;
+            const lessonPreview = lastLesson ? `
+                <div class="lesson-preview">
+                    <div class="lesson-preview-title">Next Lesson</div>
+                    <div class="lesson-item">
+                        <span class="lesson-icon">${getLessonIcon(lastLesson.type)}</span>
+                        <span>${escapeHtml(lastLesson.title)}</span>
+                        <span class="lesson-status ${lastLesson.content ? '' : 'locked'}">
+                            ${lastLesson.content ? '▶' : '🔒'}
+                        </span>
+                    </div>
+                </div>
+            ` : '';
+
+            const card = document.createElement('div');
+            card.className = `course-card ${statusClass}`;
+            card.innerHTML = `
+                <div class="course-thumbnail">
+                    ${course.thumbnail ? `<img src="${course.thumbnail}" alt="${course.title}">` : '📚'}
+                    <span class="course-badge">${badgeText}</span>
+                </div>
+                <div class="course-content">
+                    <h3 class="course-title">${escapeHtml(course.title)}</h3>
+                    <div class="course-instructor">${escapeHtml(course.instructor)}</div>
+                    
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span class="progress-label">Progress</span>
+                            <span class="progress-value">${course.progress}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${course.progress}%"></div>
+                        </div>
+                        <div style="font-size:12px; color:var(--gray); margin-top:4px;">
+                            ${course.completed_lessons}/${course.total_lessons} lessons completed
+                        </div>
+                    </div>
+
+                    ${lessonPreview}
+
+                    <button class="btn-continue ${isCompleted ? 'completed' : ''}" 
+                            onclick="continueLearning(${course.id}, ${lastLesson?.id || 'null'})"
+                            ${btnDisabled}>
+                        ${btnText}
+                    </button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function renderAvailableCourses(courses) {
+        const grid = document.getElementById('availableGrid');
+        grid.innerHTML = '';
+
+        courses.forEach(course => {
+            const card = document.createElement('div');
+            card.className = 'available-card';
+            card.innerHTML = `
+                <h4 class="available-title">${escapeHtml(course.title)}</h4>
+                <p class="available-desc">${escapeHtml(course.description?.substring(0, 100) || 'Expand your skills with this comprehensive course.')}${course.description?.length > 100 ? '...' : ''}</p>
+                <div style="font-size:13px; color:var(--gray); margin-bottom:16px;">
+                    👨‍🏫 ${escapeHtml(course.instructor)}
+                </div>
+                <button class="btn-enroll" onclick="enrollCourse(${course.id}, this)">
+                    Enroll Now →
+                </button>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    async function continueLearning(courseId, lessonId) {
+        // If lessonId is provided, go directly to that lesson in course-details
+        // Otherwise, go to course overview
+        const url = lessonId 
+            ? `course-details.html?course_id=${courseId}&lesson_id=${lessonId}`
+            : `course-details.html?course_id=${courseId}`;
+        
+        window.location.href = url;
+    }
+
+    async function enrollCourse(courseId, btn) {
+        const originalText = btn.textContent;
+        btn.textContent = 'Enrolling...';
+        btn.disabled = true;
+
+        try {
+            const token = api.getToken();
+            const res = await fetch(`http://127.0.0.1:8000/api/user/enroll/${courseId}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || 'Enrollment failed');
+            }
+
+            alert(`✅ Successfully enrolled in "${data.course.title}"!`);
+            
+            // Refresh dashboard
+            loadDashboard();
+
+        } catch (err) {
+            console.error('Enroll error:', err);
+            alert('❌ ' + err.message);
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // Helper: Get icon based on lesson type
+    function getLessonIcon(type) {
+        const icons = {
+            'video': '🎬',
+            'audio': '🎧',
+            'pdf': '📄',
+            'quiz': '✍️',
+            'test': '✍️',
+            'final': '🏆'
+        };
+        return icons[type] || '📄';
+    }
+
+    // Helper: Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    </script>
 </body>
 </html>
