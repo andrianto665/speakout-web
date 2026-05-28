@@ -1,10 +1,10 @@
 /**
  * 📁 FILE: js/api.js
  * 🎯 API Service untuk komunikasi dengan Laravel Backend
- * ✅ Compatible dengan auth.js, dashboard.js, course-details.js
+ * ✅ Compatible dengan auth.js, dashboard.js, course-details.js, courses.js
  * 
  * @module api
- * @version 2.0.0
+ * @version 2.1.0
  */
 
 // ============================================================================
@@ -224,7 +224,7 @@ const api = {
     
     /**
      * Logout user and clear session
-     * Redirects to index.html after completion
+     * ✅ FIXED: Redirect to login.html (bukan index.html)
      */
     async logout() {
         const token = this.getToken();
@@ -243,7 +243,7 @@ const api = {
         
         // Clear local session and redirect
         this.clearToken();
-        window.location.href = 'index.html';
+        window.location.href = 'login.html'; // ✅ FIXED: ke login.html
     },
     
     // =========================================================================
@@ -251,31 +251,17 @@ const api = {
     // =========================================================================
     
     /**
-     * Get all available courses (requires auth)
+     * Get all available courses (public endpoint - no auth required)
      * @returns {Promise<Array>} List of courses or empty array
      */
     async getCourses() {
-        const token = this.getToken();
-        
-        if (!token) {
-            console.warn('⚠️ No token found. Please login first.');
-            return [];
-        }
-        
         try {
             const response = await this._fetchWithTimeout(`${API_BASE}/courses`, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` }
+                method: 'GET'
+                // ✅ No auth header needed for public courses listing
             });
             
-            // Handle unauthorized (token expired)
-            if (!response.ok) {
-                if (response.status === 401) {
-                    this.clearToken();
-                    window.location.href = 'login.html';
-                }
-                throw new Error(`HTTP ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             
             return await response.json();
             
@@ -286,21 +272,21 @@ const api = {
     },
     
     /**
-     * Get course details by ID
+     * Get course details by ID (requires auth for enrolled content)
      * @param {number} courseId - Course ID
      * @returns {Promise<Object|null>} Course data or null
      */
     async getCourseDetails(courseId) {
         const token = this.getToken();
         
-        if (!token) {
-            console.warn('⚠️ No token found. Please login first.');
-            return null;
-        }
-        
         try {
+            const headers = {};
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
             const response = await this._fetchWithTimeout(`${API_BASE}/courses/${courseId}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers
             });
             
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -506,6 +492,128 @@ const api = {
     },
     
     // =========================================================================
+    // ✍️ QUIZ METHODS (NEW: Untuk Udemy-style Quiz System)
+    // =========================================================================
+    
+    /**
+     * Get quiz questions (tanpa kunci jawaban - aman untuk frontend)
+     * @param {number} quizId - Quiz ID
+     * @returns {Promise<Object|null>} Quiz data with questions (no correct_answer)
+     */
+    async getQuiz(quizId) {
+        const token = this.getToken();
+        
+        if (!token) {
+            throw new Error('Unauthorized. Please login first.');
+        }
+        
+        try {
+            const response = await this._fetchWithTimeout(
+                `${API_BASE}/quizzes/${quizId}`,
+                {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }
+            );
+            
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.message || `HTTP ${response.status}`);
+            }
+            
+            return await response.json();
+            
+        } catch (error) {
+            console.error(`❌ Get Quiz ${quizId} Error:`, error);
+            throw error;
+        }
+    },
+    
+    /**
+     * Submit quiz answers & get auto-graded result
+     * @param {number} quizId - Quiz ID
+     * @param {Object} answers - Object dengan format { question_id: "A", ... }
+     * @returns {Promise<Object>} Result: { score, passed, message, attempt }
+     * @throws {Error} On auth or API error
+     */
+    async submitQuiz(quizId, answers) {
+        const token = this.getToken();
+        
+        if (!token) {
+            throw new Error('Unauthorized. Please login first.');
+        }
+        
+        try {
+            const response = await this._fetchWithTimeout(
+                `${API_BASE}/quizzes/${quizId}/submit`,
+                {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ answers })
+                }
+            );
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || `HTTP ${response.status}`);
+            }
+            
+            return data;
+            
+        } catch (error) {
+            console.error(`❌ Submit Quiz ${quizId} Error:`, error);
+            throw error;
+        }
+    },
+    
+    // =========================================================================
+    // 📄 CERTIFICATE METHODS (NEW)
+    // =========================================================================
+    
+    /**
+     * Download certificate PDF for completed course
+     * @param {number} courseId - Course ID
+     * @returns {Promise<Blob>} PDF blob for download
+     * @throws {Error} On auth or API error
+     */
+    async downloadCertificate(courseId) {
+        const token = this.getToken();
+        
+        if (!token) {
+            throw new Error('Unauthorized. Please login first.');
+        }
+        
+        try {
+            // ✅ Gunakan Accept: application/json agar Laravel tidak redirect ke login page
+            const response = await this._fetchWithTimeout(
+                `${API_BASE}/user/certificates/${courseId}/download`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json' // ← WAJIB untuk API request
+                    }
+                }
+            );
+            
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error('Certificate not ready yet. Please complete all lessons first.');
+                }
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.message || `HTTP ${response.status}`);
+            }
+            
+            // Return blob untuk trigger download di frontend
+            return await response.blob();
+            
+        } catch (error) {
+            console.error(`❌ Download Certificate ${courseId} Error:`, error);
+            throw error;
+        }
+    },
+    
+    // =========================================================================
     // 🔄 UTILITY METHODS
     // =========================================================================
     
@@ -546,8 +654,16 @@ const api = {
  * Runs when DOM is ready on all pages
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // Pages that don't require login
-    const publicPages = ['index.html', 'login.html', 'register.html', ''];
+    // ✅ UPDATED: Tambah courses.html & teachers.html sebagai public pages
+    const publicPages = [
+        'index.html', 
+        'login.html', 
+        'register.html', 
+        'courses.html',      // ✅ Bisa diakses tanpa login (browse courses)
+        'teachers.html',     // ✅ Bisa diakses tanpa login (lihat teachers)
+        ''                  // Root path
+    ];
+    
     const currentPage = window.location.pathname.split('/').pop();
     const isPublicPage = publicPages.includes(currentPage);
     
@@ -564,7 +680,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 2. If NOT logged in + on protected page → redirect to login
     if (!api.isLoggedIn() && !isPublicPage) {
-        window.location.href = 'login.html';
+        // ✅ Kecuali courses.html & teachers.html yang boleh diakses public
+        const protectedButPublic = ['courses.html', 'teachers.html'];
+        if (!protectedButPublic.includes(currentPage)) {
+            window.location.href = 'login.html';
+        }
     }
 });
 

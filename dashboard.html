@@ -413,14 +413,14 @@
 </head>
 <body>
 
-    <!-- HEADER -->
+    <!-- ✅ FIXED HEADER: Semua link ke dashboard.html untuk logged-in user -->
     <header class="header">
         <div class="header-container">
-            <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
+            <a href="dashboard.html" class="logo">SPEAK<span>OUT</span></a>
             <nav>
                 <ul class="nav-menu">
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="dashboard.html" class="active">My Course</a></li>
+                    <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                    <li><a href="dashboard.html#my-courses">My Courses</a></li>
                     <li><a href="courses.html">All Courses</a></li>
                     <li><a href="teachers.html">Teachers</a></li>
                 </ul>
@@ -509,13 +509,13 @@
     // INITIALIZATION
     // ========================================================================
     document.addEventListener('DOMContentLoaded', () => {
-        // Auth check
+        // Auth check - redirect to login if not authenticated
         if (!api.isLoggedIn()) {
             window.location.href = 'login.html';
             return;
         }
 
-        // Setup logout
+        // Setup logout button
         document.getElementById('logoutBtn')?.addEventListener('click', () => {
             if (confirm('Are you sure you want to logout?')) {
                 api.logout();
@@ -769,14 +769,13 @@
                 btn.disabled = true;
             }
             
-            // ✅ Sesudah (tambah Accept: application/json agar Laravel tahu ini API request):
-const response = await fetch(`http://127.0.0.1:8000/api/user/certificates/${courseId}/download`, {
-    method: 'GET',
-    headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json',  // ← WAJIB: agar expectsJson() = true
-    }
-});
+            // ✅ Fetch certificate with Accept: application/json header
+            const response = await fetch(`http://127.0.0.1:8000/api/user/certificates/${courseId}/download`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
             
             if (!response.ok) {
                 if (response.status === 404) {

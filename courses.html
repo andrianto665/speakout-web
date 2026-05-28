@@ -83,7 +83,7 @@
         .nav-menu a:hover,
         .nav-menu .active { color: var(--white); }
 
-        .btn-login {
+        .btn-auth {
             background: var(--blue);
             color: white;
             padding: 11px 26px;
@@ -91,11 +91,24 @@
             font-size: 14px;
             font-weight: 600;
             transition: 0.3s;
+            border: none;
+            cursor: pointer;
         }
 
-        .btn-login:hover {
+        .btn-auth:hover {
             background: var(--blue-light);
             transform: translateY(-1px);
+        }
+
+        .btn-auth.logout {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: var(--gray);
+        }
+
+        .btn-auth.logout:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
         }
 
         /* ===== HERO ===== */
@@ -311,6 +324,33 @@
             color: var(--purple);
         }
 
+        .btn-enroll {
+            background: var(--purple);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-enroll:hover {
+            background: var(--purple-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-enroll:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-enroll.enrolled {
+            background: var(--success);
+        }
+
         /* ===== ERROR ===== */
         .error-state {
             text-align: center;
@@ -334,24 +374,26 @@
         @media(max-width: 480px) {
             .course-content { padding: 22px; }
             .course-footer { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .btn-login { padding: 10px 20px; font-size: 13px; }
+            .btn-auth { padding: 10px 20px; font-size: 13px; }
         }
     </style>
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- ✅ FIXED HEADER: Dynamic Auth + Navigation ke dashboard.html -->
 <header class="header">
     <div class="header-container">
-        <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
+        <a href="dashboard.html" class="logo">SPEAK<span>OUT</span></a>
         <nav>
             <ul class="nav-menu">
-                <li><a href="index.html">Beranda</a></li>
-                <li><a href="courses.html" class="active">Course</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="dashboard.html#my-courses">My Courses</a></li>
+                <li><a href="courses.html" class="active">All Courses</a></li>
                 <li><a href="teachers.html">Teachers</a></li>
             </ul>
         </nav>
-        <a href="login.html" class="btn-login">Login</a>
+        <!-- ✅ Dynamic Auth Button: Login/Logout -->
+        <button id="authBtn" class="btn-auth">Loading...</button>
     </div>
 </header>
 
@@ -387,7 +429,208 @@
     </div>
 </section>
 
-<script src="js/courses.js"></script>
+<!-- API Service -->
+<script src="js/api.js"></script>
+
+<!-- Courses Logic -->
+<script>
+/**
+ * 📁 courses.html - Logic dengan Dynamic Auth Header
+ * 🎯 Handle course listing, enroll, dan auth state
+ */
+
+// DOM Elements
+const authBtn = document.getElementById('authBtn');
+const loadingState = document.getElementById('loadingState');
+const coursesList = document.getElementById('coursesList');
+const errorState = document.getElementById('errorState');
+
+// ========================================================================
+// INIT: Auth Check + Setup
+// ========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Setup dynamic auth button
+    updateAuthButton();
+    
+    // Setup auth button click handler
+    authBtn.addEventListener('click', handleAuthClick);
+    
+    // Load courses
+    loadCourses();
+});
+
+/**
+ * Update auth button text & behavior based on login state
+ */
+function updateAuthButton() {
+    if (api.isLoggedIn()) {
+        const user = api.getUser();
+        const userName = user?.name?.split(' ')[0] || 'User';
+        
+        authBtn.textContent = `Logout ${userName}`;
+        authBtn.className = 'btn-auth logout';
+        authBtn.title = 'Click to logout';
+    } else {
+        authBtn.textContent = 'Login';
+        authBtn.className = 'btn-auth';
+        authBtn.title = 'Click to login';
+    }
+}
+
+/**
+ * Handle auth button click: login or logout
+ */
+function handleAuthClick() {
+    if (api.isLoggedIn()) {
+        // Logout
+        if (confirm('Are you sure you want to logout?')) {
+            api.logout();
+        }
+    } else {
+        // Login
+        window.location.href = 'login.html';
+    }
+}
+
+/**
+ * Load courses from API
+ */
+async function loadCourses() {
+    try {
+        loadingState.style.display = 'block';
+        coursesList.style.display = 'none';
+        errorState.style.display = 'none';
+        
+        const response = await fetch('http://127.0.0.1:8000/api/courses', {
+            headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) throw new Error('Failed to fetch courses');
+        
+        const courses = await response.json();
+        
+        loadingState.style.display = 'none';
+        
+        if (courses.length === 0) {
+            coursesList.innerHTML = '<p style="text-align:center; color:var(--gray); padding:40px;">No courses available yet.</p>';
+            coursesList.style.display = 'block';
+            return;
+        }
+        
+        renderCourses(courses);
+        coursesList.style.display = 'flex';
+        
+    } catch (error) {
+        console.error('Error loading courses:', error);
+        loadingState.style.display = 'none';
+        errorState.style.display = 'block';
+    }
+}
+
+/**
+ * Render course cards
+ */
+function renderCourses(courses) {
+    coursesList.innerHTML = '';
+    
+    courses.forEach(course => {
+        const card = document.createElement('div');
+        card.className = 'course-card';
+        
+        // Check if user is already enrolled (if logged in)
+        const isEnrolled = api.isLoggedIn() && course.is_enrolled;
+        const btnText = isEnrolled ? '✓ Enrolled' : 'Enroll Now';
+        const btnClass = isEnrolled ? 'enrolled' : '';
+        const btnDisabled = isEnrolled ? 'disabled' : '';
+        
+        card.innerHTML = `
+            <div class="course-image">
+                ${course.thumbnail ? `<img src="${course.thumbnail}" alt="${escapeHtml(course.title)}">` : ''}
+                <span class="course-badge">Premium</span>
+            </div>
+            <div class="course-content">
+                <div>
+                    <h3 class="course-title">${escapeHtml(course.title)}</h3>
+                    <p class="course-author">By <span>${escapeHtml(course.instructor)}</span></p>
+                    
+                    <div class="course-meta">
+                        <span class="meta-item">📚 ${course.total_lessons || 0} Lessons</span>
+                        <span class="meta-item">⏱️ ${course.duration || 'Self-paced'}</span>
+                        <span class="meta-item">🎓 Beginner-Advanced</span>
+                    </div>
+                    
+                    <p class="course-desc">${escapeHtml(course.description?.substring(0, 200) || 'Expand your skills with this comprehensive course.')}${course.description?.length > 200 ? '...' : ''}</p>
+                </div>
+                
+                <div class="course-footer">
+                    <span class="course-price">Free</span>
+                    <button class="btn-enroll ${btnClass}" 
+                            ${btnDisabled}
+                            onclick="handleEnroll(${course.id}, this)">
+                        ${btnText}
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        coursesList.appendChild(card);
+    });
+}
+
+/**
+ * Handle enroll button click
+ */
+async function handleEnroll(courseId, btn) {
+    // Check auth first
+    if (!api.isLoggedIn()) {
+        alert('Please login first to enroll in courses!');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    const originalText = btn.textContent;
+    btn.textContent = 'Enrolling...';
+    btn.disabled = true;
+    
+    try {
+        const token = api.getToken();
+        const response = await fetch(`http://127.0.0.1:8000/api/user/enroll/${courseId}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || 'Enrollment failed');
+        }
+        
+        alert(`✅ Successfully enrolled in "${data.course.title}"!\n\nRedirecting to your dashboard...`);
+        
+        // Redirect to dashboard after successful enrollment
+        window.location.href = 'dashboard.html';
+        
+    } catch (error) {
+        console.error('Enroll error:', error);
+        alert('❌ ' + error.message);
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+}
+
+/**
+ * Escape HTML to prevent XSS
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+</script>
 
 </body>
 </html>

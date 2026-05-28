@@ -144,6 +144,7 @@
                 </ul>
             </nav>
             <div class="user-info">
+                <span style="background:#667eea; color:white; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; margin-right:10px;">ADMIN</span>
                 <span class="user-name" id="userName">Admin</span>
                 <button id="logoutBtn" class="btn-logout">Logout</button>
             </div>
@@ -161,6 +162,7 @@
                 <li><a data-section="courses"><span class="icon">📚</span> Manage Courses</a></li>
                 <li><a data-section="users"><span class="icon">👥</span> Manage Users</a></li>
                 <li><a data-section="content"><span class="icon">📁</span> Manage Content</a></li>
+                <li><a data-section="quiz-monitoring"><span class="icon">📝</span> Quiz Monitoring</a></li>
             </ul>
         </aside>
 
@@ -310,7 +312,86 @@
                     </div>
                 </div>
             </div>
+            <!-- ===== QUIZ MONITORING SECTION ===== -->
+            <div id="quiz-monitoring" class="section">
+                <div class="admin-header">
+                    <div class="breadcrumb">
+                        <a href="index.html">Home</a> / Admin / Quiz Monitoring
+                    </div>
+                    <h2>Quiz Attempts Monitoring</h2>
+                    <p>View all quiz attempts from students</p>
+                </div>
 
+                <!-- Filters -->
+                <div style="background:#f8f9fa; padding:20px; border-radius:8px; margin-bottom:20px;">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="filterCourse">Filter by Course</label>
+                            <select id="filterCourse">
+                                <option value="">All Courses</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label for="filterStatus">Filter by Status</label>
+                            <select id="filterStatus">
+                                <option value="">All Status</option>
+                                <option value="passed">✅ Passed</option>
+                                <option value="failed">❌ Failed</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>&nbsp;</label>
+                            <button class="btn-add" onclick="loadQuizAttempts()" style="width:100%;">🔍 Apply Filters</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Summary -->
+                <div class="stats-grid" style="margin-bottom:20px;">
+                    <div class="stat-card">
+                        <h4>Total Attempts</h4>
+                        <div class="value" id="totalAttempts">-</div>
+                    </div>
+                    <div class="stat-card green">
+                        <h4>Passed</h4>
+                        <div class="value" id="passedAttempts">-</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <h4>Failed</h4>
+                        <div class="value" id="failedAttempts">-</div>
+                    </div>
+                    <div class="stat-card blue">
+                        <h4>Avg Score</h4>
+                        <div class="value" id="avgScore">-%</div>
+                    </div>
+                </div>
+
+                <!-- Export Button -->
+                <button class="btn-add" onclick="exportQuizAttempts()" style="margin-bottom:20px; background:#28a745;">
+                    📥 Export to CSV
+                </button>
+
+                <!-- Table -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Student</th>
+                                <th>Course</th>
+                                <th>Quiz</th>
+                                <th>Score</th>
+                                <th>Status</th>
+                                <th>Attempt #</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quizAttemptsTableBody">
+                            <tr><td colspan="8" class="loading"><div class="spinner"></div> Loading quiz attempts...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -441,6 +522,7 @@
         loadDashboardStats();
         loadCourses();
         loadUsers();
+        loadCoursesForQuizFilter();
     });
 
     // ========================================================================
@@ -1040,6 +1122,166 @@
             console.error('Error deleting content:', error);
             showNotification(`❌ Failed: ${error.message}`, 'error');
         }
+    }
+        // ========================================================================
+    // QUIZ MONITORING
+    // ========================================================================
+    
+    let allQuizAttempts = []; // Store for export
+    
+    async function loadQuizAttempts() {
+        const tbody = document.getElementById('quizAttemptsTableBody');
+        const token = api.getToken();
+        
+        if (!token) {
+            tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Please login as admin.</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div> Loading quiz attempts...</td></tr>';
+        
+        try {
+            // Get filter values
+            const courseId = document.getElementById('filterCourse').value;
+            const status = document.getElementById('filterStatus').value;
+            
+            // Build query params
+            const params = new URLSearchParams();
+            if (courseId) params.append('course_id', courseId);
+            if (status) params.append('status', status);
+            
+            const res = await fetch(`${ADMIN_API_BASE}/admin/quiz-attempts?${params}`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            
+            if (!res.ok) throw new Error('Failed to load quiz attempts');
+            
+            const attempts = await res.json();
+            allQuizAttempts = attempts; // Store for export
+            
+            // Update stats
+            updateQuizStats(attempts);
+            
+            // Render table
+            if (!attempts || attempts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No quiz attempts found.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = attempts.map((attempt, idx) => `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>
+                        <strong>${escapeHtml(attempt.user_name)}</strong><br>
+                        <small style="color:#666;">${escapeHtml(attempt.user_email || '')}</small>
+                    </td>
+                    <td>${escapeHtml(attempt.course_title)}</td>
+                    <td>${escapeHtml(attempt.quiz_title)}</td>
+                    <td><strong style="color:${attempt.score >= 70 ? '#10B981' : '#EF4444'}">${attempt.score}%</strong></td>
+                    <td>
+                        <span class="status-badge ${attempt.passed ? 'active' : ''}" 
+                              style="background:${attempt.passed ? '#DCFCE7' : '#FEE2E2'}; 
+                                     color:${attempt.passed ? '#166534' : '#991B1B'}">
+                            ${attempt.passed ? '✅ Passed' : '❌ Failed'}
+                        </span>
+                    </td>
+                    <td>#${attempt.attempt_number}</td>
+                    <td>${formatDate(attempt.created_at)}</td>
+                </tr>
+            `).join('');
+            
+        } catch (error) {
+            console.error('Error loading quiz attempts:', error);
+            tbody.innerHTML = `<tr><td colspan="8" class="empty-state" style="color:#EF4444;">❌ Failed to load quiz attempts. ${error.message}</td></tr>`;
+        }
+    }
+    
+    function updateQuizStats(attempts) {
+        const total = attempts.length;
+        const passed = attempts.filter(a => a.passed).length;
+        const failed = total - passed;
+        const avgScore = total > 0 ? Math.round(attempts.reduce((sum, a) => sum + a.score, 0) / total) : 0;
+        
+        document.getElementById('totalAttempts').textContent = total;
+        document.getElementById('passedAttempts').textContent = passed;
+        document.getElementById('failedAttempts').textContent = failed;
+        document.getElementById('avgScore').textContent = `${avgScore}%`;
+    }
+    
+    async function loadCoursesForQuizFilter() {
+        const select = document.getElementById('filterCourse');
+        const token = api.getToken();
+        
+        if (!token) return;
+        
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/courses`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            
+            if (!res.ok) throw new Error('Failed to fetch courses');
+            
+            const courses = await res.json();
+            
+            select.innerHTML = '<option value="">All Courses</option>' + 
+                courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
+            
+        } catch (error) {
+            console.error('Error loading courses for filter:', error);
+        }
+    }
+    
+    function exportQuizAttempts() {
+        if (!allQuizAttempts || allQuizAttempts.length === 0) {
+            showNotification('⚠️ No data to export', 'error');
+            return;
+        }
+        
+        // CSV headers
+        const headers = ['#', 'Student Name', 'Student Email', 'Course', 'Quiz', 'Score', 'Status', 'Attempt #', 'Date'];
+        
+        // CSV rows
+        const rows = allQuizAttempts.map((a, idx) => [
+            idx + 1,
+            a.user_name,
+            a.user_email || '',
+            a.course_title,
+            a.quiz_title,
+            `${a.score}%`,
+            a.passed ? 'Passed' : 'Failed',
+            a.attempt_number,
+            new Date(a.created_at).toLocaleString('id-ID')
+        ]);
+        
+        // Build CSV content
+        const csvContent = [
+            headers.join(','),
+            ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        ].join('\n');
+        
+        // Create download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `quiz-attempts-${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showNotification('✅ Quiz attempts exported to CSV!', 'success');
+    }
+    
+    function formatDate(dateStr) {
+        if (!dateStr) return '-';
+        return new Date(dateStr).toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     }
     </script>
 </body>
