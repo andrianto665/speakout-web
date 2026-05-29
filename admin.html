@@ -28,8 +28,6 @@
 
         /* ===== MAIN CONTENT ===== */
         .main-content { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 220px 1fr; gap: 30px; }
-
-        /* Admin Sidebar */
         .admin-sidebar { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); height: fit-content; }
         .admin-sidebar h3 { font-size: 16px; font-weight: 600; color: #666; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
         .admin-menu { list-style: none; }
@@ -37,8 +35,6 @@
         .admin-menu a { display: flex; align-items: center; gap: 10px; padding: 12px 15px; color: #333; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.2s; cursor: pointer; }
         .admin-menu a:hover, .admin-menu a.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .admin-menu .icon { font-size: 18px; }
-
-        /* Admin Content */
         .admin-content { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .admin-header { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #e1e5eb; }
         .admin-header h2 { font-size: 28px; font-weight: 600; color: #1a1a1a; margin-bottom: 5px; }
@@ -46,8 +42,6 @@
         .breadcrumb { color: #666; font-size: 14px; margin-bottom: 15px; }
         .breadcrumb a { color: #667eea; text-decoration: none; }
         .breadcrumb a:hover { text-decoration: underline; }
-
-        /* Stats Cards */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; }
         .stat-card.green { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
@@ -55,12 +49,8 @@
         .stat-card.orange { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
         .stat-card h4 { font-size: 13px; font-weight: 500; opacity: 0.9; margin-bottom: 5px; }
         .stat-card .value { font-size: 28px; font-weight: 700; }
-
-        /* Section Tabs */
         .section { display: none; }
         .section.active { display: block; }
-
-        /* Table Styles */
         .table-container { overflow-x: auto; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
         th { background: #f8f9fa; padding: 12px 15px; text-align: left; font-weight: 600; color: #333; border-bottom: 2px solid #e1e5eb; }
@@ -71,8 +61,6 @@
         .role-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
         .role-badge.admin { background: #667eea; color: white; }
         .role-badge.user { background: #e1e5eb; color: #333; }
-
-        /* Action Buttons */
         .btn-action { padding: 6px 12px; border: none; border-radius: 5px; font-size: 12px; font-weight: 500; cursor: pointer; margin-right: 5px; transition: all 0.2s; }
         .btn-edit { background: #3B82F6; color: white; }
         .btn-edit:hover { background: #2563EB; }
@@ -80,8 +68,6 @@
         .btn-delete:hover { background: #DC2626; }
         .btn-add { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 20px; }
         .btn-add:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
-
-        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
@@ -98,14 +84,16 @@
         .btn-cancel:hover { background: #d1d5db; }
         .btn-save { padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
         .btn-save:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
-
-        /* Loading & Empty */
         .loading { text-align: center; padding: 40px; color: #666; }
         .spinner { width: 40px; height: 40px; border: 3px solid #e1e5eb; border-top-color: #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .empty-state { text-align: center; padding: 40px; color: #666; }
-
-        /* Responsive */
+        .quiz-question-form { background: #f8f9fa; padding: 24px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e1e5eb; }
+        .quiz-question-form h3 { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #1a1a1a; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .options-grid input { padding: 10px; border: 1px solid #e1e5eb; border-radius: 6px; font-size: 14px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-note { font-size: 12px; color: #666; margin-top: 4px; display: block; }
         @media (max-width: 968px) {
             .main-content { grid-template-columns: 1fr; }
             .nav-menu { display: none; }
@@ -115,6 +103,7 @@
             .admin-menu a { padding: 10px 15px; white-space: nowrap; }
             .admin-content { padding: 20px; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
+            .options-grid, .form-row { grid-template-columns: 1fr; }
         }
         @media (max-width: 480px) {
             .stats-grid { grid-template-columns: 1fr; }
@@ -153,7 +142,6 @@
 
     <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
-        
         <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <h3>Admin Menu</h3>
@@ -162,80 +150,44 @@
                 <li><a data-section="courses"><span class="icon">📚</span> Manage Courses</a></li>
                 <li><a data-section="users"><span class="icon">👥</span> Manage Users</a></li>
                 <li><a data-section="content"><span class="icon">📁</span> Manage Content</a></li>
+                <li><a data-section="quiz-questions"><span class="icon">✍️</span> Tambah Soal Quiz</a></li>
                 <li><a data-section="quiz-monitoring"><span class="icon">📝</span> Quiz Monitoring</a></li>
             </ul>
         </aside>
 
         <!-- Admin Content Sections -->
         <section class="admin-content">
-
             <!-- ===== DASHBOARD SECTION ===== -->
             <div id="dashboard" class="section active">
                 <div class="admin-header">
-                    <div class="breadcrumb">
-                        <a href="index.html">Home</a> / Admin / Dashboard
-                    </div>
+                    <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Dashboard</div>
                     <h2>Admin Dashboard</h2>
                     <p>Overview of your e-course platform</p>
                 </div>
-
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <h4>Total Users</h4>
-                        <div class="value" id="totalUsers">-</div>
-                    </div>
-                    <div class="stat-card green">
-                        <h4>Total Courses</h4>
-                        <div class="value" id="totalCourses">-</div>
-                    </div>
-                    <div class="stat-card blue">
-                        <h4>Active Enrollments</h4>
-                        <div class="value" id="totalEnrollments">-</div>
-                    </div>
-                    <div class="stat-card orange">
-                        <h4>Completed Courses</h4>
-                        <div class="value" id="completedCourses">-</div>
-                    </div>
+                    <div class="stat-card"><h4>Total Users</h4><div class="value" id="totalUsers">-</div></div>
+                    <div class="stat-card green"><h4>Total Courses</h4><div class="value" id="totalCourses">-</div></div>
+                    <div class="stat-card blue"><h4>Active Enrollments</h4><div class="value" id="totalEnrollments">-</div></div>
+                    <div class="stat-card orange"><h4>Completed Courses</h4><div class="value" id="completedCourses">-</div></div>
                 </div>
-
                 <div style="margin-top: 30px;">
                     <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 15px;">Recent Activity</h3>
-                    <div id="activityList">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                            <p>Loading activity...</p>
-                        </div>
-                    </div>
+                    <div id="activityList"><div class="loading"><div class="spinner"></div><p>Loading activity...</p></div></div>
                 </div>
             </div>
 
             <!-- ===== MANAGE COURSES SECTION ===== -->
             <div id="courses" class="section">
                 <div class="admin-header">
-                    <div class="breadcrumb">
-                        <a href="index.html">Home</a> / Admin / Manage Courses
-                    </div>
+                    <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Manage Courses</div>
                     <h2>Manage Courses</h2>
                     <p>Add, edit, or remove courses from the platform</p>
                 </div>
-
                 <button class="btn-add" onclick="openCourseModal()">+ Add New Course</button>
-
                 <div class="table-container">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Instructor</th>
-                                <th>Lessons</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="coursesTableBody">
-                            <tr><td colspan="6" class="loading"><div class="spinner"></div> Loading courses...</td></tr>
-                        </tbody>
+                        <thead><tr><th>ID</th><th>Title</th><th>Instructor</th><th>Lessons</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="coursesTableBody"><tr><td colspan="6" class="loading"><div class="spinner"></div> Loading courses...</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -243,28 +195,14 @@
             <!-- ===== MANAGE USERS SECTION ===== -->
             <div id="users" class="section">
                 <div class="admin-header">
-                    <div class="breadcrumb">
-                        <a href="index.html">Home</a> / Admin / Manage Users
-                    </div>
+                    <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Manage Users</div>
                     <h2>Manage Users</h2>
                     <p>View and manage user accounts</p>
                 </div>
-
                 <div class="table-container">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Joined</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody">
-                            <tr><td colspan="6" class="loading"><div class="spinner"></div> Loading users...</td></tr>
-                        </tbody>
+                        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
+                        <tbody id="usersTableBody"><tr><td colspan="6" class="loading"><div class="spinner"></div> Loading users...</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -272,72 +210,143 @@
             <!-- ===== MANAGE CONTENT SECTION ===== -->
             <div id="content" class="section">
                 <div class="admin-header">
-                    <div class="breadcrumb">
-                        <a href="index.html">Home</a> / Admin / Manage Content
-                    </div>
+                    <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Manage Content</div>
                     <h2>Manage Course Content</h2>
                     <p>Add, edit, or remove meetings and lessons for each course</p>
                 </div>
-
-                <!-- Step 1: Pilih Course -->
                 <div class="form-group">
                     <label for="contentCourseSelect">Select Course *</label>
-                    <select id="contentCourseSelect">
-                        <option value="">-- Select a Course --</option>
-                    </select>
+                    <select id="contentCourseSelect"><option value="">-- Select a Course --</option></select>
                 </div>
-
-                <!-- Step 2: List Meetings -->
                 <div id="meetingsSection" style="display:none; margin-top:30px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                         <h3 style="font-size:18px; font-weight:600;">Meetings & Lessons</h3>
                         <button class="btn-add" onclick="openMeetingModal()" style="padding:8px 16px; font-size:13px;">+ Add Item</button>
                     </div>
-
                     <div class="table-container">
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>Order</th>
-                                    <th>Title</th>
-                                    <th>Type</th>
-                                    <th>Google Drive Link</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="meetingsTableBody">
-                                <tr><td colspan="5" class="loading"><div class="spinner"></div> Loading...</td></tr>
-                            </tbody>
+                            <thead><tr><th>Order</th><th>Title</th><th>Type</th><th>Google Drive Link</th><th>Actions</th></tr></thead>
+                            <tbody id="meetingsTableBody"><tr><td colspan="5" class="loading"><div class="spinner"></div> Loading...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
             </div>
+
+            <!-- ✅ NEW: Tambah Soal Quiz Section -->
+            <div id="quiz-questions" class="section">
+                <div class="admin-header">
+                    <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Tambah Soal Quiz</div>
+                    <h2>➕ Tambah Soal Quiz</h2>
+                    <p>Tambah pertanyaan baru ke dalam quiz yang sudah ada</p>
+                </div>
+                <div class="quiz-question-form">
+                    <form id="addQuestionForm">
+                        <!-- Pilih Quiz (Dropdown + Fallback Manual) -->
+                        <div class="form-group">
+                            <label for="quizSelect">Pilih Quiz *</label>
+                            <select id="quizSelect" onchange="toggleQuizInputMode()">
+                                <option value="">-- Loading quizzes... --</option>
+                            </select>
+                            <small class="form-note">💡 Pilih quiz dari daftar. Nilai yang dikirim adalah Quiz ID dari tabel `quizzes`.</small>
+                        </div>
+                        <!-- Fallback: Manual Quiz ID Input -->
+                        <div class="form-group" id="manualQuizIdGroup" style="display:none;">
+                            <label for="manualQuizId">Atau masukkan Quiz ID manual *</label>
+                            <input type="number" id="manualQuizId" placeholder="Contoh: 1, 3, 4..." min="1" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                            <small class="form-note">💡 Gunakan ini jika dropdown kosong. Quiz ID bisa dicek via: <code>SELECT id, title FROM quizzes;</code></small>
+                        </div>
+                        <button type="button" class="btn-add" onclick="refreshQuizzesDropdown()" style="width:100%; margin-top:10px; background:#667eea;">🔄 Refresh Daftar Quiz</button>
+
+                        <!-- Pertanyaan -->
+                        <div class="form-group">
+                            <label for="questionInput">Pertanyaan *</label>
+                            <textarea id="questionInput" rows="3" placeholder="Contoh: What is the English word for 'Keluarga'?" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;"></textarea>
+                        </div>
+
+                        <!-- Tipe Soal -->
+                        <div class="form-group">
+                            <label for="questionType">Tipe Soal *</label>
+                            <select id="questionType" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;" onchange="toggleOptionsFields()">
+                                <option value="multiple_choice">Pilihan Ganda (A, B, C, D)</option>
+                                <option value="true_false">Benar / Salah</option>
+                                <option value="short_answer">Jawaban Singkat</option>
+                            </select>
+                        </div>
+
+                        <!-- Opsi Jawaban (hanya untuk multiple_choice) -->
+                        <div id="optionsFields">
+                            <div class="form-group">
+                                <label>Opsi Jawaban *</label>
+                                <div class="options-grid">
+                                    <input type="text" id="optA" placeholder="Opsi A" required>
+                                    <input type="text" id="optB" placeholder="Opsi B" required>
+                                    <input type="text" id="optC" placeholder="Opsi C" required>
+                                    <input type="text" id="optD" placeholder="Opsi D" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="correctAnswer">Kunci Jawaban *</label>
+                                <select id="correctAnswer" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                                    <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Opsi untuk True/False -->
+                        <div id="trueFalseFields" style="display:none;">
+                            <div class="form-group">
+                                <label for="correctAnswerTF">Kunci Jawaban *</label>
+                                <select id="correctAnswerTF" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                                    <option value="true">Benar (True)</option><option value="false">Salah (False)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Poin & Urutan -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="pointsInput">Poin</label>
+                                <input type="number" id="pointsInput" value="10" min="1" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                            </div>
+                            <div class="form-group">
+                                <label for="orderInput">Urutan</label>
+                                <input type="number" id="orderInput" value="1" min="0" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                            </div>
+                        </div>
+
+                        <!-- Tombol Submit -->
+                        <button type="submit" class="btn-add" style="width:100%; margin-top:10px;">💾 Simpan Soal</button>
+                    </form>
+                    <div id="questionFormMessage" style="margin-top:16px; padding:12px; border-radius:8px; display:none; font-weight:500;"></div>
+                </div>
+                <div style="background:#f8f9fa; padding:16px; border-radius:8px; border-left:4px solid #667eea;">
+                    <h4 style="margin-bottom:8px; font-size:14px;">💡 Tips:</h4>
+                    <ul style="font-size:13px; color:#666; padding-left:20px; line-height:1.8;">
+                        <li>Pastikan quiz sudah dibuat di bagian <strong>Manage Content</strong> sebelum menambah soal</li>
+                        <li>Untuk tipe <em>Pilihan Ganda</em>, isi semua opsi A-D dan pilih kunci jawaban yang benar</li>
+                        <li>Poin default adalah 10, bisa diubah sesuai tingkat kesulitan soal</li>
+                        <li>Urutan menentukan posisi soal saat ditampilkan ke user (1 = pertama)</li>
+                        <li><strong>PENTING:</strong> Gunakan Quiz ID dari tabel <code>quizzes</code>, BUKAN meeting_id. Cek via: <code>SELECT id, title FROM quizzes;</code></li>
+                    </ul>
+                </div>
+            </div>
+
             <!-- ===== QUIZ MONITORING SECTION ===== -->
             <div id="quiz-monitoring" class="section">
                 <div class="admin-header">
-                    <div class="breadcrumb">
-                        <a href="index.html">Home</a> / Admin / Quiz Monitoring
-                    </div>
+                    <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Quiz Monitoring</div>
                     <h2>Quiz Attempts Monitoring</h2>
                     <p>View all quiz attempts from students</p>
                 </div>
-
-                <!-- Filters -->
                 <div style="background:#f8f9fa; padding:20px; border-radius:8px; margin-bottom:20px;">
                     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
                         <div class="form-group" style="margin-bottom:0;">
                             <label for="filterCourse">Filter by Course</label>
-                            <select id="filterCourse">
-                                <option value="">All Courses</option>
-                            </select>
+                            <select id="filterCourse"><option value="">All Courses</option></select>
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label for="filterStatus">Filter by Status</label>
-                            <select id="filterStatus">
-                                <option value="">All Status</option>
-                                <option value="passed">✅ Passed</option>
-                                <option value="failed">❌ Failed</option>
-                            </select>
+                            <select id="filterStatus"><option value="">All Status</option><option value="passed">✅ Passed</option><option value="failed">❌ Failed</option></select>
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label>&nbsp;</label>
@@ -345,50 +354,17 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Stats Summary -->
                 <div class="stats-grid" style="margin-bottom:20px;">
-                    <div class="stat-card">
-                        <h4>Total Attempts</h4>
-                        <div class="value" id="totalAttempts">-</div>
-                    </div>
-                    <div class="stat-card green">
-                        <h4>Passed</h4>
-                        <div class="value" id="passedAttempts">-</div>
-                    </div>
-                    <div class="stat-card orange">
-                        <h4>Failed</h4>
-                        <div class="value" id="failedAttempts">-</div>
-                    </div>
-                    <div class="stat-card blue">
-                        <h4>Avg Score</h4>
-                        <div class="value" id="avgScore">-%</div>
-                    </div>
+                    <div class="stat-card"><h4>Total Attempts</h4><div class="value" id="totalAttempts">-</div></div>
+                    <div class="stat-card green"><h4>Passed</h4><div class="value" id="passedAttempts">-</div></div>
+                    <div class="stat-card orange"><h4>Failed</h4><div class="value" id="failedAttempts">-</div></div>
+                    <div class="stat-card blue"><h4>Avg Score</h4><div class="value" id="avgScore">-%</div></div>
                 </div>
-
-                <!-- Export Button -->
-                <button class="btn-add" onclick="exportQuizAttempts()" style="margin-bottom:20px; background:#28a745;">
-                    📥 Export to CSV
-                </button>
-
-                <!-- Table -->
+                <button class="btn-add" onclick="exportQuizAttempts()" style="margin-bottom:20px; background:#28a745;">📥 Export to CSV</button>
                 <div class="table-container">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Student</th>
-                                <th>Course</th>
-                                <th>Quiz</th>
-                                <th>Score</th>
-                                <th>Status</th>
-                                <th>Attempt #</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="quizAttemptsTableBody">
-                            <tr><td colspan="8" class="loading"><div class="spinner"></div> Loading quiz attempts...</td></tr>
-                        </tbody>
+                        <thead><tr><th>#</th><th>Student</th><th>Course</th><th>Quiz</th><th>Score</th><th>Status</th><th>Attempt #</th><th>Date</th></tr></thead>
+                        <tbody id="quizAttemptsTableBody"><tr><td colspan="8" class="loading"><div class="spinner"></div> Loading quiz attempts...</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -396,79 +372,35 @@
     </main>
 
     <!-- ===== MODALS ===== -->
-
     <!-- Course Modal -->
     <div id="courseModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Add New Course</h3>
-                <button class="modal-close" onclick="closeCourseModal()">&times;</button>
-            </div>
+            <div class="modal-header"><h3 id="modalTitle">Add New Course</h3><button class="modal-close" onclick="closeCourseModal()">&times;</button></div>
             <form id="courseForm">
                 <input type="hidden" id="courseId">
-                <div class="form-group">
-                    <label for="courseTitle">Course Title *</label>
-                    <input type="text" id="courseTitle" required placeholder="Enter course title">
-                </div>
-                <div class="form-group">
-                    <label for="courseDescription">Description</label>
-                    <textarea id="courseDescription" rows="3" placeholder="Enter course description"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="courseInstructor">Instructor *</label>
-                    <input type="text" id="courseInstructor" required placeholder="Enter instructor name">
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeCourseModal()">Cancel</button>
-                    <button type="submit" class="btn-save">Save Course</button>
-                </div>
+                <div class="form-group"><label for="courseTitle">Course Title *</label><input type="text" id="courseTitle" required placeholder="Enter course title"></div>
+                <div class="form-group"><label for="courseDescription">Description</label><textarea id="courseDescription" rows="3" placeholder="Enter course description"></textarea></div>
+                <div class="form-group"><label for="courseInstructor">Instructor *</label><input type="text" id="courseInstructor" required placeholder="Enter instructor name"></div>
+                <div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeCourseModal()">Cancel</button><button type="submit" class="btn-save">Save Course</button></div>
             </form>
         </div>
     </div>
 
-    <!-- Content Modal (Meeting/Lesson) -->
+    <!-- Content Modal -->
     <div id="contentModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="contentModalTitle">Add New Item</h3>
-                <button class="modal-close" onclick="closeContentModal()">&times;</button>
-            </div>
+            <div class="modal-header"><h3 id="contentModalTitle">Add New Item</h3><button class="modal-close" onclick="closeContentModal()">&times;</button></div>
             <form id="contentForm">
-                <input type="hidden" id="contentId">
-                <input type="hidden" id="contentCourseId">
-                
-                <div class="form-group">
-                    <label for="contentTitle">Title *</label>
-                    <input type="text" id="contentTitle" required placeholder="e.g., Family 1 / Lesson 1: Greeting">
-                </div>
-
-                <div class="form-group">
-                    <label for="contentItemType">Item Type *</label>
-                    <select id="contentItemType" required onchange="toggleContentFields()">
-                        <option value="meeting">📁 Meeting Header</option>
-                        <option value="lesson">📄 Lesson / Material</option>
-                        <option value="test">✍️ Quiz / Test</option>
-                        <option value="final">🏆 Final Test</option>
-                    </select>
-                </div>
-
+                <input type="hidden" id="contentId"><input type="hidden" id="contentCourseId">
+                <div class="form-group"><label for="contentTitle">Title *</label><input type="text" id="contentTitle" required placeholder="e.g., Family 1 / Lesson 1: Greeting"></div>
+                <div class="form-group"><label for="contentItemType">Item Type *</label><select id="contentItemType" required onchange="toggleContentFields()"><option value="meeting">📁 Meeting Header</option><option value="lesson">📄 Lesson / Material</option><option value="test">✍️ Quiz / Test</option><option value="final">🏆 Final Test</option></select></div>
                 <div class="form-group" id="driveLinkGroup" style="display:none;">
                     <label for="contentDriveLink">Google Drive Link</label>
                     <input type="url" id="contentDriveLink" placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
-                    <small style="color:#666; display:block; margin-top:5px;">
-                        💡 Paste link asli, sistem akan otomatis konversi ke format preview
-                    </small>
+                    <small style="color:#666; display:block; margin-top:5px;">💡 Paste link asli, sistem akan otomatis konversi ke format preview</small>
                 </div>
-
-                <div class="form-group">
-                    <label for="contentOrder">Order Number *</label>
-                    <input type="number" id="contentOrder" required min="1" placeholder="e.g., 1, 2, 3">
-                </div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeContentModal()">Cancel</button>
-                    <button type="submit" class="btn-save">Save Item</button>
-                </div>
+                <div class="form-group"><label for="contentOrder">Order Number *</label><input type="number" id="contentOrder" required min="1" placeholder="e.g., 1, 2, 3"></div>
+                <div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeContentModal()">Cancel</button><button type="submit" class="btn-save">Save Item</button></div>
             </form>
         </div>
     </div>
@@ -478,811 +410,388 @@
     <script>
     /**
      * 📁 admin.html - Admin Dashboard Logic
-     * 🎯 Handle admin features: stats, courses, users, content management
+     * 🎯 Handle admin features: stats, courses, users, content, quiz questions management
      */
-
-    // ========================================================================
-    // CONFIG & GLOBAL VARIABLES
-    // ========================================================================
     const ADMIN_API_BASE = 'http://127.0.0.1:8000/api';
 
-    // ========================================================================
-    // INIT: DOM Loaded
-    // ========================================================================
     document.addEventListener('DOMContentLoaded', () => {
-        // 🔐 Auth Check
-        if (!api.isLoggedIn()) {
-            window.location.href = 'index.html';
-            return;
-        }
-        
+        if (!api.isLoggedIn()) { window.location.href = 'index.html'; return; }
         const user = api.getUser();
-        if (user?.role !== 'admin') {
-            alert('Access denied. Admin privileges required.');
-            window.location.href = 'dashboard.html';
-            return;
-        }
-        
-        // Set user name in header
-        if (user?.name) {
-            document.getElementById('userName').textContent = user.name.split(' ')[0];
-        }
-        
-        // Setup navigation & event listeners
+        if (user?.role !== 'admin') { alert('Access denied. Admin privileges required.'); window.location.href = 'dashboard.html'; return; }
+        if (user?.name) document.getElementById('userName').textContent = user.name.split(' ')[0];
         setupNavigation();
         document.getElementById('logoutBtn').addEventListener('click', handleLogout);
         document.getElementById('courseForm').addEventListener('submit', handleCourseSubmit);
         document.getElementById('contentForm').addEventListener('submit', handleContentSubmit);
-        
-        // Setup modal close on outside click
+        document.getElementById('addQuestionForm').addEventListener('submit', handleAddQuestionSubmit);
         setupModalClose('courseModal');
         setupModalClose('contentModal');
-        
-        // Load initial data
         loadDashboardStats();
         loadCourses();
         loadUsers();
         loadCoursesForQuizFilter();
+        loadQuizzesForQuestionForm();
     });
 
-    // ========================================================================
-    // NAVIGATION & UI HELPERS
-    // ========================================================================
     function setupNavigation() {
         document.querySelectorAll('.admin-menu a').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                
-                // Update active menu item
                 document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
                 e.currentTarget.classList.add('active');
-                
-                // Show selected section
                 const sectionId = e.currentTarget.dataset.section;
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
                 document.getElementById(sectionId).classList.add('active');
-                
-                // Load data for content section when activated
-                if (sectionId === 'content') {
-                    loadCoursesForContent();
-                }
+                if (sectionId === 'content') loadCoursesForContent();
+                if (sectionId === 'quiz-questions') loadQuizzesForQuestionForm();
             });
         });
     }
 
     function setupModalClose(modalId) {
         const modal = document.getElementById(modalId);
-        modal?.addEventListener('click', (e) => {
-            if (e.target.id === modalId) {
-                modal.classList.remove('active');
-            }
-        });
+        modal?.addEventListener('click', (e) => { if (e.target.id === modalId) modal.classList.remove('active'); });
     }
 
-    function handleLogout() {
-        if (confirm('Are you sure you want to logout?')) {
-            api.logout();
-        }
-    }
+    function handleLogout() { if (confirm('Are you sure you want to logout?')) api.logout(); }
 
     function showNotification(message, type = 'success') {
-        // Remove existing notification
         const existing = document.querySelector('.admin-notification');
         if (existing) existing.remove();
-        
-        // Create new notification
         const notification = document.createElement('div');
-        notification.className = `admin-notification`;
-        notification.style.cssText = `
-            position: fixed; top: 20px; right: 20px; padding: 12px 20px;
-            border-radius: 8px; color: white; font-weight: 500; font-size: 14px;
-            z-index: 9999; animation: slideIn 0.3s ease;
-            background: ${type === 'success' ? '#10B981' : '#EF4444'};
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        `;
+        notification.className = 'admin-notification';
+        notification.style.cssText = `position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; color: white; font-weight: 500; font-size: 14px; z-index: 9999; animation: slideIn 0.3s ease; background: ${type === 'success' ? '#10B981' : '#EF4444'}; box-shadow: 0 4px 12px rgba(0,0,0,0.15);`;
         notification.textContent = message;
-        
-        // Add animation styles if not exists
         if (!document.querySelector('#admin-notification-styles')) {
             const style = document.createElement('style');
             style.id = 'admin-notification-styles';
-            style.textContent = `
-                @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-                @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
-            `;
+            style.textContent = `@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } } @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }`;
             document.head.appendChild(style);
         }
-        
         document.body.appendChild(notification);
-        
-        // Auto remove after 3 seconds
-        setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease forwards';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
+        setTimeout(() => { notification.style.animation = 'slideOut 0.3s ease forwards'; setTimeout(() => notification.remove(), 300); }, 3000);
     }
 
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
 
-    // ========================================================================
-    // DASHBOARD STATS
-    // ========================================================================
     async function loadDashboardStats() {
-        const token = api.getToken();
-        if (!token) return;
-        
+        const token = api.getToken(); if (!token) return;
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/admin/stats`, {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            
+            const res = await fetch(`${ADMIN_API_BASE}/admin/stats`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
             if (!res.ok) throw new Error('Failed to fetch stats');
-            
             const data = await res.json();
             document.getElementById('totalUsers').textContent = data.total_users ?? '-';
             document.getElementById('totalCourses').textContent = data.total_courses ?? '-';
             document.getElementById('totalEnrollments').textContent = data.total_enrollments ?? '-';
             document.getElementById('completedCourses').textContent = data.completed_courses ?? '-';
-            
-        } catch (error) {
-            console.error('Error loading stats:', error);
-            ['totalUsers','totalCourses','totalEnrollments','completedCourses'].forEach(id => {
-                document.getElementById(id).textContent = '-';
-            });
-        }
+        } catch (error) { console.error('Error loading stats:', error); ['totalUsers','totalCourses','totalEnrollments','completedCourses'].forEach(id => { document.getElementById(id).textContent = '-'; }); }
     }
 
-    // ========================================================================
-    // MANAGE COURSES
-    // ========================================================================
     async function loadCourses() {
         const tbody = document.getElementById('coursesTableBody');
         const token = api.getToken();
-        
-        if (!token) {
-            tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Please login as admin.</td></tr>';
-            return;
-        }
-        
+        if (!token) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Please login as admin.</td></tr>'; return; }
         tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div> Loading courses...</td></tr>';
-        
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/admin/courses`, {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            
-            if (!res.ok) {
-                if (res.status === 401 || res.status === 403) {
-                    api.clearToken();
-                    window.location.href = 'login.html';
-                    return;
-                }
-                throw new Error(`HTTP ${res.status}`);
-            }
-            
+            const res = await fetch(`${ADMIN_API_BASE}/admin/courses`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+            if (!res.ok) { if (res.status === 401 || res.status === 403) { api.clearToken(); window.location.href = 'login.html'; return; } throw new Error(`HTTP ${res.status}`); }
             const data = await res.json();
             const courses = data.data || data || [];
-            
-            if (!courses || courses.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No courses found. Click "+ Add New Course" to create one.</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = courses.map(course => `
-                <tr>
-                    <td>${course.id}</td>
-                    <td><strong>${escapeHtml(course.title)}</strong></td>
-                    <td>${escapeHtml(course.instructor || '-')}</td>
-                    <td>${course.total_lessons || course.lessons_count || 0}</td>
-                    <td><span class="status-badge active">Active</span></td>
-                    <td>
-                        <button class="btn-action btn-edit" onclick="editCourse(${course.id}, '${escapeHtml(course.title)}', '${escapeHtml(course.description || "")}', '${escapeHtml(course.instructor || "")}')">Edit</button>
-                        <button class="btn-action btn-delete" onclick="deleteCourse(${course.id})">Delete</button>
-                    </td>
-                </tr>
-            `).join('');
-            
-        } catch (error) {
-            console.error('Error loading courses:', error);
-            tbody.innerHTML = `<tr><td colspan="6" class="empty-state" style="color:#EF4444;">❌ Failed to load courses. ${error.message}</td></tr>`;
-        }
+            if (!courses || courses.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No courses found. Click "+ Add New Course" to create one.</td></tr>'; return; }
+            tbody.innerHTML = courses.map(course => `<tr><td>${course.id}</td><td><strong>${escapeHtml(course.title)}</strong></td><td>${escapeHtml(course.instructor || '-')}</td><td>${course.total_lessons || course.lessons_count || 0}</td><td><span class="status-badge active">Active</span></td><td><button class="btn-action btn-edit" onclick="editCourse(${course.id}, '${escapeHtml(course.title)}', '${escapeHtml(course.description || "")}', '${escapeHtml(course.instructor || "")}')">Edit</button><button class="btn-action btn-delete" onclick="deleteCourse(${course.id})">Delete</button></td></tr>`).join('');
+        } catch (error) { console.error('Error loading courses:', error); tbody.innerHTML = `<tr><td colspan="6" class="empty-state" style="color:#EF4444;">❌ Failed to load courses. ${error.message}</td></tr>`; }
     }
 
     function openCourseModal(course = null) {
-        const modal = document.getElementById('courseModal');
-        const form = document.getElementById('courseForm');
-        const title = document.getElementById('modalTitle');
-        
-        if (course) {
-            title.textContent = 'Edit Course';
-            document.getElementById('courseId').value = course.id;
-            document.getElementById('courseTitle').value = course.title || '';
-            document.getElementById('courseDescription').value = course.description || '';
-            document.getElementById('courseInstructor').value = course.instructor || '';
-        } else {
-            title.textContent = 'Add New Course';
-            form.reset();
-            document.getElementById('courseId').value = '';
-        }
+        const modal = document.getElementById('courseModal'); const form = document.getElementById('courseForm'); const title = document.getElementById('modalTitle');
+        if (course) { title.textContent = 'Edit Course'; document.getElementById('courseId').value = course.id; document.getElementById('courseTitle').value = course.title || ''; document.getElementById('courseDescription').value = course.description || ''; document.getElementById('courseInstructor').value = course.instructor || ''; }
+        else { title.textContent = 'Add New Course'; form.reset(); document.getElementById('courseId').value = ''; }
         modal.classList.add('active');
     }
-
-    function closeCourseModal() {
-        document.getElementById('courseModal').classList.remove('active');
-    }
-
-    function editCourse(id, title, description, instructor) {
-        openCourseModal({ id, title, description, instructor });
-    }
+    function closeCourseModal() { document.getElementById('courseModal').classList.remove('active'); }
+    function editCourse(id, title, description, instructor) { openCourseModal({ id, title, description, instructor }); }
 
     async function handleCourseSubmit(e) {
         e.preventDefault();
-        
         const courseId = document.getElementById('courseId').value;
-        const courseData = {
-            title: document.getElementById('courseTitle').value.trim(),
-            description: document.getElementById('courseDescription').value.trim(),
-            instructor: document.getElementById('courseInstructor').value.trim(),
-        };
-        
-        const btnSave = e.target.querySelector('.btn-save');
-        const originalText = btnSave.textContent;
-        btnSave.textContent = courseId ? 'Updating...' : 'Creating...';
-        btnSave.disabled = true;
-        
+        const courseData = { title: document.getElementById('courseTitle').value.trim(), description: document.getElementById('courseDescription').value.trim(), instructor: document.getElementById('courseInstructor').value.trim() };
+        const btnSave = e.target.querySelector('.btn-save'); const originalText = btnSave.textContent;
+        btnSave.textContent = courseId ? 'Updating...' : 'Creating...'; btnSave.disabled = true;
         const token = api.getToken();
-        
         try {
-            const url = courseId 
-                ? `${ADMIN_API_BASE}/admin/courses/${courseId}`
-                : `${ADMIN_API_BASE}/admin/courses`;
+            const url = courseId ? `${ADMIN_API_BASE}/admin/courses/${courseId}` : `${ADMIN_API_BASE}/admin/courses`;
             const method = courseId ? 'PUT' : 'POST';
-            
-            const res = await fetch(url, {
-                method,
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(courseData)
-            });
-            
+            const res = await fetch(url, { method, headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(courseData) });
             const data = await res.json();
-            
-            if (!res.ok) {
-                throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
-            }
-            
+            if (!res.ok) throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
             showNotification(courseId ? '✅ Course updated!' : '✅ Course created!', 'success');
-            closeCourseModal();
-            loadCourses();
-            
-        } catch (error) {
-            console.error('Error saving course:', error);
-            showNotification(`❌ Failed: ${error.message}`, 'error');
-        } finally {
-            btnSave.textContent = originalText;
-            btnSave.disabled = false;
-        }
+            closeCourseModal(); loadCourses();
+        } catch (error) { console.error('Error saving course:', error); showNotification(`❌ Failed: ${error.message}`, 'error'); }
+        finally { btnSave.textContent = originalText; btnSave.disabled = false; }
     }
 
     async function deleteCourse(courseId) {
         if (!confirm('Delete this course? This action cannot be undone.')) return;
-        
         const token = api.getToken();
-        
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/admin/courses/${courseId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            
+            const res = await fetch(`${ADMIN_API_BASE}/admin/courses/${courseId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
             const data = await res.json();
-            
-            if (!res.ok) {
-                throw new Error(data.message || 'Failed to delete course');
-            }
-            
-            showNotification('✅ Course deleted!', 'success');
-            loadCourses();
-            
-        } catch (error) {
-            console.error('Error deleting course:', error);
-            showNotification(`❌ Failed: ${error.message}`, 'error');
-        }
+            if (!res.ok) throw new Error(data.message || 'Failed to delete course');
+            showNotification('✅ Course deleted!', 'success'); loadCourses();
+        } catch (error) { console.error('Error deleting course:', error); showNotification(`❌ Failed: ${error.message}`, 'error'); }
     }
 
-    // ========================================================================
-    // MANAGE USERS
-    // ========================================================================
     async function loadUsers() {
-        const tbody = document.getElementById('usersTableBody');
-        const token = api.getToken();
-        
-        if (!token) {
-            tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Please login as admin.</td></tr>';
-            return;
-        }
-        
+        const tbody = document.getElementById('usersTableBody'); const token = api.getToken();
+        if (!token) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Please login as admin.</td></tr>'; return; }
         tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div> Loading users...</td></tr>';
-        
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/admin/users`, {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            
-            if (!res.ok) {
-                if (res.status === 401 || res.status === 403) {
-                    api.clearToken();
-                    window.location.href = 'login.html';
-                    return;
-                }
-                throw new Error(`HTTP ${res.status}`);
-            }
-            
-            const data = await res.json();
-            const users = data.data || data || [];
-            
-            if (!users || users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users found.</td></tr>';
-                return;
-            }
-            
+            const res = await fetch(`${ADMIN_API_BASE}/admin/users`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+            if (!res.ok) { if (res.status === 401 || res.status === 403) { api.clearToken(); window.location.href = 'login.html'; return; } throw new Error(`HTTP ${res.status}`); }
+            const data = await res.json(); const users = data.data || data || [];
+            if (!users || users.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users found.</td></tr>'; return; }
             const currentUserId = api.getUser()?.id;
-            
-            tbody.innerHTML = users.map(user => `
-                <tr>
-                    <td>${user.id}</td>
-                    <td><strong>${escapeHtml(user.name)}</strong></td>
-                    <td>${escapeHtml(user.email)}</td>
-                    <td><span class="role-badge ${user.role === 'admin' ? 'admin' : 'user'}">${user.role}</span></td>
-                    <td>${new Date(user.created_at).toLocaleDateString()}</td>
-                    <td>
-                        ${user.id !== currentUserId ? 
-                            `<button class="btn-action btn-delete" onclick="deleteUser(${user.id})">Delete</button>` : 
-                            '<span style="color:#999;font-size:12px">Cannot delete self</span>'
-                        }
-                    </td>
-                </tr>
-            `).join('');
-            
-        } catch (error) {
-            console.error('Error loading users:', error);
-            tbody.innerHTML = `<tr><td colspan="6" class="empty-state" style="color:#EF4444;">❌ Failed to load users. ${error.message}</td></tr>`;
-        }
+            tbody.innerHTML = users.map(user => `<tr><td>${user.id}</td><td><strong>${escapeHtml(user.name)}</strong></td><td>${escapeHtml(user.email)}</td><td><span class="role-badge ${user.role === 'admin' ? 'admin' : 'user'}">${user.role}</span></td><td>${new Date(user.created_at).toLocaleDateString()}</td><td>${user.id !== currentUserId ? `<button class="btn-action btn-delete" onclick="deleteUser(${user.id})">Delete</button>` : '<span style="color:#999;font-size:12px">Cannot delete self</span>'}</td></tr>`).join('');
+        } catch (error) { console.error('Error loading users:', error); tbody.innerHTML = `<tr><td colspan="6" class="empty-state" style="color:#EF4444;">❌ Failed to load users. ${error.message}</td></tr>`; }
     }
 
     async function deleteUser(userId) {
         const currentUser = api.getUser();
-        if (userId === currentUser?.id) {
-            showNotification('❌ Cannot delete your own account', 'error');
-            return;
-        }
-        
+        if (userId === currentUser?.id) { showNotification('❌ Cannot delete your own account', 'error'); return; }
         if (!confirm('Delete this user? This action cannot be undone.')) return;
-        
         const token = api.getToken();
-        
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/admin/users/${userId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            
+            const res = await fetch(`${ADMIN_API_BASE}/admin/users/${userId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
             const data = await res.json();
-            
-            if (!res.ok) {
-                throw new Error(data.message || 'Failed to delete user');
-            }
-            
-            showNotification('✅ User deleted!', 'success');
-            loadUsers();
-            
-        } catch (error) {
-            console.error('Error deleting user:', error);
-            showNotification(`❌ Failed: ${error.message}`, 'error');
-        }
+            if (!res.ok) throw new Error(data.message || 'Failed to delete user');
+            showNotification('✅ User deleted!', 'success'); loadUsers();
+        } catch (error) { console.error('Error deleting user:', error); showNotification(`❌ Failed: ${error.message}`, 'error'); }
     }
 
-    // ========================================================================
-    // MANAGE CONTENT (Course Meetings/Lessons)
-    // ========================================================================
     async function loadCoursesForContent() {
-        const select = document.getElementById('contentCourseSelect');
-        const token = api.getToken();
-        
-        if (!token) return;
-        
+        const select = document.getElementById('contentCourseSelect'); const token = api.getToken(); if (!token) return;
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/courses`, {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            
+            const res = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
             if (!res.ok) throw new Error('Failed to fetch courses');
-            
             const courses = await res.json();
-            
-            select.innerHTML = '<option value="">-- Select a Course --</option>' + 
-                courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
-            
-            select.onchange = (e) => {
-                const courseId = e.target.value;
-                if (courseId) {
-                    document.getElementById('meetingsSection').style.display = 'block';
-                    document.getElementById('contentCourseId').value = courseId;
-                    loadMeetingsForCourse(courseId);
-                } else {
-                    document.getElementById('meetingsSection').style.display = 'none';
-                }
-            };
-            
-        } catch (error) {
-            console.error('Error loading courses for content:', error);
-            select.innerHTML = '<option value="">-- Error loading courses --</option>';
-        }
+            select.innerHTML = '<option value="">-- Select a Course --</option>' + courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
+            select.onchange = (e) => { const courseId = e.target.value; if (courseId) { document.getElementById('meetingsSection').style.display = 'block'; document.getElementById('contentCourseId').value = courseId; loadMeetingsForCourse(courseId); } else { document.getElementById('meetingsSection').style.display = 'none'; } };
+        } catch (error) { console.error('Error loading courses for content:', error); select.innerHTML = '<option value="">-- Error loading courses --</option>'; }
     }
 
     async function loadMeetingsForCourse(courseId) {
-        const tbody = document.getElementById('meetingsTableBody');
-        const token = api.getToken();
-        
+        const tbody = document.getElementById('meetingsTableBody'); const token = api.getToken();
         tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div> Loading...</td></tr>';
-        
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/courses/${courseId}`, {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            
+            const res = await fetch(`${ADMIN_API_BASE}/courses/${courseId}`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
             if (!res.ok) throw new Error('Failed to fetch course content');
-            
-            const course = await res.json();
-            const items = course.meetings || [];
-            
-            if (items.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No content found. Click "+ Add Item" to start.</td></tr>';
-                return;
-            }
-            
+            const course = await res.json(); const items = course.meetings || [];
+            if (items.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No content found. Click "+ Add Item" to start.</td></tr>'; return; }
             tbody.innerHTML = items.map(item => {
-                // Determine type label
                 let typeLabel = '📁 Meeting';
                 if (item.type === 'lesson' || item.type === 'normal') typeLabel = '📄 Lesson';
                 else if (item.type === 'test') typeLabel = '✍️ Quiz';
                 else if (item.type === 'final') typeLabel = '🏆 Final';
-                
-                // Format link display
-                const linkDisplay = item.content ? 
-                    `<a href="${item.content}" target="_blank" style="color:#667eea; text-decoration:none;">🔗 View</a>` : 
-                    '<span style="color:#999;">-</span>';
-                
-                return `
-                    <tr>
-                        <td><strong>${item.order_number}</strong></td>
-                        <td>${escapeHtml(item.title)}</td>
-                        <td><span style="font-size:12px;">${typeLabel}</span></td>
-                        <td>${linkDisplay}</td>
-                        <td>
-                            <button class="btn-action btn-edit" onclick="editContentItem(${item.id}, '${escapeHtml(item.title)}', '${item.type}', '${item.content || ''}', ${item.order_number})">Edit</button>
-                            <button class="btn-action btn-delete" onclick="deleteContentItem(${item.id})">Delete</button>
-                        </td>
-                    </tr>
-                `;
+                const linkDisplay = item.content ? `<a href="${item.content}" target="_blank" style="color:#667eea; text-decoration:none;">🔗 View</a>` : '<span style="color:#999;">-</span>';
+                return `<tr><td><strong>${item.order_number}</strong></td><td>${escapeHtml(item.title)}</td><td><span style="font-size:12px;">${typeLabel}</span></td><td>${linkDisplay}</td><td><button class="btn-action btn-edit" onclick="editContentItem(${item.id}, '${escapeHtml(item.title)}', '${item.type}', '${item.content || ''}', ${item.order_number})">Edit</button><button class="btn-action btn-delete" onclick="deleteContentItem(${item.id})">Delete</button></td></tr>`;
             }).join('');
-            
-        } catch (error) {
-            console.error('Error loading meetings:', error);
-            tbody.innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#EF4444;">❌ Failed to load content. ${error.message}</td></tr>`;
-        }
+        } catch (error) { console.error('Error loading meetings:', error); tbody.innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#EF4444;">❌ Failed to load content. ${error.message}</td></tr>`; }
     }
 
-    function toggleContentFields() {
-        const type = document.getElementById('contentItemType').value;
-        const driveGroup = document.getElementById('driveLinkGroup');
-        
-        if (type === 'meeting') {
-            driveGroup.style.display = 'none';
-            document.getElementById('contentDriveLink').required = false;
-        } else {
-            driveGroup.style.display = 'block';
-            document.getElementById('contentDriveLink').required = true;
-        }
-    }
-
-    function openMeetingModal() {
-        const courseId = document.getElementById('contentCourseId').value;
-        if (!courseId) {
-            showNotification('⚠️ Please select a course first', 'error');
-            return;
-        }
-        
-        document.getElementById('contentModal').classList.add('active');
-        document.getElementById('contentModalTitle').textContent = 'Add New Item';
-        document.getElementById('contentForm').reset();
-        document.getElementById('contentId').value = '';
-        document.getElementById('contentCourseId').value = courseId;
-        document.getElementById('contentItemType').value = 'meeting';
-        toggleContentFields();
-    }
-
-    function closeContentModal() {
-        document.getElementById('contentModal').classList.remove('active');
-    }
-
-    function editContentItem(id, title, type, content, order_number) {
-        document.getElementById('contentModal').classList.add('active');
-        document.getElementById('contentModalTitle').textContent = 'Edit Item';
-        document.getElementById('contentId').value = id;
-        document.getElementById('contentTitle').value = title;
-        document.getElementById('contentItemType').value = type === 'normal' ? 'lesson' : type;
-        document.getElementById('contentDriveLink').value = content || '';
-        document.getElementById('contentOrder').value = order_number;
-        toggleContentFields();
-    }
+    function toggleContentFields() { const type = document.getElementById('contentItemType').value; const driveGroup = document.getElementById('driveLinkGroup'); if (type === 'meeting') { driveGroup.style.display = 'none'; document.getElementById('contentDriveLink').required = false; } else { driveGroup.style.display = 'block'; document.getElementById('contentDriveLink').required = true; } }
+    function openMeetingModal() { const courseId = document.getElementById('contentCourseId').value; if (!courseId) { showNotification('⚠️ Please select a course first', 'error'); return; } document.getElementById('contentModal').classList.add('active'); document.getElementById('contentModalTitle').textContent = 'Add New Item'; document.getElementById('contentForm').reset(); document.getElementById('contentId').value = ''; document.getElementById('contentCourseId').value = courseId; document.getElementById('contentItemType').value = 'meeting'; toggleContentFields(); }
+    function closeContentModal() { document.getElementById('contentModal').classList.remove('active'); }
+    function editContentItem(id, title, type, content, order_number) { document.getElementById('contentModal').classList.add('active'); document.getElementById('contentModalTitle').textContent = 'Edit Item'; document.getElementById('contentId').value = id; document.getElementById('contentTitle').value = title; document.getElementById('contentItemType').value = type === 'normal' ? 'lesson' : type; document.getElementById('contentDriveLink').value = content || ''; document.getElementById('contentOrder').value = order_number; toggleContentFields(); }
 
     async function handleContentSubmit(e) {
         e.preventDefault();
-        
-        const id = document.getElementById('contentId').value;
-        const courseId = document.getElementById('contentCourseId').value;
-        const itemType = document.getElementById('contentItemType').value;
-        
-        // Map frontend type to database ENUM
-        let dbType = 'normal';
-        if (itemType === 'meeting') dbType = 'normal';
-        else if (itemType === 'test') dbType = 'test';
-        else if (itemType === 'final') dbType = 'final';
-        else dbType = 'normal';
-        
-        // Convert Google Drive link to preview format
-        let driveLink = document.getElementById('contentDriveLink').value.trim();
-        if (driveLink && driveLink.includes('/view')) {
-            const match = driveLink.match(/\/d\/([^\/\?]+)/);
-            if (match && match[1]) {
-                driveLink = `https://drive.google.com/file/d/${match[1]}/preview`;
-            }
-        }
-        
-        const payload = {
-            title: document.getElementById('contentTitle').value.trim(),
-            type: dbType,
-            content: itemType === 'meeting' ? null : driveLink,
-            order_number: parseInt(document.getElementById('contentOrder').value)
-        };
-        
-        const btnSave = e.target.querySelector('.btn-save');
-        const originalText = btnSave.textContent;
-        btnSave.textContent = id ? 'Updating...' : 'Creating...';
-        btnSave.disabled = true;
-        
-        const token = api.getToken();
-        
+        const id = document.getElementById('contentId').value; const courseId = document.getElementById('contentCourseId').value; const itemType = document.getElementById('contentItemType').value;
+        let dbType = 'normal'; if (itemType === 'meeting') dbType = 'normal'; else if (itemType === 'test') dbType = 'test'; else if (itemType === 'final') dbType = 'final';
+        let driveLink = document.getElementById('contentDriveLink').value.trim(); if (driveLink && driveLink.includes('/view')) { const match = driveLink.match(/\/d\/([^\/\?]+)/); if (match && match[1]) driveLink = `https://drive.google.com/file/d/${match[1]}/preview`; }
+        const payload = { title: document.getElementById('contentTitle').value.trim(), type: dbType, content: itemType === 'meeting' ? null : driveLink, order_number: parseInt(document.getElementById('contentOrder').value) };
+        const btnSave = e.target.querySelector('.btn-save'); const originalText = btnSave.textContent; btnSave.textContent = id ? 'Updating...' : 'Creating...'; btnSave.disabled = true; const token = api.getToken();
         try {
-            const url = id 
-                ? `${ADMIN_API_BASE}/admin/content/${id}`
-                : `${ADMIN_API_BASE}/admin/courses/${courseId}/content`;
-            const method = id ? 'PUT' : 'POST';
-            
-            const res = await fetch(url, {
-                method,
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
-            
-            const data = await res.json();
-            
-            if (!res.ok) {
-                throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
-            }
-            
-            showNotification(id ? '✅ Item updated!' : '✅ Item added!', 'success');
-            closeContentModal();
-            loadMeetingsForCourse(courseId);
-            
-        } catch (error) {
-            console.error('Error saving content:', error);
-            showNotification(`❌ Failed: ${error.message}`, 'error');
-        } finally {
-            btnSave.textContent = originalText;
-            btnSave.disabled = false;
-        }
+            const url = id ? `${ADMIN_API_BASE}/admin/content/${id}` : `${ADMIN_API_BASE}/admin/courses/${courseId}/content`; const method = id ? 'PUT' : 'POST';
+            const res = await fetch(url, { method, headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await res.json(); if (!res.ok) throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
+            showNotification(id ? '✅ Item updated!' : '✅ Item added!', 'success'); closeContentModal(); loadMeetingsForCourse(courseId);
+        } catch (error) { console.error('Error saving content:', error); showNotification(`❌ Failed: ${error.message}`, 'error'); }
+        finally { btnSave.textContent = originalText; btnSave.disabled = false; }
     }
 
     async function deleteContentItem(id) {
         if (!confirm('Delete this item? This action cannot be undone.')) return;
-        
-        const courseId = document.getElementById('contentCourseId').value;
-        const token = api.getToken();
-        
-        try {
-            const res = await fetch(`${ADMIN_API_BASE}/admin/content/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            
-            const data = await res.json();
-            
-            if (!res.ok) {
-                throw new Error(data.message || 'Failed to delete content');
-            }
-            
-            showNotification('✅ Item deleted!', 'success');
-            loadMeetingsForCourse(courseId);
-            
-        } catch (error) {
-            console.error('Error deleting content:', error);
-            showNotification(`❌ Failed: ${error.message}`, 'error');
-        }
+        const courseId = document.getElementById('contentCourseId').value; const token = api.getToken();
+        try { const res = await fetch(`${ADMIN_API_BASE}/admin/content/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } }); const data = await res.json(); if (!res.ok) throw new Error(data.message || 'Failed to delete content'); showNotification('✅ Item deleted!', 'success'); loadMeetingsForCourse(courseId); }
+        catch (error) { console.error('Error deleting content:', error); showNotification(`❌ Failed: ${error.message}`, 'error'); }
     }
-        // ========================================================================
-    // QUIZ MONITORING
+
+    // ========================================================================
+    // ✅ QUIZ QUESTION MANAGEMENT (FIXED VERSION - Quiz ID Mapping)
     // ========================================================================
     
-    let allQuizAttempts = []; // Store for export
-    
-    async function loadQuizAttempts() {
-        const tbody = document.getElementById('quizAttemptsTableBody');
+    /**
+     * Load quizzes for dropdown - FIX: Use quiz.id from quizzes table, NOT meeting.id
+     * This prevents foreign key constraint errors
+     */
+    async function loadQuizzesForQuestionForm() {
+        const select = document.getElementById('quizSelect');
         const token = api.getToken();
         
-        if (!token) {
-            tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Please login as admin.</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div> Loading quiz attempts...</td></tr>';
+        if (!token) { select.innerHTML = '<option value="">-- Login required --</option>'; return; }
+        select.innerHTML = '<option value="">-- Loading quizzes... --</option>';
         
         try {
-            // Get filter values
-            const courseId = document.getElementById('filterCourse').value;
-            const status = document.getElementById('filterStatus').value;
+            // Fetch all courses first
+            const coursesRes = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+            if (!coursesRes.ok) throw new Error('Failed to fetch courses');
+            const courses = await coursesRes.json();
             
-            // Build query params
-            const params = new URLSearchParams();
-            if (courseId) params.append('course_id', courseId);
-            if (status) params.append('status', status);
+            let options = '<option value="">-- Pilih Quiz --</option>';
+            let quizCount = 0;
             
-            const res = await fetch(`${ADMIN_API_BASE}/admin/quiz-attempts?${params}`, {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-            });
-            
-            if (!res.ok) throw new Error('Failed to load quiz attempts');
-            
-            const attempts = await res.json();
-            allQuizAttempts = attempts; // Store for export
-            
-            // Update stats
-            updateQuizStats(attempts);
-            
-            // Render table
-            if (!attempts || attempts.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No quiz attempts found.</td></tr>';
-                return;
+            // For each course, fetch details to get meetings, then match with quizzes table
+            for (const course of courses) {
+                try {
+                    const courseRes = await fetch(`${ADMIN_API_BASE}/courses/${course.id}`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+                    if (!courseRes.ok) continue;
+                    const courseData = await courseRes.json();
+                    const meetings = courseData.meetings || [];
+                    
+                    meetings.forEach(meeting => {
+                        // Only include if meeting is a quiz type AND has a valid quiz_id
+                        if ((meeting.type === 'test' || meeting.type === 'final') && meeting.quiz_id) {
+                            // ✅ Use meeting.quiz_id (which references quizzes.id)
+                            options += `<option value="${meeting.quiz_id}">📚 ${escapeHtml(course.title)} - ${escapeHtml(meeting.title)} (Quiz ID: ${meeting.quiz_id})</option>`;
+                            quizCount++;
+                        }
+                    });
+                } catch (err) { console.error(`Error fetching course ${course.id}:`, err); }
             }
             
-            tbody.innerHTML = attempts.map((attempt, idx) => `
-                <tr>
-                    <td>${idx + 1}</td>
-                    <td>
-                        <strong>${escapeHtml(attempt.user_name)}</strong><br>
-                        <small style="color:#666;">${escapeHtml(attempt.user_email || '')}</small>
-                    </td>
-                    <td>${escapeHtml(attempt.course_title)}</td>
-                    <td>${escapeHtml(attempt.quiz_title)}</td>
-                    <td><strong style="color:${attempt.score >= 70 ? '#10B981' : '#EF4444'}">${attempt.score}%</strong></td>
-                    <td>
-                        <span class="status-badge ${attempt.passed ? 'active' : ''}" 
-                              style="background:${attempt.passed ? '#DCFCE7' : '#FEE2E2'}; 
-                                     color:${attempt.passed ? '#166534' : '#991B1B'}">
-                            ${attempt.passed ? '✅ Passed' : '❌ Failed'}
-                        </span>
-                    </td>
-                    <td>#${attempt.attempt_number}</td>
-                    <td>${formatDate(attempt.created_at)}</td>
-                </tr>
-            `).join('');
+            if (quizCount === 0) {
+                options = '<option value="">-- No quizzes found --</option>';
+                document.getElementById('manualQuizIdGroup').style.display = 'block';
+                console.warn('No quizzes with valid quiz_id found. Showing manual input fallback.');
+            } else {
+                document.getElementById('manualQuizIdGroup').style.display = 'none';
+            }
+            select.innerHTML = options;
             
         } catch (error) {
-            console.error('Error loading quiz attempts:', error);
-            tbody.innerHTML = `<tr><td colspan="8" class="empty-state" style="color:#EF4444;">❌ Failed to load quiz attempts. ${error.message}</td></tr>`;
+            console.error('Error loading quizzes:', error);
+            select.innerHTML = '<option value="">-- Error loading quizzes --</option>';
+            document.getElementById('manualQuizIdGroup').style.display = 'block';
         }
     }
     
-    function updateQuizStats(attempts) {
-        const total = attempts.length;
-        const passed = attempts.filter(a => a.passed).length;
-        const failed = total - passed;
-        const avgScore = total > 0 ? Math.round(attempts.reduce((sum, a) => sum + a.score, 0) / total) : 0;
-        
-        document.getElementById('totalAttempts').textContent = total;
-        document.getElementById('passedAttempts').textContent = passed;
-        document.getElementById('failedAttempts').textContent = failed;
-        document.getElementById('avgScore').textContent = `${avgScore}%`;
+    function toggleQuizInputMode() {
+        const select = document.getElementById('quizSelect');
+        const manualGroup = document.getElementById('manualQuizIdGroup');
+        const manualInput = document.getElementById('manualQuizId');
+        if (select.value === '' && select.options[select.selectedIndex]?.text?.includes('No quizzes found')) {
+            manualGroup.style.display = 'block'; manualInput.required = true;
+        } else { manualGroup.style.display = 'none'; manualInput.required = false; }
     }
     
-    async function loadCoursesForQuizFilter() {
-        const select = document.getElementById('filterCourse');
+    function refreshQuizzesDropdown() {
+        const select = document.getElementById('quizSelect');
+        select.innerHTML = '<option value="">-- Refreshing... --</option>'; select.disabled = true;
+        loadQuizzesForQuestionForm().finally(() => { select.disabled = false; });
+    }
+    
+    function toggleOptionsFields() {
+        const type = document.getElementById('questionType').value;
+        const optionsFields = document.getElementById('optionsFields');
+        const trueFalseFields = document.getElementById('trueFalseFields');
+        if (type === 'multiple_choice') {
+            optionsFields.style.display = 'block'; trueFalseFields.style.display = 'none';
+            ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).required = true);
+        } else if (type === 'true_false') {
+            optionsFields.style.display = 'none'; trueFalseFields.style.display = 'block';
+            ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).required = false);
+        } else {
+            optionsFields.style.display = 'none'; trueFalseFields.style.display = 'none';
+            ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).required = false);
+        }
+    }
+    
+    async function handleAddQuestionSubmit(e) {
+        e.preventDefault();
+        let quizId = document.getElementById('quizSelect').value;
+        if (!quizId) { quizId = document.getElementById('manualQuizId').value; }
+        if (!quizId) { showNotification('⚠️ Please select or enter a Quiz ID', 'error'); return; }
+        
+        const questionType = document.getElementById('questionType').value;
+        let options = [], correctAnswer = '';
+        
+        if (questionType === 'multiple_choice') {
+            options = [document.getElementById('optA').value.trim(), document.getElementById('optB').value.trim(), document.getElementById('optC').value.trim(), document.getElementById('optD').value.trim()].filter(opt => opt !== '');
+            correctAnswer = document.getElementById('correctAnswer').value;
+        } else if (questionType === 'true_false') {
+            options = ['Benar', 'Salah'];
+            correctAnswer = document.getElementById('correctAnswerTF').value === 'true' ? 'Benar' : 'Salah';
+        }
+        
+        const payload = {
+            question: document.getElementById('questionInput').value.trim(),
+            type: questionType,
+            options: options,
+            correct_answer: correctAnswer,
+            points: parseInt(document.getElementById('pointsInput').value) || 10,
+            order: parseInt(document.getElementById('orderInput').value) || 0
+        };
+        
+        const btnSubmit = e.target.querySelector('button[type="submit"]');
+        const originalText = btnSubmit.textContent;
+        btnSubmit.textContent = '💾 Menyimpan...'; btnSubmit.disabled = true;
+        const messageDiv = document.getElementById('questionFormMessage'); messageDiv.style.display = 'none';
         const token = api.getToken();
         
-        if (!token) return;
-        
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/courses`, {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            const res = await fetch(`${ADMIN_API_BASE}/admin/quizzes/${quizId}/questions`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(payload)
             });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
             
-            if (!res.ok) throw new Error('Failed to fetch courses');
-            
-            const courses = await res.json();
-            
-            select.innerHTML = '<option value="">All Courses</option>' + 
-                courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
-            
+            messageDiv.style.display = 'block'; messageDiv.style.background = '#DCFCE7'; messageDiv.style.color = '#166534';
+            messageDiv.textContent = '✅ Soal berhasil ditambahkan!';
+            document.getElementById('questionInput').value = ''; document.getElementById('pointsInput').value = '10'; document.getElementById('orderInput').value = '1';
+            if (questionType === 'multiple_choice') ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).value = '');
+            showNotification('✅ Soal berhasil disimpan!', 'success');
         } catch (error) {
-            console.error('Error loading courses for filter:', error);
-        }
+            console.error('Error adding question:', error);
+            messageDiv.style.display = 'block'; messageDiv.style.background = '#FEE2E2'; messageDiv.style.color = '#991B1B';
+            messageDiv.textContent = `❌ Gagal: ${error.message}`;
+            showNotification(`❌ Gagal menyimpan soal: ${error.message}`, 'error');
+        } finally { btnSubmit.textContent = originalText; btnSubmit.disabled = false; }
     }
-    
-    function exportQuizAttempts() {
-        if (!allQuizAttempts || allQuizAttempts.length === 0) {
-            showNotification('⚠️ No data to export', 'error');
-            return;
-        }
-        
-        // CSV headers
-        const headers = ['#', 'Student Name', 'Student Email', 'Course', 'Quiz', 'Score', 'Status', 'Attempt #', 'Date'];
-        
-        // CSV rows
-        const rows = allQuizAttempts.map((a, idx) => [
-            idx + 1,
-            a.user_name,
-            a.user_email || '',
-            a.course_title,
-            a.quiz_title,
-            `${a.score}%`,
-            a.passed ? 'Passed' : 'Failed',
-            a.attempt_number,
-            new Date(a.created_at).toLocaleString('id-ID')
-        ]);
-        
-        // Build CSV content
-        const csvContent = [
-            headers.join(','),
-            ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-        ].join('\n');
-        
-        // Create download
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', `quiz-attempts-${new Date().toISOString().split('T')[0]}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        showNotification('✅ Quiz attempts exported to CSV!', 'success');
+
+    // ========================================================================
+    // QUIZ MONITORING
+    // ========================================================================
+    let allQuizAttempts = [];
+    async function loadQuizAttempts() {
+        const tbody = document.getElementById('quizAttemptsTableBody'); const token = api.getToken();
+        if (!token) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Please login as admin.</td></tr>'; return; }
+        tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div> Loading quiz attempts...</td></tr>';
+        try {
+            const courseId = document.getElementById('filterCourse').value; const status = document.getElementById('filterStatus').value;
+            const params = new URLSearchParams(); if (courseId) params.append('course_id', courseId); if (status) params.append('status', status);
+            const res = await fetch(`${ADMIN_API_BASE}/admin/quiz-attempts?${params}`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+            if (!res.ok) throw new Error('Failed to load quiz attempts');
+            const attempts = await res.json(); allQuizAttempts = attempts; updateQuizStats(attempts);
+            if (!attempts || attempts.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No quiz attempts found.</td></tr>'; return; }
+            tbody.innerHTML = attempts.map((attempt, idx) => `<tr><td>${idx + 1}</td><td><strong>${escapeHtml(attempt.user_name)}</strong><br><small style="color:#666;">${escapeHtml(attempt.user_email || '')}</small></td><td>${escapeHtml(attempt.course_title)}</td><td>${escapeHtml(attempt.quiz_title)}</td><td><strong style="color:${attempt.score >= 70 ? '#10B981' : '#EF4444'}">${attempt.score}%</strong></td><td><span class="status-badge ${attempt.passed ? 'active' : ''}" style="background:${attempt.passed ? '#DCFCE7' : '#FEE2E2'}; color:${attempt.passed ? '#166534' : '#991B1B'}">${attempt.passed ? '✅ Passed' : '❌ Failed'}</span></td><td>#${attempt.attempt_number}</td><td>${formatDate(attempt.created_at)}</td></tr>`).join('');
+        } catch (error) { console.error('Error loading quiz attempts:', error); tbody.innerHTML = `<tr><td colspan="8" class="empty-state" style="color:#EF4444;">❌ Failed to load quiz attempts. ${error.message}</td></tr>`; }
     }
-    
-    function formatDate(dateStr) {
-        if (!dateStr) return '-';
-        return new Date(dateStr).toLocaleDateString('id-ID', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
+    function updateQuizStats(attempts) { const total = attempts.length; const passed = attempts.filter(a => a.passed).length; const failed = total - passed; const avgScore = total > 0 ? Math.round(attempts.reduce((sum, a) => sum + a.score, 0) / total) : 0; document.getElementById('totalAttempts').textContent = total; document.getElementById('passedAttempts').textContent = passed; document.getElementById('failedAttempts').textContent = failed; document.getElementById('avgScore').textContent = `${avgScore}%`; }
+    async function loadCoursesForQuizFilter() { const select = document.getElementById('filterCourse'); const token = api.getToken(); if (!token) return; try { const res = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } }); if (!res.ok) throw new Error('Failed to fetch courses'); const courses = await res.json(); select.innerHTML = '<option value="">All Courses</option>' + courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join(''); } catch (error) { console.error('Error loading courses for filter:', error); } }
+    function exportQuizAttempts() { if (!allQuizAttempts || allQuizAttempts.length === 0) { showNotification('⚠️ No data to export', 'error'); return; } const headers = ['#', 'Student Name', 'Student Email', 'Course', 'Quiz', 'Score', 'Status', 'Attempt #', 'Date']; const rows = allQuizAttempts.map((a, idx) => [idx + 1, a.user_name, a.user_email || '', a.course_title, a.quiz_title, `${a.score}%`, a.passed ? 'Passed' : 'Failed', a.attempt_number, new Date(a.created_at).toLocaleString('id-ID')]); const csvContent = [headers.join(','), ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))].join('\n'); const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `quiz-attempts-${new Date().toISOString().split('T')[0]}.csv`; link.click(); showNotification('✅ Quiz attempts exported to CSV!', 'success'); }
+    function formatDate(dateStr) { if (!dateStr) return '-'; return new Date(dateStr).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
     </script>
 </body>
 </html>

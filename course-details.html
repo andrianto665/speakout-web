@@ -35,6 +35,7 @@
             background: var(--surface2);
             color: #1f1f3a;
             overflow-x: hidden;
+            padding-top: 100px; /* ✅ Space untuk header fixed */
         }
         a { text-decoration: none; }
 
@@ -42,10 +43,11 @@
         .header {
             width: 100%;
             padding: 18px 0;
-            position: sticky;
+            position: fixed; /* ✅ Changed dari sticky ke fixed */
             top: 0;
-            z-index: 999;
-            background: rgba(10,15,35,0.92);
+            left: 0;
+            z-index: 1000; /* ✅ Lebih rendah dari timer */
+            background: rgba(10,15,35,0.95);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255,255,255,0.06);
         }
@@ -501,67 +503,164 @@
 </head>
 <body>
 
-<!-- ✅ FIXED HEADER: Link ke dashboard.html (bukan index.html) -->
-<header class="header">
-    <div class="header-container">
-        <a href="dashboard.html" class="logo">SPEAK<span>OUT</span></a>
-        <nav>
-            <ul class="nav-menu">
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="dashboard.html#my-courses">My Courses</a></li>
-                <li><a href="courses.html">All Courses</a></li>
-                <li><a href="teachers.html">Teachers</a></li>
-            </ul>
-        </nav>
-        <button id="logoutBtn" class="btn-login">Logout</button>
+    <!-- ✅ TIMER DISPLAY (Fixed di pojok kanan atas - Z-INDEX TINGGI) -->
+    <div id="quiz-timer-box" style="display:none; position:fixed; top:80px; right:20px; background:#ffffff; padding:12px 20px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.15); font-family:'DM Sans',sans-serif; z-index:10001; border-left:4px solid #5b2d8e;">
+        <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">⏱️ Sisa Waktu</div>
+        <div id="timer-display" style="font-size:24px; font-weight:700; color:#1f2937; letter-spacing:1px;">--:--</div>
     </div>
-</header>
 
-<!-- HERO -->
-<section class="page-hero">
-    <h1 id="page-title">Loading...</h1>
-    <p>Pilih pertemuan di sebelah kiri untuk melihat materi</p>
-</section>
+    <!-- ✅ FIXED HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <a href="dashboard.html" class="logo">SPEAK<span>OUT</span></a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="dashboard.html#my-courses">My Courses</a></li>
+                    <li><a href="courses.html">All Courses</a></li>
+                    <li><a href="teachers.html">Teachers</a></li>
+                </ul>
+            </nav>
+            <button id="logoutBtn" class="btn-login">Logout</button>
+        </div>
+    </header>
 
-<!-- MAIN CONTENT -->
-<div class="course-detail-container">
-    
-    <!-- Sidebar: Daftar Pertemuan -->
-    <aside class="sidebar">
-        <h3>Daftar Pertemuan</h3>
-        <div id="meeting-list">
-            <div class="loading-detail"><div class="spinner"></div></div>
-        </div>
-    </aside>
+    <!-- HERO -->
+    <section class="page-hero">
+        <h1 id="page-title">Loading...</h1>
+        <p>Pilih pertemuan di sebelah kiri untuk melihat materi</p>
+    </section>
 
-    <!-- Content: Daftar Materi / Quiz UI -->
-    <main class="content-area">
+    <!-- MAIN CONTENT -->
+    <div class="course-detail-container">
         
-        <!-- ✅ NEW: Back to Dashboard Button -->
-        <div style="margin-bottom: 20px;">
-            <a href="dashboard.html" style="display: inline-flex; align-items: center; gap: 8px; color: var(--purple); text-decoration: none; font-weight: 600; font-size: 14px; transition: gap 0.2s;">
-                <span style="font-size: 16px;">←</span> Back to Dashboard
-            </a>
-        </div>
-        
-        <div class="content-header">
-            <span id="meeting-label">Pertemuan 1</span>
-            <h2 id="meeting-title">Loading...</h2>
-        </div>
-        
-        <!-- ✅ Container untuk Lesson List ATAU Quiz UI -->
-        <div id="content-container">
-            <ul class="lesson-list" id="lesson-list">
+        <!-- Sidebar: Daftar Pertemuan -->
+        <aside class="sidebar">
+            <h3>Daftar Pertemuan</h3>
+            <div id="meeting-list">
                 <div class="loading-detail"><div class="spinner"></div></div>
-            </ul>
-        </div>
-    </main>
+            </div>
+        </aside>
 
-</div>
+        <!-- Content: Daftar Materi / Quiz UI -->
+        <main class="content-area">
+            
+            <!-- ✅ NEW: Back to Dashboard Button -->
+            <div style="margin-bottom: 20px;">
+                <a href="dashboard.html" style="display: inline-flex; align-items: center; gap: 8px; color: var(--purple); text-decoration: none; font-weight: 600; font-size: 14px; transition: gap 0.2s;">
+                    <span style="font-size: 16px;">←</span> Back to Dashboard
+                </a>
+            </div>
+            
+            <div class="content-header">
+                <span id="meeting-label">Pertemuan 1</span>
+                <h2 id="meeting-title">Loading...</h2>
+            </div>
+            
+            <!-- ✅ Container untuk Lesson List ATAU Quiz UI -->
+            <div id="content-container">
+                <ul class="lesson-list" id="lesson-list">
+                    <div class="loading-detail"><div class="spinner"></div></div>
+                </ul>
+            </div>
+        </main>
 
-<!-- ✅ EXTERNAL JS FILES -->
-<script src="js/api.js"></script>
-<script src="js/course-details.js"></script>
+    </div>
+
+    <!-- ✅ EXTERNAL JS FILES -->
+    <script src="js/api.js"></script>
+    <script src="js/course-details.js"></script>
+
+    <!-- ✅ TIMER JAVASCRIPT -->
+    <script>
+    /**
+     * ⏱️ Quiz Timer Logic - course-details.html
+     * Otomatis berjalan saat quiz data berhasil diload
+     */
+    let timerInterval = null;
+    let remainingSeconds = 0;
+
+    /**
+     * Start countdown timer
+     * @param {number} timeLimitMinutes - Waktu dalam menit (default: 60)
+     */
+    function startQuizTimer(timeLimitMinutes) {
+        // Stop timer lama jika ada (hindari double interval)
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+
+        // Konversi menit ke detik (default 60 menit jika null/undefined)
+        remainingSeconds = (timeLimitMinutes && timeLimitMinutes > 0) 
+            ? timeLimitMinutes * 60 
+            : 60 * 60; // Default 60 menit
+        
+        // Tampilkan box timer
+        const timerBox = document.getElementById('quiz-timer-box');
+        if (timerBox) {
+            timerBox.style.display = 'block';
+        }
+
+        // Update tampilan setiap 1 detik
+        timerInterval = setInterval(() => {
+            remainingSeconds--;
+            
+            // Format MM:SS
+            const minutes = Math.floor(remainingSeconds / 60);
+            const seconds = remainingSeconds % 60;
+            const display = document.getElementById('timer-display');
+            
+            if (display) {
+                display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                // ⚠️ Warning: Ubah warna jadi merah jika sisa < 5 menit (300 detik)
+                if (remainingSeconds <= 300) {
+                    display.style.color = '#dc2626'; // Merah
+                    const timerBox = document.getElementById('quiz-timer-box');
+                    if (timerBox) {
+                        timerBox.style.borderLeftColor = '#dc2626';
+                    }
+                }
+            }
+
+            // ⏰ Waktu Habis: Auto-submit quiz
+            if (remainingSeconds <= 0) {
+                clearInterval(timerInterval);
+                alert('⏰ Waktu quiz telah habis! Jawaban akan disubmit otomatis.');
+                
+                // ✅ AUTO-SUBMIT: Panggil fungsi submitQuizAnswers jika tersedia
+                if (typeof currentQuizId !== 'undefined' && currentQuizId) {
+                    if (typeof submitQuizAnswers === 'function') {
+                        submitQuizAnswers(currentQuizId);
+                    }
+                }
+                
+                return;
+            }
+        }, 1000);
+    }
+
+    /**
+     * Stop timer (dipanggil saat quiz selesai/submit)
+     */
+    function stopQuizTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        const timerBox = document.getElementById('quiz-timer-box');
+        if (timerBox) {
+            timerBox.style.display = 'none';
+        }
+    }
+
+    // 🛑 Cleanup: Hentikan timer jika user pindah halaman/navigasi
+    window.addEventListener('beforeunload', () => {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+    });
+    </script>
 
 </body>
 </html>

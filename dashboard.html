@@ -607,7 +607,7 @@
 
         courses.forEach(course => {
             // ✅ Use API field is_completed if available, fallback to progress check
-            const isCompleted = course.is_completed || course.progress >= 100;
+            const isCompleted = course.is_completed === true || course.progress >= 100;
             const statusClass = isCompleted ? 'completed' : 'in-progress';
             const badgeText = isCompleted ? '🏆 Completed' : `${course.progress}%`;
             const btnText = isCompleted ? '📄 View Certificate' : '▶ Continue Learning';
