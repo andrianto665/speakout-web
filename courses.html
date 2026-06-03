@@ -23,7 +23,7 @@
             --surface2: #f4f4fc;
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'DM Sans', sans-serif;
@@ -41,9 +41,9 @@
             position: sticky;
             top: 0;
             z-index: 999;
-            background: rgba(10,15,35,0.92);
+            background: rgba(10, 15, 35, 0.92);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .header-container {
@@ -102,12 +102,12 @@
 
         .btn-auth.logout {
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: var(--gray);
         }
 
         .btn-auth.logout:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: var(--white);
         }
 
@@ -131,7 +131,7 @@
             font-family: 'Playfair Display', serif;
             font-size: 200px;
             font-weight: 900;
-            color: rgba(255,255,255,0.03);
+            color: rgba(255, 255, 255, 0.03);
             white-space: nowrap;
             pointer-events: none;
         }
@@ -179,6 +179,81 @@
             font-weight: 300;
         }
 
+        /* ===== FILTER & SORTING SECTION ===== */
+        .filter-sorting-section {
+            padding: 40px 20px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .filter-sorting-wrapper {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 180px;
+        }
+
+        .filter-item label,
+        .sorting-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .filter-item svg,
+        .sorting-group svg {
+            color: var(--blue);
+        }
+
+        .filter-item select,
+        .sorting-group select {
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            outline: none;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .filter-item select:focus,
+        .sorting-group select:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(10, 77, 155, 0.1);
+        }
+
+        .sorting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 220px;
+        }
+
         /* ===== COURSES SECTION ===== */
         .courses-section {
             width: 100%;
@@ -199,7 +274,7 @@
         .spinner {
             width: 60px;
             height: 60px;
-            border: 4px solid rgba(91,45,142,0.15);
+            border: 4px solid rgba(91, 45, 142, 0.15);
             border-top-color: var(--purple);
             border-radius: 50%;
             margin: auto auto 20px;
@@ -219,16 +294,16 @@
             background: white;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 24px rgba(91,45,142,0.08);
+            box-shadow: 0 4px 24px rgba(91, 45, 142, 0.08);
             display: grid;
             grid-template-columns: 300px 1fr;
             transition: 0.3s;
-            border: 1px solid rgba(91,45,142,0.08);
+            border: 1px solid rgba(91, 45, 142, 0.08);
         }
 
         .course-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(91,45,142,0.15);
+            box-shadow: 0 12px 40px rgba(91, 45, 142, 0.15);
         }
 
         .course-image {
@@ -296,7 +371,7 @@
         }
 
         .meta-item {
-            background: rgba(91,45,142,0.07);
+            background: rgba(91, 45, 142, 0.07);
             color: var(--purple);
             padding: 8px 14px;
             border-radius: 8px;
@@ -348,7 +423,20 @@
         }
 
         .btn-enroll.enrolled {
-            background: var(--success);
+            background: #10b981;
+        }
+
+        /* ===== NO RESULTS ===== */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .no-results-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
         }
 
         /* ===== ERROR ===== */
@@ -358,20 +446,68 @@
             color: #e53935;
         }
 
+        /* Course placeholder untuk yang tidak ada gambar */
+.course-image.no-image {
+    background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
+    min-height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.course-placeholder {
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    padding: 40px 20px;
+    line-height: 1.4;
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.course-image.no-image img {
+    display: none;
+}
+
         /* ===== RESPONSIVE ===== */
-        @media(max-width: 992px) {
+        @media (max-width: 992px) {
             .nav-menu { display: none; }
             .course-card { grid-template-columns: 1fr; }
             .course-image { height: 240px; }
+            
+            .filter-sorting-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+            }
+            
+            .filter-item {
+                min-width: 100%;
+            }
+            
+            .sorting-group {
+                min-width: 100%;
+            }
         }
 
-        @media(max-width: 768px) {
+        @media (max-width: 768px) {
             .header-container { padding: 0 24px; }
             .hero { padding: 60px 20px; }
             .hero::before { font-size: 100px; }
         }
 
-        @media(max-width: 480px) {
+        @media (max-width: 480px) {
             .course-content { padding: 22px; }
             .course-footer { flex-direction: column; align-items: flex-start; gap: 10px; }
             .btn-auth { padding: 10px 20px; font-size: 13px; }
@@ -380,7 +516,7 @@
 </head>
 <body>
 
-<!-- ✅ FIXED HEADER: Dynamic Auth + Navigation ke dashboard.html -->
+<!-- HEADER -->
 <header class="header">
     <div class="header-container">
         <a href="dashboard.html" class="logo">SPEAK<span>OUT</span></a>
@@ -392,7 +528,6 @@
                 <li><a href="teachers.html">Teachers</a></li>
             </ul>
         </nav>
-        <!-- ✅ Dynamic Auth Button: Login/Logout -->
         <button id="authBtn" class="btn-auth">Loading...</button>
     </div>
 </header>
@@ -410,6 +545,79 @@
         dengan metode aktif, praktis, dan modern khas SpeakOut.
     </p>
 </section>
+
+<!-- FILTER & SORTING SECTION -->
+<div class="filter-sorting-section">
+    <div class="filter-sorting-wrapper">
+        
+        <!-- Filter Group -->
+        <div class="filter-group">
+            <div class="filter-item">
+                <label for="filterKategori">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M1.5 1h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1zm0 5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1zm0 5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1z"/>
+                    </svg>
+                    Kategori
+                </label>
+                <select id="filterKategori">
+                    <option value="">Semua Kategori</option>
+                    <option value="speaking">Speaking</option>
+                    <option value="grammar">Grammar</option>
+                    <option value="vocabulary">Vocabulary</option>
+                    <option value="business">Business English</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label for="filterLevel">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.906.906 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                    </svg>
+                    Level
+                </label>
+                <select id="filterLevel">
+                    <option value="">Semua Level</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label for="filterHarga">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.615-1.098-2.517-2.714-2.874l-.459-.101c-.73-.161-1.112-.385-1.112-.819 0-.49.434-.864 1.168-.864.738 0 1.285.374 1.424.864h1.636c-.179-1.294-1.238-2.166-2.918-2.343V2h-1.043v1.216c-2.078.15-3.443 1.333-3.591 3h1.043c.148-.832.738-1.355 1.8-1.462V6.5c-1.216.109-1.8.632-1.943 1.462h-1.043zm3.25 4.469c1.216-.109 1.8-.632 1.943-1.462h-1.043c-.148.832-.738 1.355-1.8 1.462V11.5c1.216-.109 1.8-.632 1.943-1.462h-1.043c-.148.832-.738 1.355-1.8 1.462v1.216h1.043v-1.216z"/>
+                    </svg>
+                    Harga
+                </label>
+                <select id="filterHarga">
+                    <option value="">Semua Harga</option>
+                    <option value="free">Gratis</option>
+                    <option value="paid">Berbayar</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Sorting -->
+        <div class="sorting-group">
+            <label for="sortBy">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M3.5 2.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 11.293V2.5zm3.5 1a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/>
+                </svg>
+                Urutkan
+            </label>
+            <select id="sortBy">
+                <option value="newest">Terbaru</option>
+                <option value="popular">Terpopuler</option>
+                <option value="price-low">Harga: Rendah ke Tinggi</option>
+                <option value="price-high">Harga: Tinggi ke Rendah</option>
+                <option value="name-asc">Nama: A-Z</option>
+            </select>
+        </div>
+
+    </div>
+</div>
 
 <!-- COURSES -->
 <section class="courses-section">
@@ -435,8 +643,8 @@
 <!-- Courses Logic -->
 <script>
 /**
- * 📁 courses.html - Logic dengan Dynamic Auth Header
- * 🎯 Handle course listing, enroll, dan auth state
+ * 📁 courses.html - Logic dengan Filter & Sorting
+ * 🎯 Handle course listing, enroll, filter, dan sorting
  */
 
 // DOM Elements
@@ -444,6 +652,15 @@ const authBtn = document.getElementById('authBtn');
 const loadingState = document.getElementById('loadingState');
 const coursesList = document.getElementById('coursesList');
 const errorState = document.getElementById('errorState');
+
+// Filter & Sorting Elements
+const filterKategori = document.getElementById('filterKategori');
+const filterLevel = document.getElementById('filterLevel');
+const filterHarga = document.getElementById('filterHarga');
+const sortBy = document.getElementById('sortBy');
+
+// Store all courses
+let allCourses = [];
 
 // ========================================================================
 // INIT: Auth Check + Setup
@@ -454,6 +671,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Setup auth button click handler
     authBtn.addEventListener('click', handleAuthClick);
+    
+    // Setup filter & sorting listeners
+    filterKategori.addEventListener('change', applyFilters);
+    filterLevel.addEventListener('change', applyFilters);
+    filterHarga.addEventListener('change', applyFilters);
+    sortBy.addEventListener('change', applyFilters);
     
     // Load courses
     loadCourses();
@@ -507,24 +730,95 @@ async function loadCourses() {
         
         if (!response.ok) throw new Error('Failed to fetch courses');
         
-        const courses = await response.json();
+        allCourses = await response.json();
         
         loadingState.style.display = 'none';
         
-        if (courses.length === 0) {
+        if (allCourses.length === 0) {
             coursesList.innerHTML = '<p style="text-align:center; color:var(--gray); padding:40px;">No courses available yet.</p>';
             coursesList.style.display = 'block';
             return;
         }
         
-        renderCourses(courses);
-        coursesList.style.display = 'flex';
+        // Apply initial filters
+        applyFilters();
         
     } catch (error) {
         console.error('Error loading courses:', error);
         loadingState.style.display = 'none';
         errorState.style.display = 'block';
     }
+}
+
+/**
+ * Apply filters and sorting
+ */
+function applyFilters() {
+    let filteredCourses = [...allCourses];
+    
+    // Apply category filter
+    const category = filterKategori.value;
+    if (category) {
+        filteredCourses = filteredCourses.filter(course => 
+            course.category?.toLowerCase() === category.toLowerCase()
+        );
+    }
+    
+    // Apply level filter
+    const level = filterLevel.value;
+    if (level) {
+        filteredCourses = filteredCourses.filter(course => 
+            course.level?.toLowerCase() === level.toLowerCase()
+        );
+    }
+    
+    // Apply price filter
+    const price = filterHarga.value;
+    if (price === 'free') {
+        filteredCourses = filteredCourses.filter(course => 
+            !course.price || course.price === 0 || course.price === 'free'
+        );
+    } else if (price === 'paid') {
+        filteredCourses = filteredCourses.filter(course => 
+            course.price && course.price > 0 && course.price !== 'free'
+        );
+    }
+    
+    // Apply sorting
+    const sort = sortBy.value;
+    switch (sort) {
+        case 'newest':
+            filteredCourses.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            break;
+        case 'popular':
+            // Sort by total_lessons as proxy for popularity
+            filteredCourses.sort((a, b) => (b.total_lessons || 0) - (a.total_lessons || 0));
+            break;
+        case 'price-low':
+            filteredCourses.sort((a, b) => (a.price || 0) - (b.price || 0));
+            break;
+        case 'price-high':
+            filteredCourses.sort((a, b) => (b.price || 0) - (a.price || 0));
+            break;
+        case 'name-asc':
+            filteredCourses.sort((a, b) => a.title.localeCompare(b.title));
+            break;
+    }
+    
+    // Render filtered courses
+    if (filteredCourses.length === 0) {
+        coursesList.innerHTML = `
+            <div class="no-results">
+                <div class="no-results-icon">🔍</div>
+                <h3>Tidak ada course yang cocok</h3>
+                <p>Coba ubah filter atau sorting untuk melihat course lain</p>
+            </div>
+        `;
+    } else {
+        renderCourses(filteredCourses);
+    }
+    
+    coursesList.style.display = 'flex';
 }
 
 /**
@@ -537,15 +831,25 @@ function renderCourses(courses) {
         const card = document.createElement('div');
         card.className = 'course-card';
         
-        // Check if user is already enrolled (if logged in)
+        // ✅ FIXED: Tanpa external placeholder
+        const hasThumbnail = course.thumbnail && course.thumbnail.trim() !== '';
+        const thumbnailUrl = hasThumbnail ? 
+            `http://127.0.0.1:8000/${course.thumbnail}` : 
+            '';
+        
         const isEnrolled = api.isLoggedIn() && course.is_enrolled;
         const btnText = isEnrolled ? '✓ Enrolled' : 'Enroll Now';
         const btnClass = isEnrolled ? 'enrolled' : '';
         const btnDisabled = isEnrolled ? 'disabled' : '';
         
+        // ✅ Background gradient untuk course tanpa gambar
+        const imageSection = hasThumbnail ? 
+            `<img src="${thumbnailUrl}" alt="${escapeHtml(course.title)}" onerror="this.style.display='none'; this.parentElement.classList.add('no-image');">` :
+            `<div class="course-placeholder">${escapeHtml(course.title).substring(0, 30)}${escapeHtml(course.title).length > 30 ? '...' : ''}</div>`;
+        
         card.innerHTML = `
-            <div class="course-image">
-                ${course.thumbnail ? `<img src="${course.thumbnail}" alt="${escapeHtml(course.title)}">` : ''}
+            <div class="course-image ${!hasThumbnail ? 'no-image' : ''}">
+                ${imageSection}
                 <span class="course-badge">Premium</span>
             </div>
             <div class="course-content">
@@ -556,14 +860,14 @@ function renderCourses(courses) {
                     <div class="course-meta">
                         <span class="meta-item">📚 ${course.total_lessons || 0} Lessons</span>
                         <span class="meta-item">⏱️ ${course.duration || 'Self-paced'}</span>
-                        <span class="meta-item">🎓 Beginner-Advanced</span>
+                        <span class="meta-item">🎓 ${course.level || 'Beginner-Advanced'}</span>
                     </div>
                     
                     <p class="course-desc">${escapeHtml(course.description?.substring(0, 200) || 'Expand your skills with this comprehensive course.')}${course.description?.length > 200 ? '...' : ''}</p>
                 </div>
                 
                 <div class="course-footer">
-                    <span class="course-price">Free</span>
+                    <span class="course-price">${course.price && course.price > 0 ? 'Rp ' + course.price.toLocaleString('id-ID') : 'Free'}</span>
                     <button class="btn-enroll ${btnClass}" 
                             ${btnDisabled}
                             onclick="handleEnroll(${course.id}, this)">

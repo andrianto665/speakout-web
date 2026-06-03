@@ -5,60 +5,78 @@
 
 // 🔐 LOGIN HANDLER
 document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Mencegah reload halaman
+    e.preventDefault();
 
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const btn = document.querySelector('#loginForm .login-btn');
     
-    // Simpan text asli tombol & tampilkan loading
-    const originalBtnText = btn.textContent;
-    btn.textContent = 'Logging in...';
-    btn.disabled = true;
+    const originalBtnText = btn?.textContent || 'Login';
+    if (btn) {
+        btn.textContent = 'Logging in...';
+        btn.disabled = true;
+    }
 
     try {
-        // Panggil API login dari api.js
         const result = await api.login(email, password);
-        
-        console.log('🔹 Login Response:', result); // Debug: cek di Console (F12)
+        console.log('🔹 Login Response:', result);
 
         if (result.success) {
-            // ✅ Login berhasil
             const role = api.getUserRole();
             const targetPage = role === 'admin' ? 'admin.html' : 'dashboard.html';
-            
-            // Optional: tampilkan pesan sukses singkat
-            // alert('Welcome back!');
-            
-            // Redirect ke halaman tujuan
             window.location.href = targetPage;
         } else {
-            // ❌ Login gagal (email/password salah, dll)
             const errorMsg = result.data?.message || result.data?.errors?.email?.[0] || 'Login failed. Please check your credentials.';
             alert('⚠️ ' + errorMsg);
         }
     } catch (error) {
-        // ❌ Error jaringan / server down
         console.error('❌ Login Error:', error);
         alert('🌐 Connection error. Make sure Laravel API is running at http://localhost:8000');
     } finally {
-        // Kembalikan tombol ke keadaan semula
-        btn.textContent = originalBtnText;
-        btn.disabled = false;
+        if (btn) {
+            btn.textContent = originalBtnText;
+            btn.disabled = false;
+        }
     }
 });
 
-// 📝 REGISTER HANDLER
+// 📝 REGISTER HANDLER - ✅ FIXED
 document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const name = document.getElementById('name')?.value.trim();
     const email = document.getElementById('email')?.value.trim();
     const password = document.getElementById('password')?.value;
-    const btn = document.querySelector('#registerForm .login-btn'); // atau .register-btn
+    const confirmPassword = document.getElementById('confirmPassword')?.value;
+    const messageDiv = document.getElementById('message');
+    
+    // ✅ FIXED: Gunakan .register-btn, BUKAN .login-btn
+    const btn = document.querySelector('#registerForm .register-btn');
 
+    // ✅ Validasi frontend
     if (!name || !email || !password) {
-        alert('⚠️ Please fill in all fields.');
+        if (messageDiv) {
+            messageDiv.style.color = '#E53935';
+            messageDiv.textContent = '⚠️ Please fill in all fields.';
+        }
+        return;
+    }
+
+    // ✅ Validasi confirm password
+    if (password !== confirmPassword) {
+        if (messageDiv) {
+            messageDiv.style.color = '#E53935';
+            messageDiv.textContent = '⚠️ Passwords do not match!';
+        }
+        return;
+    }
+
+    // ✅ Validasi panjang password
+    if (password.length < 6) {
+        if (messageDiv) {
+            messageDiv.style.color = '#E53935';
+            messageDiv.textContent = '⚠️ Password must be at least 6 characters!';
+        }
         return;
     }
 
@@ -68,28 +86,45 @@ document.getElementById('registerForm')?.addEventListener('submit', async (e) =>
         btn.disabled = true;
     }
 
+    // ✅ CLEAR localStorage sebelum register (PENTING!)
+    localStorage.removeItem('speakout_token');
+    localStorage.removeItem('speakout_user');
+
     try {
         const result = await api.register(name, email, password);
-        
         console.log('🔹 Register Response:', result);
 
         if (result.success) {
-            alert('✅ Registration successful! Please log in.');
-            window.location.href = 'login.html';
+            if (messageDiv) {
+                messageDiv.style.color = '#10b981';
+                messageDiv.textContent = '✅ Registration successful! Redirecting to login...';
+            }
+            
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
         } else {
-            // Handle validation errors dari Laravel
             const errors = result.data?.errors;
+            let errorMsg = 'Registration failed.';
+            
             if (errors) {
                 const firstError = Object.values(errors)[0]?.[0];
-                alert('⚠️ ' + firstError);
-            } else {
-                const errorMsg = result.data?.message || 'Registration failed.';
-                alert('⚠️ ' + errorMsg);
+                errorMsg = firstError || errorMsg;
+            } else if (result.data?.message) {
+                errorMsg = result.data.message;
+            }
+            
+            if (messageDiv) {
+                messageDiv.style.color = '#E53935';
+                messageDiv.textContent = '⚠️ ' + errorMsg;
             }
         }
     } catch (error) {
         console.error('❌ Register Error:', error);
-        alert('🌐 Connection error. Please try again.');
+        if (messageDiv) {
+            messageDiv.style.color = '#E53935';
+            messageDiv.textContent = '🌐 Connection error. Please try again.';
+        }
     } finally {
         if (btn) {
             btn.textContent = originalBtnText;
@@ -98,20 +133,9 @@ document.getElementById('registerForm')?.addEventListener('submit', async (e) =>
     }
 });
 
-// 🚪 LOGOUT HANDLER (bisa dipanggil dari dashboard.html / admin.html)
+// 🚪 LOGOUT HANDLER
 function handleLogout() {
     if (confirm('Are you sure you want to logout?')) {
-        api.logout(); // Fungsi logout sudah ada di api.js
-        // Setelah logout, api.js akan redirect ke index.html
+        api.logout();
     }
 }
-
-// 🔁 Auto-check: Jika user sudah login dan buka index.html, redirect ke dashboard
-document.addEventListener('DOMContentLoaded', () => {
-    const isLoginPage = window.location.pathname.includes('login.html') || window.location.pathname.endsWith('/');
-    
-    if (api.isLoggedIn() && isLoginPage) {
-        const role = api.getUserRole();
-        window.location.href = role === 'admin' ? 'admin.html' : 'dashboard.html';
-    }
-});

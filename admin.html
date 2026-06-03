@@ -8,8 +8,6 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #333; }
-
-        /* ===== HEADER ===== */
         .header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 0; position: sticky; top: 0; z-index: 1000; }
         .header-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
@@ -25,8 +23,6 @@
         .user-name { font-weight: 500; color: #333; font-size: 14px; }
         .btn-logout { padding: 8px 16px; background: #EF4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.3s; }
         .btn-logout:hover { background: #DC2626; transform: translateY(-2px); }
-
-        /* ===== MAIN CONTENT ===== */
         .main-content { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 220px 1fr; gap: 30px; }
         .admin-sidebar { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); height: fit-content; }
         .admin-sidebar h3 { font-size: 16px; font-weight: 600; color: #666; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -70,7 +66,7 @@
         .btn-add:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .modal-header h3 { font-size: 20px; font-weight: 600; color: #1a1a1a; }
         .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #666; }
@@ -150,14 +146,14 @@
                 <li><a data-section="courses"><span class="icon">📚</span> Manage Courses</a></li>
                 <li><a data-section="users"><span class="icon">👥</span> Manage Users</a></li>
                 <li><a data-section="content"><span class="icon">📁</span> Manage Content</a></li>
-                <li><a data-section="quiz-questions"><span class="icon">✍️</span> Tambah Soal Quiz</a></li>
+                <li><a data-section="quiz-questions"><span class="icon">✍️</span> Kelola Soal Quiz</a></li>
                 <li><a data-section="quiz-monitoring"><span class="icon">📝</span> Quiz Monitoring</a></li>
             </ul>
         </aside>
 
         <!-- Admin Content Sections -->
         <section class="admin-content">
-            <!-- ===== DASHBOARD SECTION ===== -->
+            <!-- ===== DASHBOARD ===== -->
             <div id="dashboard" class="section active">
                 <div class="admin-header">
                     <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Dashboard</div>
@@ -170,49 +166,42 @@
                     <div class="stat-card blue"><h4>Active Enrollments</h4><div class="value" id="totalEnrollments">-</div></div>
                     <div class="stat-card orange"><h4>Completed Courses</h4><div class="value" id="completedCourses">-</div></div>
                 </div>
-                <div style="margin-top: 30px;">
-                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 15px;">Recent Activity</h3>
-                    <div id="activityList"><div class="loading"><div class="spinner"></div><p>Loading activity...</p></div></div>
-                </div>
             </div>
 
-            <!-- ===== MANAGE COURSES SECTION ===== -->
+            <!-- ===== MANAGE COURSES ===== -->
             <div id="courses" class="section">
                 <div class="admin-header">
                     <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Manage Courses</div>
                     <h2>Manage Courses</h2>
-                    <p>Add, edit, or remove courses from the platform</p>
                 </div>
                 <button class="btn-add" onclick="openCourseModal()">+ Add New Course</button>
                 <div class="table-container">
                     <table>
-                        <thead><tr><th>ID</th><th>Title</th><th>Instructor</th><th>Lessons</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody id="coursesTableBody"><tr><td colspan="6" class="loading"><div class="spinner"></div> Loading courses...</td></tr></tbody>
+                        <thead><tr><th>ID</th><th>Title</th><th>Instructor</th><th>Category</th><th>Level</th><th>Lessons</th><th>Actions</th></tr></thead>
+                        <tbody id="coursesTableBody"><tr><td colspan="7" class="loading"><div class="spinner"></div> Loading...</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- ===== MANAGE USERS SECTION ===== -->
+            <!-- ===== MANAGE USERS ===== -->
             <div id="users" class="section">
                 <div class="admin-header">
                     <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Manage Users</div>
                     <h2>Manage Users</h2>
-                    <p>View and manage user accounts</p>
                 </div>
                 <div class="table-container">
                     <table>
                         <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
-                        <tbody id="usersTableBody"><tr><td colspan="6" class="loading"><div class="spinner"></div> Loading users...</td></tr></tbody>
+                        <tbody id="usersTableBody"><tr><td colspan="6" class="loading"><div class="spinner"></div> Loading...</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- ===== MANAGE CONTENT SECTION ===== -->
+            <!-- ===== MANAGE CONTENT ===== -->
             <div id="content" class="section">
                 <div class="admin-header">
                     <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Manage Content</div>
                     <h2>Manage Course Content</h2>
-                    <p>Add, edit, or remove meetings and lessons for each course</p>
                 </div>
                 <div class="form-group">
                     <label for="contentCourseSelect">Select Course *</label>
@@ -225,55 +214,51 @@
                     </div>
                     <div class="table-container">
                         <table>
-                            <thead><tr><th>Order</th><th>Title</th><th>Type</th><th>Google Drive Link</th><th>Actions</th></tr></thead>
+                            <thead><tr><th>Order</th><th>Title</th><th>Type</th><th>Link</th><th>Actions</th></tr></thead>
                             <tbody id="meetingsTableBody"><tr><td colspan="5" class="loading"><div class="spinner"></div> Loading...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- ✅ NEW: Tambah Soal Quiz Section -->
+            <!-- ✅ KELOLA SOAL QUIZ (Tambah, Edit, Hapus) -->
             <div id="quiz-questions" class="section">
                 <div class="admin-header">
-                    <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Tambah Soal Quiz</div>
-                    <h2>➕ Tambah Soal Quiz</h2>
-                    <p>Tambah pertanyaan baru ke dalam quiz yang sudah ada</p>
+                    <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Kelola Soal Quiz</div>
+                    <h2>✍️ Kelola Soal Quiz</h2>
+                    <p>Tambah, edit, atau hapus pertanyaan untuk quiz tertentu.</p>
                 </div>
+
+                <!-- FORM TAMBAH SOAL -->
                 <div class="quiz-question-form">
+                    <h3>➕ Tambah Soal Baru</h3>
                     <form id="addQuestionForm">
-                        <!-- Pilih Quiz (Dropdown + Fallback Manual) -->
                         <div class="form-group">
                             <label for="quizSelect">Pilih Quiz *</label>
                             <select id="quizSelect" onchange="toggleQuizInputMode()">
                                 <option value="">-- Loading quizzes... --</option>
                             </select>
-                            <small class="form-note">💡 Pilih quiz dari daftar. Nilai yang dikirim adalah Quiz ID dari tabel `quizzes`.</small>
                         </div>
-                        <!-- Fallback: Manual Quiz ID Input -->
                         <div class="form-group" id="manualQuizIdGroup" style="display:none;">
                             <label for="manualQuizId">Atau masukkan Quiz ID manual *</label>
-                            <input type="number" id="manualQuizId" placeholder="Contoh: 1, 3, 4..." min="1" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
-                            <small class="form-note">💡 Gunakan ini jika dropdown kosong. Quiz ID bisa dicek via: <code>SELECT id, title FROM quizzes;</code></small>
+                            <input type="number" id="manualQuizId" placeholder="Contoh: 1, 3" min="1" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;">
+                            <small class="form-note">💡 Cek Quiz ID via: phpMyAdmin > tabel `quizzes` > kolom `id`, atau via terminal: <code>php artisan tinker</code> lalu <code>DB::table('quizzes')->get()</code></small>
                         </div>
                         <button type="button" class="btn-add" onclick="refreshQuizzesDropdown()" style="width:100%; margin-top:10px; background:#667eea;">🔄 Refresh Daftar Quiz</button>
 
-                        <!-- Pertanyaan -->
-                        <div class="form-group">
+                        <div class="form-group" style="margin-top: 20px;">
                             <label for="questionInput">Pertanyaan *</label>
-                            <textarea id="questionInput" rows="3" placeholder="Contoh: What is the English word for 'Keluarga'?" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;"></textarea>
+                            <textarea id="questionInput" rows="3" placeholder="Contoh: What is the English word for 'Keluarga'?" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;"></textarea>
                         </div>
 
-                        <!-- Tipe Soal -->
                         <div class="form-group">
                             <label for="questionType">Tipe Soal *</label>
-                            <select id="questionType" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;" onchange="toggleOptionsFields()">
+                            <select id="questionType" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;" onchange="toggleOptionsFields()">
                                 <option value="multiple_choice">Pilihan Ganda (A, B, C, D)</option>
                                 <option value="true_false">Benar / Salah</option>
-                                <option value="short_answer">Jawaban Singkat</option>
                             </select>
                         </div>
 
-                        <!-- Opsi Jawaban (hanya untuk multiple_choice) -->
                         <div id="optionsFields">
                             <div class="form-group">
                                 <label>Opsi Jawaban *</label>
@@ -286,58 +271,75 @@
                             </div>
                             <div class="form-group">
                                 <label for="correctAnswer">Kunci Jawaban *</label>
-                                <select id="correctAnswer" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                                <select id="correctAnswer" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;">
                                     <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
                                 </select>
                             </div>
                         </div>
 
-                        <!-- Opsi untuk True/False -->
                         <div id="trueFalseFields" style="display:none;">
                             <div class="form-group">
                                 <label for="correctAnswerTF">Kunci Jawaban *</label>
-                                <select id="correctAnswerTF" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                                <select id="correctAnswerTF" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;">
                                     <option value="true">Benar (True)</option><option value="false">Salah (False)</option>
                                 </select>
                             </div>
                         </div>
 
-                        <!-- Poin & Urutan -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="pointsInput">Poin</label>
-                                <input type="number" id="pointsInput" value="10" min="1" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                                <input type="number" id="pointsInput" value="10" min="1" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;">
                             </div>
                             <div class="form-group">
                                 <label for="orderInput">Urutan</label>
-                                <input type="number" id="orderInput" value="1" min="0" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px; font-size:14px;">
+                                <input type="number" id="orderInput" value="1" min="0" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;">
                             </div>
                         </div>
 
-                        <!-- Tombol Submit -->
                         <button type="submit" class="btn-add" style="width:100%; margin-top:10px;">💾 Simpan Soal</button>
                     </form>
                     <div id="questionFormMessage" style="margin-top:16px; padding:12px; border-radius:8px; display:none; font-weight:500;"></div>
                 </div>
-                <div style="background:#f8f9fa; padding:16px; border-radius:8px; border-left:4px solid #667eea;">
-                    <h4 style="margin-bottom:8px; font-size:14px;">💡 Tips:</h4>
-                    <ul style="font-size:13px; color:#666; padding-left:20px; line-height:1.8;">
-                        <li>Pastikan quiz sudah dibuat di bagian <strong>Manage Content</strong> sebelum menambah soal</li>
-                        <li>Untuk tipe <em>Pilihan Ganda</em>, isi semua opsi A-D dan pilih kunci jawaban yang benar</li>
-                        <li>Poin default adalah 10, bisa diubah sesuai tingkat kesulitan soal</li>
-                        <li>Urutan menentukan posisi soal saat ditampilkan ke user (1 = pertama)</li>
-                        <li><strong>PENTING:</strong> Gunakan Quiz ID dari tabel <code>quizzes</code>, BUKAN meeting_id. Cek via: <code>SELECT id, title FROM quizzes;</code></li>
-                    </ul>
+
+                <!-- PANEL EDIT & HAPUS SOAL -->
+                <div class="quiz-question-form" style="border-left: 4px solid #EF4444; margin-top: 30px;">
+                    <h3 style="color: #EF4444;">✏️ Edit & 🗑️ Hapus Soal Quiz</h3>
+                    <p style="font-size: 13px; color: #666; margin-bottom: 16px;">Masukkan Quiz ID untuk melihat daftar soal, lalu pilih untuk mengedit atau menghapus.</p>
+                    
+                    <div class="form-row" style="margin-bottom: 16px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="deleteQuizIdInput">Quiz ID</label>
+                            <input type="number" id="deleteQuizIdInput" placeholder="Contoh: 1 atau 3" min="1" style="width: 100%; padding: 12px; border: 2px solid #e1e5eb; border-radius: 8px;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0; display: flex; align-items: flex-end;">
+                            <button type="button" class="btn-add" onclick="loadQuestionsToDelete()" style="background: #EF4444; width: 100%; margin-top: 0;">🔍 Tampilkan Daftar Soal</button>
+                        </div>
+                    </div>
+
+                    <div id="questionsToDeleteList" style="display: none; max-height: 400px; overflow-y: auto; border: 1px solid #e1e5eb; border-radius: 8px; padding: 10px; background: white;">
+                        <!-- Daftar soal akan muncul di sini via JS -->
+                    </div>
+                    <div id="deleteMessage" style="margin-top: 12px; padding: 10px; border-radius: 6px; display: none; font-size: 14px; font-weight: 500;"></div>
                 </div>
             </div>
 
-            <!-- ===== QUIZ MONITORING SECTION ===== -->
+            <!-- ===== QUIZ MONITORING ===== -->
             <div id="quiz-monitoring" class="section">
                 <div class="admin-header">
                     <div class="breadcrumb"><a href="index.html">Home</a> / Admin / Quiz Monitoring</div>
                     <h2>Quiz Attempts Monitoring</h2>
-                    <p>View all quiz attempts from students</p>
                 </div>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid" style="margin-bottom: 20px;">
+                    <div class="stat-card"><h4>Total Attempts</h4><div class="value" id="totalAttempts">-</div></div>
+                    <div class="stat-card green"><h4>Passed</h4><div class="value" id="passedAttempts">-</div></div>
+                    <div class="stat-card orange"><h4>Failed</h4><div class="value" id="failedAttempts">-</div></div>
+                    <div class="stat-card blue"><h4>Avg Score</h4><div class="value" id="avgScore">-%</div></div>
+                </div>
+                
+                <!-- Filters & Refresh -->
                 <div style="background:#f8f9fa; padding:20px; border-radius:8px; margin-bottom:20px;">
                     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
                         <div class="form-group" style="margin-bottom:0;">
@@ -350,21 +352,16 @@
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label>&nbsp;</label>
-                            <button class="btn-add" onclick="loadQuizAttempts()" style="width:100%;">🔍 Apply Filters</button>
+                            <button class="btn-add" onclick="loadQuizAttempts()" style="width:100%;">🔄 Refresh Data</button>
                         </div>
                     </div>
                 </div>
-                <div class="stats-grid" style="margin-bottom:20px;">
-                    <div class="stat-card"><h4>Total Attempts</h4><div class="value" id="totalAttempts">-</div></div>
-                    <div class="stat-card green"><h4>Passed</h4><div class="value" id="passedAttempts">-</div></div>
-                    <div class="stat-card orange"><h4>Failed</h4><div class="value" id="failedAttempts">-</div></div>
-                    <div class="stat-card blue"><h4>Avg Score</h4><div class="value" id="avgScore">-%</div></div>
-                </div>
+                
                 <button class="btn-add" onclick="exportQuizAttempts()" style="margin-bottom:20px; background:#28a745;">📥 Export to CSV</button>
                 <div class="table-container">
                     <table>
                         <thead><tr><th>#</th><th>Student</th><th>Course</th><th>Quiz</th><th>Score</th><th>Status</th><th>Attempt #</th><th>Date</th></tr></thead>
-                        <tbody id="quizAttemptsTableBody"><tr><td colspan="8" class="loading"><div class="spinner"></div> Loading quiz attempts...</td></tr></tbody>
+                        <tbody id="quizAttemptsTableBody"><tr><td colspan="8" class="loading"><div class="spinner"></div> Loading...</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -375,13 +372,62 @@
     <!-- Course Modal -->
     <div id="courseModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h3 id="modalTitle">Add New Course</h3><button class="modal-close" onclick="closeCourseModal()">&times;</button></div>
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Course</h3>
+                <button class="modal-close" onclick="closeCourseModal()">&times;</button>
+            </div>
             <form id="courseForm">
                 <input type="hidden" id="courseId">
-                <div class="form-group"><label for="courseTitle">Course Title *</label><input type="text" id="courseTitle" required placeholder="Enter course title"></div>
-                <div class="form-group"><label for="courseDescription">Description</label><textarea id="courseDescription" rows="3" placeholder="Enter course description"></textarea></div>
-                <div class="form-group"><label for="courseInstructor">Instructor *</label><input type="text" id="courseInstructor" required placeholder="Enter instructor name"></div>
-                <div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeCourseModal()">Cancel</button><button type="submit" class="btn-save">Save Course</button></div>
+                
+                <div class="form-group">
+                    <label for="courseTitle">Course Title *</label>
+                    <input type="text" id="courseTitle" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="courseDescription">Description</label>
+                    <textarea id="courseDescription" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="courseInstructor">Instructor *</label>
+                    <input type="text" id="courseInstructor" required>
+                </div>
+                
+                <!-- NEW: Category & Level -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="courseCategory">Category</label>
+                        <select id="courseCategory">
+                            <option value="">Select Category</option>
+                            <option value="speaking">Speaking</option>
+                            <option value="grammar">Grammar</option>
+                            <option value="vocabulary">Vocabulary</option>
+                            <option value="business">Business English</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="courseLevel">Level</label>
+                        <select id="courseLevel">
+                            <option value="">Select Level</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- NEW: Duration -->
+                <div class="form-group">
+                    <label for="courseDuration">Duration</label>
+                    <input type="text" id="courseDuration" placeholder="e.g., Self-paced, 4 weeks, etc.">
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeCourseModal()">Cancel</button>
+                    <button type="submit" class="btn-save">Save</button>
+                </div>
             </form>
         </div>
     </div>
@@ -392,33 +438,136 @@
             <div class="modal-header"><h3 id="contentModalTitle">Add New Item</h3><button class="modal-close" onclick="closeContentModal()">&times;</button></div>
             <form id="contentForm">
                 <input type="hidden" id="contentId"><input type="hidden" id="contentCourseId">
-                <div class="form-group"><label for="contentTitle">Title *</label><input type="text" id="contentTitle" required placeholder="e.g., Family 1 / Lesson 1: Greeting"></div>
-                <div class="form-group"><label for="contentItemType">Item Type *</label><select id="contentItemType" required onchange="toggleContentFields()"><option value="meeting">📁 Meeting Header</option><option value="lesson">📄 Lesson / Material</option><option value="test">✍️ Quiz / Test</option><option value="final">🏆 Final Test</option></select></div>
+                <div class="form-group"><label for="contentTitle">Title *</label><input type="text" id="contentTitle" required></div>
+                <div class="form-group"><label for="contentItemType">Item Type *</label><select id="contentItemType" required onchange="toggleContentFields()"><option value="meeting">📁 Meeting Header</option><option value="lesson">📄 Lesson</option><option value="test">✍️ Quiz</option><option value="final">🏆 Final</option></select></div>
                 <div class="form-group" id="driveLinkGroup" style="display:none;">
                     <label for="contentDriveLink">Google Drive Link</label>
-                    <input type="url" id="contentDriveLink" placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
-                    <small style="color:#666; display:block; margin-top:5px;">💡 Paste link asli, sistem akan otomatis konversi ke format preview</small>
+                    <input type="url" id="contentDriveLink" placeholder="https://drive.google.com/...">
                 </div>
-                <div class="form-group"><label for="contentOrder">Order Number *</label><input type="number" id="contentOrder" required min="1" placeholder="e.g., 1, 2, 3"></div>
-                <div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeContentModal()">Cancel</button><button type="submit" class="btn-save">Save Item</button></div>
+                <div class="form-group"><label for="contentOrder">Order Number *</label><input type="number" id="contentOrder" required min="1"></div>
+                <div class="modal-actions"><button type="button" class="btn-cancel" onclick="closeContentModal()">Cancel</button><button type="submit" class="btn-save">Save</button></div>
             </form>
+        </div>
+    </div>
+
+    <!-- ✅ MODAL EDIT SOAL QUIZ -->
+    <div id="editQuestionModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>✏️ Edit Soal</h3>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editQuestionForm" onsubmit="handleEditQuestionSubmit(event)">
+                <input type="hidden" id="editQuestionId">
+                <input type="hidden" id="editQuizId">
+                
+                <div class="form-group">
+                    <label for="editQuestionText">Pertanyaan *</label>
+                    <textarea id="editQuestionText" rows="3" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editQuestionType">Tipe Soal *</label>
+                    <select id="editQuestionType" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;" onchange="toggleEditOptionsFields()">
+                        <option value="multiple_choice">Pilihan Ganda (A, B, C, D)</option>
+                        <option value="true_false">Benar / Salah</option>
+                    </select>
+                </div>
+
+                <div id="editOptionsFields">
+                    <div class="form-group">
+                        <label>Opsi Jawaban *</label>
+                        <div class="options-grid">
+                            <input type="text" id="editOptA" required>
+                            <input type="text" id="editOptB" required>
+                            <input type="text" id="editOptC" required>
+                            <input type="text" id="editOptD" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCorrectAnswer">Kunci Jawaban *</label>
+                        <select id="editCorrectAnswer" required style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="editTrueFalseFields" style="display:none;">
+                    <div class="form-group">
+                        <label for="editCorrectAnswerTF">Kunci Jawaban *</label>
+                        <select id="editCorrectAnswerTF" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;">
+                            <option value="true">Benar (True)</option>
+                            <option value="false">Salah (False)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPointsInput">Poin</label>
+                        <input type="number" id="editPointsInput" value="10" min="1" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="editOrderInput">Urutan</label>
+                        <input type="number" id="editOrderInput" value="1" min="0" style="width:100%; padding:12px; border:2px solid #e1e5eb; border-radius:8px;">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeEditModal()">Batal</button>
+                    <button type="submit" class="btn-save">💾 Simpan Perubahan</button>
+                </div>
+            </form>
+            <div id="editMessage" style="margin-top:16px; padding:12px; border-radius:8px; display:none; font-weight:500;"></div>
         </div>
     </div>
 
     <!-- ===== JAVASCRIPT ===== -->
     <script src="js/api.js"></script>
     <script>
-    /**
-     * 📁 admin.html - Admin Dashboard Logic
-     * 🎯 Handle admin features: stats, courses, users, content, quiz questions management
-     */
     const ADMIN_API_BASE = 'http://127.0.0.1:8000/api';
 
+    // ========================================================================
+    // 🔒 SESSION MANAGEMENT
+    // ========================================================================
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'speakout_token' && e.newValue === null) {
+            showNotification('⚠️ Logged out from another window', 'error');
+            setTimeout(() => window.location.href = 'login.html', 1500);
+        }
+    });
+
+    setInterval(async () => {
+        const token = localStorage.getItem('speakout_token');
+        if (token) {
+            try {
+                const res = await fetch(`${ADMIN_API_BASE}/user`, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                });
+                if (!res.ok) {
+                    showNotification('⚠️ Session expired', 'error');
+                    setTimeout(() => {
+                        localStorage.removeItem('speakout_token');
+                        localStorage.removeItem('speakout_user');
+                        window.location.href = 'login.html';
+                    }, 2000);
+                }
+            } catch (err) { console.error('Token check failed:', err); }
+        }
+    }, 60000);
+
+    // ========================================================================
+    // 🚀 INITIALIZATION
+    // ========================================================================
     document.addEventListener('DOMContentLoaded', () => {
         if (!api.isLoggedIn()) { window.location.href = 'index.html'; return; }
         const user = api.getUser();
-        if (user?.role !== 'admin') { alert('Access denied. Admin privileges required.'); window.location.href = 'dashboard.html'; return; }
+        if (user?.role !== 'admin') { alert('Access denied.'); window.location.href = 'dashboard.html'; return; }
         if (user?.name) document.getElementById('userName').textContent = user.name.split(' ')[0];
+        
         setupNavigation();
         document.getElementById('logoutBtn').addEventListener('click', handleLogout);
         document.getElementById('courseForm').addEventListener('submit', handleCourseSubmit);
@@ -426,6 +575,8 @@
         document.getElementById('addQuestionForm').addEventListener('submit', handleAddQuestionSubmit);
         setupModalClose('courseModal');
         setupModalClose('contentModal');
+        setupModalClose('editQuestionModal');
+        
         loadDashboardStats();
         loadCourses();
         loadUsers();
@@ -439,11 +590,15 @@
                 e.preventDefault();
                 document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
                 e.currentTarget.classList.add('active');
-                const sectionId = e.currentTarget.dataset.section;
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(sectionId).classList.add('active');
-                if (sectionId === 'content') loadCoursesForContent();
-                if (sectionId === 'quiz-questions') loadQuizzesForQuestionForm();
+                document.getElementById(e.currentTarget.dataset.section).classList.add('active');
+                
+                if (e.currentTarget.dataset.section === 'content') loadCoursesForContent();
+                if (e.currentTarget.dataset.section === 'quiz-questions') loadQuizzesForQuestionForm();
+                if (e.currentTarget.dataset.section === 'quiz-monitoring') {
+                    loadQuizAttempts();
+                    loadCoursesForQuizFilter();
+                }
             });
         });
     }
@@ -453,7 +608,21 @@
         modal?.addEventListener('click', (e) => { if (e.target.id === modalId) modal.classList.remove('active'); });
     }
 
-    function handleLogout() { if (confirm('Are you sure you want to logout?')) api.logout(); }
+    function handleLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            const token = api.getToken();
+            if (token) {
+                fetch(`${ADMIN_API_BASE}/auth/logout`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }).catch(() => {});
+            }
+            localStorage.removeItem('speakout_token');
+            localStorage.removeItem('speakout_user');
+            showNotification('Logged out successfully', 'success');
+            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        }
+    }
 
     function showNotification(message, type = 'success') {
         const existing = document.querySelector('.admin-notification');
@@ -478,320 +647,646 @@
         const token = api.getToken(); if (!token) return;
         try {
             const res = await fetch(`${ADMIN_API_BASE}/admin/stats`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-            if (!res.ok) throw new Error('Failed to fetch stats');
-            const data = await res.json();
-            document.getElementById('totalUsers').textContent = data.total_users ?? '-';
-            document.getElementById('totalCourses').textContent = data.total_courses ?? '-';
-            document.getElementById('totalEnrollments').textContent = data.total_enrollments ?? '-';
-            document.getElementById('completedCourses').textContent = data.completed_courses ?? '-';
-        } catch (error) { console.error('Error loading stats:', error); ['totalUsers','totalCourses','totalEnrollments','completedCourses'].forEach(id => { document.getElementById(id).textContent = '-'; }); }
+            if (res.ok) {
+                const data = await res.json();
+                document.getElementById('totalUsers').textContent = data.total_users ?? '-';
+                document.getElementById('totalCourses').textContent = data.total_courses ?? '-';
+                document.getElementById('totalEnrollments').textContent = data.total_enrollments ?? '-';
+                document.getElementById('completedCourses').textContent = data.completed_courses ?? '-';
+            }
+        } catch (error) { console.error('Stats error:', error); }
     }
 
     async function loadCourses() {
         const tbody = document.getElementById('coursesTableBody');
-        const token = api.getToken();
-        if (!token) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Please login as admin.</td></tr>'; return; }
-        tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div> Loading courses...</td></tr>';
+        const token = api.getToken(); if (!token) return;
+        tbody.innerHTML = '<tr><td colspan="7" class="loading"><div class="spinner"></div> Loading...</td></tr>';
         try {
             const res = await fetch(`${ADMIN_API_BASE}/admin/courses`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-            if (!res.ok) { if (res.status === 401 || res.status === 403) { api.clearToken(); window.location.href = 'login.html'; return; } throw new Error(`HTTP ${res.status}`); }
-            const data = await res.json();
-            const courses = data.data || data || [];
-            if (!courses || courses.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No courses found. Click "+ Add New Course" to create one.</td></tr>'; return; }
-            tbody.innerHTML = courses.map(course => `<tr><td>${course.id}</td><td><strong>${escapeHtml(course.title)}</strong></td><td>${escapeHtml(course.instructor || '-')}</td><td>${course.total_lessons || course.lessons_count || 0}</td><td><span class="status-badge active">Active</span></td><td><button class="btn-action btn-edit" onclick="editCourse(${course.id}, '${escapeHtml(course.title)}', '${escapeHtml(course.description || "")}', '${escapeHtml(course.instructor || "")}')">Edit</button><button class="btn-action btn-delete" onclick="deleteCourse(${course.id})">Delete</button></td></tr>`).join('');
-        } catch (error) { console.error('Error loading courses:', error); tbody.innerHTML = `<tr><td colspan="6" class="empty-state" style="color:#EF4444;">❌ Failed to load courses. ${error.message}</td></tr>`; }
+            if (res.ok) {
+                const courses = (await res.json()).data || [];
+                tbody.innerHTML = courses.map(c => `<tr>
+                    <td>${c.id}</td>
+                    <td><strong>${escapeHtml(c.title)}</strong></td>
+                    <td>${escapeHtml(c.instructor || '-')}</td>
+                    <td>${c.category ? `<span class="status-badge" style="background:#e0e7ff;color:#4f46e5">${c.category}</span>` : '-'}</td>
+                    <td>${c.level ? `<span class="status-badge" style="background:#fef3c7;color:#d97706">${c.level}</span>` : '-'}</td>
+                    <td>${c.total_lessons || 0}</td>
+                    <td>
+                        <button class="btn-action btn-edit" onclick="editCourse(${c.id}, '${escapeHtml(c.title)}', '${escapeHtml(c.description||"")}', '${escapeHtml(c.instructor||"")}', '${c.category||''}', '${c.level||''}', '${c.duration||''}')">Edit</button>
+                        <button class="btn-action btn-delete" onclick="deleteCourse(${c.id})">Delete</button>
+                    </td>
+                </tr>`).join('');
+            }
+        } catch (error) { tbody.innerHTML = `<tr><td colspan="7" style="color:#EF4444; text-align:center;">Error loading courses</td></tr>`; }
     }
 
     function openCourseModal(course = null) {
-        const modal = document.getElementById('courseModal'); const form = document.getElementById('courseForm'); const title = document.getElementById('modalTitle');
-        if (course) { title.textContent = 'Edit Course'; document.getElementById('courseId').value = course.id; document.getElementById('courseTitle').value = course.title || ''; document.getElementById('courseDescription').value = course.description || ''; document.getElementById('courseInstructor').value = course.instructor || ''; }
-        else { title.textContent = 'Add New Course'; form.reset(); document.getElementById('courseId').value = ''; }
-        modal.classList.add('active');
+        document.getElementById('modalTitle').textContent = course?.id ? 'Edit Course' : 'Add New Course';
+        document.getElementById('courseId').value = course?.id || '';
+        document.getElementById('courseTitle').value = course?.title || '';
+        document.getElementById('courseDescription').value = course?.description || '';
+        document.getElementById('courseInstructor').value = course?.instructor || '';
+        document.getElementById('courseCategory').value = course?.category || '';
+        document.getElementById('courseLevel').value = course?.level || '';
+        document.getElementById('courseDuration').value = course?.duration || '';
+        document.getElementById('courseModal').classList.add('active');
     }
-    function closeCourseModal() { document.getElementById('courseModal').classList.remove('active'); }
-    function editCourse(id, title, description, instructor) { openCourseModal({ id, title, description, instructor }); }
+    
+    function closeCourseModal() { 
+        document.getElementById('courseModal').classList.remove('active'); 
+    }
+    
+    function editCourse(id, title, desc, inst, category = '', level = '', duration = '') { 
+        openCourseModal({ 
+            id, title, description: desc, instructor: inst,
+            category, level, duration
+        }); 
+    }
 
     async function handleCourseSubmit(e) {
         e.preventDefault();
-        const courseId = document.getElementById('courseId').value;
-        const courseData = { title: document.getElementById('courseTitle').value.trim(), description: document.getElementById('courseDescription').value.trim(), instructor: document.getElementById('courseInstructor').value.trim() };
-        const btnSave = e.target.querySelector('.btn-save'); const originalText = btnSave.textContent;
-        btnSave.textContent = courseId ? 'Updating...' : 'Creating...'; btnSave.disabled = true;
-        const token = api.getToken();
+        const id = document.getElementById('courseId').value;
+        const data = { 
+            title: document.getElementById('courseTitle').value.trim(), 
+            description: document.getElementById('courseDescription').value.trim(), 
+            instructor: document.getElementById('courseInstructor').value.trim(),
+            category: document.getElementById('courseCategory').value,
+            level: document.getElementById('courseLevel').value,
+            duration: document.getElementById('courseDuration').value.trim()
+        };
+        
+        const btn = e.target.querySelector('.btn-save'); 
+        btn.disabled = true; 
+        btn.textContent = 'Saving...';
+        
         try {
-            const url = courseId ? `${ADMIN_API_BASE}/admin/courses/${courseId}` : `${ADMIN_API_BASE}/admin/courses`;
-            const method = courseId ? 'PUT' : 'POST';
-            const res = await fetch(url, { method, headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(courseData) });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
-            showNotification(courseId ? '✅ Course updated!' : '✅ Course created!', 'success');
-            closeCourseModal(); loadCourses();
-        } catch (error) { console.error('Error saving course:', error); showNotification(`❌ Failed: ${error.message}`, 'error'); }
-        finally { btnSave.textContent = originalText; btnSave.disabled = false; }
+            const res = await fetch(id ? `${ADMIN_API_BASE}/admin/courses/${id}` : `${ADMIN_API_BASE}/admin/courses`, {
+                method: id ? 'PUT' : 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${api.getToken()}`, 
+                    'Content-Type': 'application/json', 
+                    'Accept': 'application/json' 
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (res.ok) { 
+                showNotification('✅ Course saved!', 'success'); 
+                closeCourseModal(); 
+                loadCourses(); 
+            } else {
+                throw new Error('Failed');
+            }
+        } catch (err) { 
+            showNotification('❌ Failed to save', 'error'); 
+        } finally { 
+            btn.disabled = false; 
+            btn.textContent = 'Save'; 
+        }
     }
 
-    async function deleteCourse(courseId) {
-        if (!confirm('Delete this course? This action cannot be undone.')) return;
-        const token = api.getToken();
+    async function deleteCourse(id) {
+        if (!confirm('Delete this course?')) return;
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/admin/courses/${courseId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || 'Failed to delete course');
-            showNotification('✅ Course deleted!', 'success'); loadCourses();
-        } catch (error) { console.error('Error deleting course:', error); showNotification(`❌ Failed: ${error.message}`, 'error'); }
+            const res = await fetch(`${ADMIN_API_BASE}/admin/courses/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
+            if (res.ok) { showNotification('✅ Deleted', 'success'); loadCourses(); }
+        } catch (err) { showNotification('❌ Failed', 'error'); }
     }
 
     async function loadUsers() {
-        const tbody = document.getElementById('usersTableBody'); const token = api.getToken();
-        if (!token) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Please login as admin.</td></tr>'; return; }
-        tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div> Loading users...</td></tr>';
+        const tbody = document.getElementById('usersTableBody');
+        const token = api.getToken(); if (!token) return;
+        tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div> Loading...</td></tr>';
         try {
             const res = await fetch(`${ADMIN_API_BASE}/admin/users`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-            if (!res.ok) { if (res.status === 401 || res.status === 403) { api.clearToken(); window.location.href = 'login.html'; return; } throw new Error(`HTTP ${res.status}`); }
-            const data = await res.json(); const users = data.data || data || [];
-            if (!users || users.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users found.</td></tr>'; return; }
-            const currentUserId = api.getUser()?.id;
-            tbody.innerHTML = users.map(user => `<tr><td>${user.id}</td><td><strong>${escapeHtml(user.name)}</strong></td><td>${escapeHtml(user.email)}</td><td><span class="role-badge ${user.role === 'admin' ? 'admin' : 'user'}">${user.role}</span></td><td>${new Date(user.created_at).toLocaleDateString()}</td><td>${user.id !== currentUserId ? `<button class="btn-action btn-delete" onclick="deleteUser(${user.id})">Delete</button>` : '<span style="color:#999;font-size:12px">Cannot delete self</span>'}</td></tr>`).join('');
-        } catch (error) { console.error('Error loading users:', error); tbody.innerHTML = `<tr><td colspan="6" class="empty-state" style="color:#EF4444;">❌ Failed to load users. ${error.message}</td></tr>`; }
+            if (res.ok) {
+                const users = (await res.json()).data || [];
+                const myId = api.getUser()?.id;
+                tbody.innerHTML = users.map(u => `<tr><td>${u.id}</td><td><strong>${escapeHtml(u.name)}</strong></td><td>${escapeHtml(u.email)}</td><td><span class="role-badge ${u.role}">${u.role}</span></td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${u.id !== myId ? `<button class="btn-action btn-delete" onclick="deleteUser(${u.id})">Delete</button>` : '-'}</td></tr>`).join('');
+            }
+        } catch (err) { tbody.innerHTML = `<tr><td colspan="6" style="color:#EF4444; text-align:center;">Error</td></tr>`; }
     }
 
-    async function deleteUser(userId) {
-        const currentUser = api.getUser();
-        if (userId === currentUser?.id) { showNotification('❌ Cannot delete your own account', 'error'); return; }
-        if (!confirm('Delete this user? This action cannot be undone.')) return;
-        const token = api.getToken();
+    async function deleteUser(id) {
+        if (!confirm('Delete this user?')) return;
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/admin/users/${userId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || 'Failed to delete user');
-            showNotification('✅ User deleted!', 'success'); loadUsers();
-        } catch (error) { console.error('Error deleting user:', error); showNotification(`❌ Failed: ${error.message}`, 'error'); }
+            const res = await fetch(`${ADMIN_API_BASE}/admin/users/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
+            if (res.ok) { showNotification('✅ Deleted', 'success'); loadUsers(); }
+        } catch (err) { showNotification('❌ Failed', 'error'); }
     }
 
     async function loadCoursesForContent() {
-        const select = document.getElementById('contentCourseSelect'); const token = api.getToken(); if (!token) return;
+        const select = document.getElementById('contentCourseSelect');
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-            if (!res.ok) throw new Error('Failed to fetch courses');
-            const courses = await res.json();
-            select.innerHTML = '<option value="">-- Select a Course --</option>' + courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
-            select.onchange = (e) => { const courseId = e.target.value; if (courseId) { document.getElementById('meetingsSection').style.display = 'block'; document.getElementById('contentCourseId').value = courseId; loadMeetingsForCourse(courseId); } else { document.getElementById('meetingsSection').style.display = 'none'; } };
-        } catch (error) { console.error('Error loading courses for content:', error); select.innerHTML = '<option value="">-- Error loading courses --</option>'; }
+            const res = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
+            if (res.ok) {
+                const courses = await res.json();
+                select.innerHTML = '<option value="">-- Select --</option>' + courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
+                select.onchange = (e) => {
+                    document.getElementById('meetingsSection').style.display = e.target.value ? 'block' : 'none';
+                    if (e.target.value) { document.getElementById('contentCourseId').value = e.target.value; loadMeetingsForCourse(e.target.value); }
+                };
+            }
+        } catch (err) { console.error(err); }
     }
 
     async function loadMeetingsForCourse(courseId) {
-        const tbody = document.getElementById('meetingsTableBody'); const token = api.getToken();
+        const tbody = document.getElementById('meetingsTableBody');
         tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div> Loading...</td></tr>';
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/courses/${courseId}`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-            if (!res.ok) throw new Error('Failed to fetch course content');
-            const course = await res.json(); const items = course.meetings || [];
-            if (items.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No content found. Click "+ Add Item" to start.</td></tr>'; return; }
-            tbody.innerHTML = items.map(item => {
-                let typeLabel = '📁 Meeting';
-                if (item.type === 'lesson' || item.type === 'normal') typeLabel = '📄 Lesson';
-                else if (item.type === 'test') typeLabel = '✍️ Quiz';
-                else if (item.type === 'final') typeLabel = '🏆 Final';
-                const linkDisplay = item.content ? `<a href="${item.content}" target="_blank" style="color:#667eea; text-decoration:none;">🔗 View</a>` : '<span style="color:#999;">-</span>';
-                return `<tr><td><strong>${item.order_number}</strong></td><td>${escapeHtml(item.title)}</td><td><span style="font-size:12px;">${typeLabel}</span></td><td>${linkDisplay}</td><td><button class="btn-action btn-edit" onclick="editContentItem(${item.id}, '${escapeHtml(item.title)}', '${item.type}', '${item.content || ''}', ${item.order_number})">Edit</button><button class="btn-action btn-delete" onclick="deleteContentItem(${item.id})">Delete</button></td></tr>`;
-            }).join('');
-        } catch (error) { console.error('Error loading meetings:', error); tbody.innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#EF4444;">❌ Failed to load content. ${error.message}</td></tr>`; }
+            const res = await fetch(`${ADMIN_API_BASE}/courses/${courseId}`, { headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
+            if (res.ok) {
+                const items = (await res.json()).meetings || [];
+                tbody.innerHTML = items.map(i => {
+                    let typeLabel = '📄 Lesson';
+                    if (i.type === 'test') typeLabel = '✍️ Quiz';
+                    else if (i.type === 'final') typeLabel = '🏆 Final';
+                    else if (i.type === 'normal') typeLabel = (!i.content || i.content === null) ? '📁 Meeting Header' : '📄 Lesson';
+                    
+                    const linkDisplay = i.content ? `<a href="${i.content}" target="_blank" style="color:#667eea; text-decoration:none;">🔗 Link</a>` : '<span style="color:#999;">-</span>';
+                    return `<tr><td>${i.order_number}</td><td>${escapeHtml(i.title)}</td><td><span style="font-size:12px;">${typeLabel}</span></td><td>${linkDisplay}</td><td><button class="btn-action btn-edit" onclick="editContentItem(${i.id}, '${escapeHtml(i.title)}', '${i.type}', '${i.content||''}', ${i.order_number})">Edit</button><button class="btn-action btn-delete" onclick="deleteContentItem(${i.id})">Delete</button></td></tr>`;
+                }).join('');
+            }
+        } catch (err) { tbody.innerHTML = `<tr><td colspan="5" style="color:#EF4444; text-align:center;">Error</td></tr>`; }
     }
 
-    function toggleContentFields() { const type = document.getElementById('contentItemType').value; const driveGroup = document.getElementById('driveLinkGroup'); if (type === 'meeting') { driveGroup.style.display = 'none'; document.getElementById('contentDriveLink').required = false; } else { driveGroup.style.display = 'block'; document.getElementById('contentDriveLink').required = true; } }
-    function openMeetingModal() { const courseId = document.getElementById('contentCourseId').value; if (!courseId) { showNotification('⚠️ Please select a course first', 'error'); return; } document.getElementById('contentModal').classList.add('active'); document.getElementById('contentModalTitle').textContent = 'Add New Item'; document.getElementById('contentForm').reset(); document.getElementById('contentId').value = ''; document.getElementById('contentCourseId').value = courseId; document.getElementById('contentItemType').value = 'meeting'; toggleContentFields(); }
-    function closeContentModal() { document.getElementById('contentModal').classList.remove('active'); }
-    function editContentItem(id, title, type, content, order_number) { document.getElementById('contentModal').classList.add('active'); document.getElementById('contentModalTitle').textContent = 'Edit Item'; document.getElementById('contentId').value = id; document.getElementById('contentTitle').value = title; document.getElementById('contentItemType').value = type === 'normal' ? 'lesson' : type; document.getElementById('contentDriveLink').value = content || ''; document.getElementById('contentOrder').value = order_number; toggleContentFields(); }
+    function toggleContentFields() {
+        document.getElementById('driveLinkGroup').style.display = document.getElementById('contentItemType').value === 'meeting' ? 'none' : 'block';
+    }
+    
+    function openMeetingModal() {
+        document.getElementById('contentModal').classList.add('active');
+        document.getElementById('contentForm').reset();
+        document.getElementById('contentId').value = '';
+        document.getElementById('contentItemType').value = 'meeting';
+        toggleContentFields();
+    }
+    
+    function closeContentModal() { 
+        document.getElementById('contentModal').classList.remove('active'); 
+    }
+    
+    function editContentItem(id, title, type, content, order) {
+        document.getElementById('contentModal').classList.add('active');
+        document.getElementById('contentId').value = id;
+        document.getElementById('contentTitle').value = title;
+        document.getElementById('contentOrder').value = order;
+        
+        const select = document.getElementById('contentItemType');
+        let dropdownValue = 'meeting';
+        if (type === 'normal') dropdownValue = content ? 'lesson' : 'meeting';
+        else if (type === 'test') dropdownValue = 'test';
+        else if (type === 'final') dropdownValue = 'final';
+        
+        select.value = dropdownValue;
+        document.getElementById('contentDriveLink').value = content || '';
+        toggleContentFields();
+    }
 
     async function handleContentSubmit(e) {
         e.preventDefault();
-        const id = document.getElementById('contentId').value; const courseId = document.getElementById('contentCourseId').value; const itemType = document.getElementById('contentItemType').value;
-        let dbType = 'normal'; if (itemType === 'meeting') dbType = 'normal'; else if (itemType === 'test') dbType = 'test'; else if (itemType === 'final') dbType = 'final';
-        let driveLink = document.getElementById('contentDriveLink').value.trim(); if (driveLink && driveLink.includes('/view')) { const match = driveLink.match(/\/d\/([^\/\?]+)/); if (match && match[1]) driveLink = `https://drive.google.com/file/d/${match[1]}/preview`; }
-        const payload = { title: document.getElementById('contentTitle').value.trim(), type: dbType, content: itemType === 'meeting' ? null : driveLink, order_number: parseInt(document.getElementById('contentOrder').value) };
-        const btnSave = e.target.querySelector('.btn-save'); const originalText = btnSave.textContent; btnSave.textContent = id ? 'Updating...' : 'Creating...'; btnSave.disabled = true; const token = api.getToken();
-        try {
-            const url = id ? `${ADMIN_API_BASE}/admin/content/${id}` : `${ADMIN_API_BASE}/admin/courses/${courseId}/content`; const method = id ? 'PUT' : 'POST';
-            const res = await fetch(url, { method, headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
-            const data = await res.json(); if (!res.ok) throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
-            showNotification(id ? '✅ Item updated!' : '✅ Item added!', 'success'); closeContentModal(); loadMeetingsForCourse(courseId);
-        } catch (error) { console.error('Error saving content:', error); showNotification(`❌ Failed: ${error.message}`, 'error'); }
-        finally { btnSave.textContent = originalText; btnSave.disabled = false; }
-    }
-
-    async function deleteContentItem(id) {
-        if (!confirm('Delete this item? This action cannot be undone.')) return;
-        const courseId = document.getElementById('contentCourseId').value; const token = api.getToken();
-        try { const res = await fetch(`${ADMIN_API_BASE}/admin/content/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } }); const data = await res.json(); if (!res.ok) throw new Error(data.message || 'Failed to delete content'); showNotification('✅ Item deleted!', 'success'); loadMeetingsForCourse(courseId); }
-        catch (error) { console.error('Error deleting content:', error); showNotification(`❌ Failed: ${error.message}`, 'error'); }
-    }
-
-    // ========================================================================
-    // ✅ QUIZ QUESTION MANAGEMENT (FIXED VERSION - Quiz ID Mapping)
-    // ========================================================================
-    
-    /**
-     * Load quizzes for dropdown - FIX: Use quiz.id from quizzes table, NOT meeting.id
-     * This prevents foreign key constraint errors
-     */
-    async function loadQuizzesForQuestionForm() {
-        const select = document.getElementById('quizSelect');
-        const token = api.getToken();
+        const id = document.getElementById('contentId').value;
+        const courseId = document.getElementById('contentCourseId').value;
+        const type = document.getElementById('contentItemType').value;
         
-        if (!token) { select.innerHTML = '<option value="">-- Login required --</option>'; return; }
-        select.innerHTML = '<option value="">-- Loading quizzes... --</option>';
+        let dbType = 'normal';
+        if (type === 'test') dbType = 'test';
+        if (type === 'final') dbType = 'final';
         
-        try {
-            // Fetch all courses first
-            const coursesRes = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-            if (!coursesRes.ok) throw new Error('Failed to fetch courses');
-            const courses = await coursesRes.json();
-            
-            let options = '<option value="">-- Pilih Quiz --</option>';
-            let quizCount = 0;
-            
-            // For each course, fetch details to get meetings, then match with quizzes table
-            for (const course of courses) {
-                try {
-                    const courseRes = await fetch(`${ADMIN_API_BASE}/courses/${course.id}`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-                    if (!courseRes.ok) continue;
-                    const courseData = await courseRes.json();
-                    const meetings = courseData.meetings || [];
-                    
-                    meetings.forEach(meeting => {
-                        // Only include if meeting is a quiz type AND has a valid quiz_id
-                        if ((meeting.type === 'test' || meeting.type === 'final') && meeting.quiz_id) {
-                            // ✅ Use meeting.quiz_id (which references quizzes.id)
-                            options += `<option value="${meeting.quiz_id}">📚 ${escapeHtml(course.title)} - ${escapeHtml(meeting.title)} (Quiz ID: ${meeting.quiz_id})</option>`;
-                            quizCount++;
-                        }
-                    });
-                } catch (err) { console.error(`Error fetching course ${course.id}:`, err); }
-            }
-            
-            if (quizCount === 0) {
-                options = '<option value="">-- No quizzes found --</option>';
-                document.getElementById('manualQuizIdGroup').style.display = 'block';
-                console.warn('No quizzes with valid quiz_id found. Showing manual input fallback.');
-            } else {
-                document.getElementById('manualQuizIdGroup').style.display = 'none';
-            }
-            select.innerHTML = options;
-            
-        } catch (error) {
-            console.error('Error loading quizzes:', error);
-            select.innerHTML = '<option value="">-- Error loading quizzes --</option>';
-            document.getElementById('manualQuizIdGroup').style.display = 'block';
-        }
-    }
-    
-    function toggleQuizInputMode() {
-        const select = document.getElementById('quizSelect');
-        const manualGroup = document.getElementById('manualQuizIdGroup');
-        const manualInput = document.getElementById('manualQuizId');
-        if (select.value === '' && select.options[select.selectedIndex]?.text?.includes('No quizzes found')) {
-            manualGroup.style.display = 'block'; manualInput.required = true;
-        } else { manualGroup.style.display = 'none'; manualInput.required = false; }
-    }
-    
-    function refreshQuizzesDropdown() {
-        const select = document.getElementById('quizSelect');
-        select.innerHTML = '<option value="">-- Refreshing... --</option>'; select.disabled = true;
-        loadQuizzesForQuestionForm().finally(() => { select.disabled = false; });
-    }
-    
-    function toggleOptionsFields() {
-        const type = document.getElementById('questionType').value;
-        const optionsFields = document.getElementById('optionsFields');
-        const trueFalseFields = document.getElementById('trueFalseFields');
-        if (type === 'multiple_choice') {
-            optionsFields.style.display = 'block'; trueFalseFields.style.display = 'none';
-            ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).required = true);
-        } else if (type === 'true_false') {
-            optionsFields.style.display = 'none'; trueFalseFields.style.display = 'block';
-            ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).required = false);
-        } else {
-            optionsFields.style.display = 'none'; trueFalseFields.style.display = 'none';
-            ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).required = false);
-        }
-    }
-    
-    async function handleAddQuestionSubmit(e) {
-        e.preventDefault();
-        let quizId = document.getElementById('quizSelect').value;
-        if (!quizId) { quizId = document.getElementById('manualQuizId').value; }
-        if (!quizId) { showNotification('⚠️ Please select or enter a Quiz ID', 'error'); return; }
-        
-        const questionType = document.getElementById('questionType').value;
-        let options = [], correctAnswer = '';
-        
-        if (questionType === 'multiple_choice') {
-            options = [document.getElementById('optA').value.trim(), document.getElementById('optB').value.trim(), document.getElementById('optC').value.trim(), document.getElementById('optD').value.trim()].filter(opt => opt !== '');
-            correctAnswer = document.getElementById('correctAnswer').value;
-        } else if (questionType === 'true_false') {
-            options = ['Benar', 'Salah'];
-            correctAnswer = document.getElementById('correctAnswerTF').value === 'true' ? 'Benar' : 'Salah';
+        let link = document.getElementById('contentDriveLink').value.trim();
+        if (link && link.includes('/view')) { 
+            const m = link.match(/\/d\/([^\/\?]+)/); 
+            if (m) link = `https://drive.google.com/file/d/${m[1]}/preview`; 
         }
         
-        const payload = {
-            question: document.getElementById('questionInput').value.trim(),
-            type: questionType,
-            options: options,
-            correct_answer: correctAnswer,
-            points: parseInt(document.getElementById('pointsInput').value) || 10,
-            order: parseInt(document.getElementById('orderInput').value) || 0
+        const payload = { 
+            title: document.getElementById('contentTitle').value.trim(), 
+            type: dbType,
+            content: (dbType === 'normal' && type === 'meeting') ? null : link, 
+            order_number: parseInt(document.getElementById('contentOrder').value) || 1 
         };
         
-        const btnSubmit = e.target.querySelector('button[type="submit"]');
-        const originalText = btnSubmit.textContent;
-        btnSubmit.textContent = '💾 Menyimpan...'; btnSubmit.disabled = true;
-        const messageDiv = document.getElementById('questionFormMessage'); messageDiv.style.display = 'none';
-        const token = api.getToken();
+        const btn = e.target.querySelector('.btn-save'); 
+        const originalText = btn.textContent;
+        btn.disabled = true; 
+        btn.textContent = 'Saving...';
         
         try {
-            const res = await fetch(`${ADMIN_API_BASE}/admin/quizzes/${quizId}/questions`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            const url = id ? `${ADMIN_API_BASE}/admin/content/${id}` : `${ADMIN_API_BASE}/admin/courses/${courseId}/content`;
+            const method = id ? 'PUT' : 'POST';
+            const res = await fetch(url, {
+                method: method,
+                headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(payload)
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
             
-            messageDiv.style.display = 'block'; messageDiv.style.background = '#DCFCE7'; messageDiv.style.color = '#166534';
-            messageDiv.textContent = '✅ Soal berhasil ditambahkan!';
-            document.getElementById('questionInput').value = ''; document.getElementById('pointsInput').value = '10'; document.getElementById('orderInput').value = '1';
-            if (questionType === 'multiple_choice') ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).value = '');
-            showNotification('✅ Soal berhasil disimpan!', 'success');
-        } catch (error) {
-            console.error('Error adding question:', error);
-            messageDiv.style.display = 'block'; messageDiv.style.background = '#FEE2E2'; messageDiv.style.color = '#991B1B';
-            messageDiv.textContent = `❌ Gagal: ${error.message}`;
-            showNotification(`❌ Gagal menyimpan soal: ${error.message}`, 'error');
-        } finally { btnSubmit.textContent = originalText; btnSubmit.disabled = false; }
+            showNotification('✅ Content saved successfully!', 'success');
+            closeContentModal(); 
+            if (courseId) loadMeetingsForCourse(courseId);
+        } catch (err) { 
+            console.error('Save content error:', err);
+            showNotification(`❌ Failed: ${err.message}`, 'error'); 
+        } finally { 
+            btn.disabled = false; 
+            btn.textContent = originalText; 
+        }
+    }
+
+    async function deleteContentItem(id) {
+        if (!confirm('Delete?')) return;
+        const courseId = document.getElementById('contentCourseId').value;
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/admin/content/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
+            if (res.ok) { showNotification('✅ Deleted', 'success'); loadMeetingsForCourse(courseId); }
+        } catch (err) { showNotification('❌ Failed', 'error'); }
     }
 
     // ========================================================================
-    // QUIZ MONITORING
+    // ✅ QUIZ QUESTION MANAGEMENT
+    // ========================================================================
+    async function loadQuizzesForQuestionForm() {
+        const select = document.getElementById('quizSelect');
+        const token = api.getToken(); if (!token) return;
+        select.innerHTML = '<option value="">-- Loading... --</option>'; select.disabled = true;
+        try {
+            const coursesRes = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+            if (!coursesRes.ok) throw new Error('Failed');
+            const courses = await coursesRes.json();
+            let options = '<option value="">-- Pilih Quiz --</option>'; let count = 0;
+            for (const c of courses) {
+                try {
+                    const res = await fetch(`${ADMIN_API_BASE}/courses/${c.id}`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+                    if (!res.ok) continue;
+                    const data = await res.json();
+                    (data.meetings || []).forEach(m => {
+                        if ((m.type === 'test' || m.type === 'final' || m.type === 'quiz') && m.quiz_id) {
+                            options += `<option value="${m.quiz_id}">📚 ${escapeHtml(c.title)} - ${escapeHtml(m.title)} (ID: ${m.quiz_id})</option>`;
+                            count++;
+                        }
+                    });
+                } catch(e) {}
+            }
+            if (count === 0) { options = '<option value="">-- No quizzes found --</option>'; document.getElementById('manualQuizIdGroup').style.display = 'block'; }
+            else { document.getElementById('manualQuizIdGroup').style.display = 'none'; }
+            select.innerHTML = options; select.disabled = false;
+        } catch (err) {
+            select.innerHTML = '<option value="">-- Error --</option>'; select.disabled = false;
+            document.getElementById('manualQuizIdGroup').style.display = 'block';
+        }
+    }
+
+    function toggleQuizInputMode() {
+        const hasNoQuizzes = document.getElementById('quizSelect').options[document.getElementById('quizSelect').selectedIndex]?.text?.includes('No quizzes found');
+        document.getElementById('manualQuizIdGroup').style.display = (document.getElementById('quizSelect').value === '' && hasNoQuizzes) ? 'block' : 'none';
+    }
+
+    function refreshQuizzesDropdown() {
+        const select = document.getElementById('quizSelect');
+        select.innerHTML = '<option value="">-- Refreshing... --</option>'; select.disabled = true;
+        loadQuizzesForQuestionForm().finally(() => { select.disabled = false; });
+    }
+
+    function toggleOptionsFields() {
+        const isMC = document.getElementById('questionType').value === 'multiple_choice';
+        document.getElementById('optionsFields').style.display = isMC ? 'block' : 'none';
+        document.getElementById('trueFalseFields').style.display = isMC ? 'none' : 'block';
+        ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).required = isMC);
+    }
+
+    async function handleAddQuestionSubmit(e) {
+        e.preventDefault();
+        let quizId = document.getElementById('quizSelect').value || document.getElementById('manualQuizId').value;
+        if (!quizId) { showNotification('⚠️ Masukkan Quiz ID', 'error'); return; }
+        
+        const type = document.getElementById('questionType').value;
+        let options = [], correct = '';
+        if (type === 'multiple_choice') {
+            options = [document.getElementById('optA').value.trim(), document.getElementById('optB').value.trim(), document.getElementById('optC').value.trim(), document.getElementById('optD').value.trim()].filter(o => o !== '');
+            correct = document.getElementById('correctAnswer').value;
+        } else {
+            options = ['Benar', 'Salah'];
+            correct = document.getElementById('correctAnswerTF').value === 'true' ? 'Benar' : 'Salah';
+        }
+        
+        const payload = {
+            question: document.getElementById('questionInput').value.trim(),
+            type: type, options: options, correct_answer: correct,
+            points: parseInt(document.getElementById('pointsInput').value) || 10,
+            order: parseInt(document.getElementById('orderInput').value) || 0
+        };
+        
+        const btn = e.target.querySelector('button[type="submit"]');
+        const origText = btn.innerHTML; 
+        btn.disabled = true; 
+        btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;margin:0;display:inline-block;vertical-align:middle;margin-right:8px;"></span> Menyimpan...';
+        const msg = document.getElementById('questionFormMessage'); msg.style.display = 'none';
+        
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/admin/quizzes/${quizId}/questions`, {
+                method: 'POST', 
+                headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Failed');
+            
+            msg.style.display = 'block'; msg.style.background = '#DCFCE7'; msg.style.color = '#166534';
+            msg.textContent = '✅ Soal berhasil ditambahkan!';
+            showNotification('✅ Soal berhasil disimpan!', 'success');
+            
+            document.getElementById('questionInput').value = '';
+            document.getElementById('pointsInput').value = '10';
+            document.getElementById('orderInput').value = '1';
+            if (type === 'multiple_choice') ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).value = '');
+            
+            await loadQuizzesForQuestionForm();
+            setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        } catch (err) {
+            msg.style.display = 'block'; msg.style.background = '#FEE2E2'; msg.style.color = '#991B1B';
+            msg.textContent = `❌ Gagal: ${err.message}`;
+            showNotification(`❌ Gagal: ${err.message}`, 'error');
+        } finally { 
+            btn.disabled = false; 
+            btn.innerHTML = origText; 
+        }
+    }
+
+    async function loadQuestionsToDelete() {
+        const quizId = document.getElementById('deleteQuizIdInput').value;
+        const listContainer = document.getElementById('questionsToDeleteList');
+        const msgDiv = document.getElementById('deleteMessage');
+        if (!quizId) { showNotification('⚠️ Masukkan Quiz ID', 'error'); return; }
+        
+        msgDiv.style.display = 'none';
+        listContainer.innerHTML = '<div style="text-align:center; padding: 20px;"><span class="spinner" style="width:24px;height:24px;border-width:3px;margin:0 auto 10px;display:block;"></span> Memuat daftar soal...</div>';
+        listContainer.style.display = 'block';
+
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/quizzes/${quizId}`, { headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
+            if (!res.ok) throw new Error('Quiz tidak ditemukan.');
+            const quiz = await res.json();
+            
+            if (!quiz.questions || quiz.questions.length === 0) {
+                listContainer.innerHTML = '<p style="text-align:center; color:#666; padding: 20px;">Tidak ada soal di quiz ini.</p>';
+                return;
+            }
+
+            const sorted = [...quiz.questions].sort((a, b) => (a.order || 0) - (b.order || 0));
+            let html = '<table style="width:100%; font-size: 13px; border-collapse: collapse;">';
+            html += '<thead><tr style="background:#f8f9fa;"><th style="padding:8px; text-align:left;">ID</th><th style="padding:8px;">Urutan</th><th style="padding:8px; text-align:left;">Pertanyaan</th><th style="padding:8px; text-align:center;" colspan="2">Aksi</th></tr></thead><tbody>';
+            
+            sorted.forEach(q => {
+                const safeData = {
+                    id: q.id, quizId: quizId, question: q.question,
+                    points: q.points, order: q.order, type: q.type,
+                    options: q.options, correct_answer: q.correct_answer
+                };
+                const encodedData = encodeURIComponent(JSON.stringify(safeData));
+                
+                html += `<tr style="border-bottom: 1px solid #e1e5eb;">
+                    <td style="padding:8px; color:#666;">#${q.id}</td>
+                    <td style="padding:8px; text-align:center;">${q.order}</td>
+                    <td style="padding:8px;">${escapeHtml(q.question)}</td>
+                    <td style="padding:8px; text-align:center;">
+                        <button class="btn-action btn-edit edit-question-btn" 
+                                data-question="${encodedData}" 
+                                style="padding: 4px 8px; font-size: 11px; cursor: pointer;">✏️ Edit</button>
+                    </td>
+                    <td style="padding:8px; text-align:center;">
+                        <button class="btn-action btn-delete" 
+                                onclick="confirmDeleteQuestion(${q.id}, ${quizId})" 
+                                style="padding: 4px 8px; font-size: 11px; cursor: pointer;">🗑️ Hapus</button>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            listContainer.innerHTML = html;
+            
+            listContainer.querySelectorAll('.edit-question-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    try {
+                        const data = JSON.parse(decodeURIComponent(this.dataset.question));
+                        openEditModal(data.id, data.quizId, data.question, data.points, data.order, data.type, JSON.stringify(data.options), data.correct_answer);
+                    } catch (e) {
+                        console.error('Error parsing question data:', e);
+                        showNotification('❌ Gagal memuat data soal', 'error');
+                    }
+                });
+            });
+            
+        } catch (err) {
+            console.error('Load questions error:', err);
+            listContainer.innerHTML = `<p style="text-align:center; color:#EF4444; padding: 20px;">❌ ${err.message}</p>`;
+        }
+    }
+
+    function openEditModal(questionId, quizId, question, points, order, type, optionsStr, correctAnswer) {
+        document.getElementById('editQuestionId').value = questionId;
+        document.getElementById('editQuizId').value = quizId;
+        document.getElementById('editQuestionText').value = question;
+        document.getElementById('editPointsInput').value = points;
+        document.getElementById('editOrderInput').value = order;
+        document.getElementById('editQuestionType').value = type;
+        
+        let options = [];
+        try { options = JSON.parse(decodeURIComponent(optionsStr)); } catch (e) { console.error('Error parsing options:', e); }
+        
+        if (type === 'multiple_choice') {
+            document.getElementById('editOptionsFields').style.display = 'block';
+            document.getElementById('editTrueFalseFields').style.display = 'none';
+            document.getElementById('editOptA').value = options[0] || '';
+            document.getElementById('editOptB').value = options[1] || '';
+            document.getElementById('editOptC').value = options[2] || '';
+            document.getElementById('editOptD').value = options[3] || '';
+            document.getElementById('editCorrectAnswer').value = correctAnswer;
+        } else if (type === 'true_false') {
+            document.getElementById('editOptionsFields').style.display = 'none';
+            document.getElementById('editTrueFalseFields').style.display = 'block';
+            document.getElementById('editCorrectAnswerTF').value = correctAnswer === 'Benar' || correctAnswer === 'true' ? 'true' : 'false';
+        }
+        document.getElementById('editQuestionModal').classList.add('active');
+        document.getElementById('editMessage').style.display = 'none';
+    }
+
+    function closeEditModal() { 
+        document.getElementById('editQuestionModal').classList.remove('active'); 
+    }
+
+    function toggleEditOptionsFields() {
+        const isMC = document.getElementById('editQuestionType').value === 'multiple_choice';
+        document.getElementById('editOptionsFields').style.display = isMC ? 'block' : 'none';
+        document.getElementById('editTrueFalseFields').style.display = isMC ? 'none' : 'block';
+    }
+
+    async function handleEditQuestionSubmit(e) {
+        e.preventDefault();
+        const questionId = document.getElementById('editQuestionId').value;
+        const quizId = document.getElementById('editQuizId').value;
+        const type = document.getElementById('editQuestionType').value;
+        
+        let options = [], correct = '';
+        if (type === 'multiple_choice') {
+            options = [document.getElementById('editOptA').value.trim(), document.getElementById('editOptB').value.trim(), document.getElementById('editOptC').value.trim(), document.getElementById('editOptD').value.trim()].filter(o => o !== '');
+            correct = document.getElementById('editCorrectAnswer').value;
+        } else {
+            options = ['Benar', 'Salah'];
+            correct = document.getElementById('editCorrectAnswerTF').value === 'true' ? 'Benar' : 'Salah';
+        }
+        
+        const payload = {
+            question: document.getElementById('editQuestionText').value.trim(),
+            type: type, options: options, correct_answer: correct,
+            points: parseInt(document.getElementById('editPointsInput').value) || 10,
+            order: parseInt(document.getElementById('editOrderInput').value) || 0
+        };
+        
+        const btn = e.target.querySelector('button[type="submit"]');
+        const origText = btn.innerHTML;
+        btn.disabled = true; 
+        btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;margin:0;display:inline-block;vertical-align:middle;margin-right:8px;"></span> Memperbarui...';
+        const msg = document.getElementById('editMessage'); msg.style.display = 'none';
+        
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/admin/quizzes/questions/${questionId}`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Gagal mengedit soal');
+            
+            msg.style.display = 'block'; msg.style.background = '#DCFCE7'; msg.style.color = '#166534';
+            msg.textContent = '✅ ' + data.message;
+            showNotification('✅ Soal berhasil diperbarui!', 'success');
+            
+            setTimeout(() => { closeEditModal(); loadQuestionsToDelete(); }, 1500);
+        } catch (err) {
+            msg.style.display = 'block'; msg.style.background = '#FEE2E2'; msg.style.color = '#991B1B';
+            msg.textContent = '❌ Gagal: ' + err.message;
+            showNotification('❌ Gagal: ' + err.message, 'error');
+        } finally { 
+            btn.disabled = false; 
+            btn.innerHTML = origText; 
+        }
+    }
+
+    async function confirmDeleteQuestion(questionId, quizId) {
+        if (!confirm(`⚠️ PERINGATAN!\n\nAnda yakin ingin menghapus soal ini secara permanen?\nID Soal: ${questionId}\n\nTindakan ini tidak dapat dibatalkan.`)) return;
+
+        const msgDiv = document.getElementById('deleteMessage');
+        msgDiv.style.display = 'block'; msgDiv.style.background = '#FEF3C7'; msgDiv.style.color = '#92400E';
+        msgDiv.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;margin:0;display:inline-block;vertical-align:middle;margin-right:8px;"></span> Menghapus soal...';
+
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/admin/quizzes/questions/${questionId}`, {
+                method: 'DELETE', headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' }
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Gagal menghapus');
+
+            msgDiv.style.background = '#DCFCE7'; msgDiv.style.color = '#166534';
+            msgDiv.textContent = `✅ ${data.message}`;
+            showNotification('✅ Soal berhasil dihapus!', 'success');
+            setTimeout(() => { loadQuestionsToDelete(); }, 1000);
+        } catch (err) {
+            msgDiv.style.background = '#FEE2E2'; msgDiv.style.color = '#991B1B';
+            msgDiv.textContent = `❌ Gagal: ${err.message}`;
+            showNotification(`❌ Gagal: ${err.message}`, 'error');
+        }
+    }
+
+    // ========================================================================
+    // ✅ QUIZ MONITORING
     // ========================================================================
     let allQuizAttempts = [];
+    
     async function loadQuizAttempts() {
-        const tbody = document.getElementById('quizAttemptsTableBody'); const token = api.getToken();
-        if (!token) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Please login as admin.</td></tr>'; return; }
-        tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div> Loading quiz attempts...</td></tr>';
+        const tbody = document.getElementById('quizAttemptsTableBody');
+        tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div> Loading...</td></tr>';
+        
         try {
-            const courseId = document.getElementById('filterCourse').value; const status = document.getElementById('filterStatus').value;
-            const params = new URLSearchParams(); if (courseId) params.append('course_id', courseId); if (status) params.append('status', status);
-            const res = await fetch(`${ADMIN_API_BASE}/admin/quiz-attempts?${params}`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-            if (!res.ok) throw new Error('Failed to load quiz attempts');
-            const attempts = await res.json(); allQuizAttempts = attempts; updateQuizStats(attempts);
-            if (!attempts || attempts.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No quiz attempts found.</td></tr>'; return; }
-            tbody.innerHTML = attempts.map((attempt, idx) => `<tr><td>${idx + 1}</td><td><strong>${escapeHtml(attempt.user_name)}</strong><br><small style="color:#666;">${escapeHtml(attempt.user_email || '')}</small></td><td>${escapeHtml(attempt.course_title)}</td><td>${escapeHtml(attempt.quiz_title)}</td><td><strong style="color:${attempt.score >= 70 ? '#10B981' : '#EF4444'}">${attempt.score}%</strong></td><td><span class="status-badge ${attempt.passed ? 'active' : ''}" style="background:${attempt.passed ? '#DCFCE7' : '#FEE2E2'}; color:${attempt.passed ? '#166534' : '#991B1B'}">${attempt.passed ? '✅ Passed' : '❌ Failed'}</span></td><td>#${attempt.attempt_number}</td><td>${formatDate(attempt.created_at)}</td></tr>`).join('');
-        } catch (error) { console.error('Error loading quiz attempts:', error); tbody.innerHTML = `<tr><td colspan="8" class="empty-state" style="color:#EF4444;">❌ Failed to load quiz attempts. ${error.message}</td></tr>`; }
+            const params = new URLSearchParams();
+            const filterCourse = document.getElementById('filterCourse');
+            const filterStatus = document.getElementById('filterStatus');
+            
+            if (filterCourse && filterCourse.value) params.append('course_id', filterCourse.value);
+            if (filterStatus && filterStatus.value) params.append('status', filterStatus.value);
+            
+            const res = await fetch(`${ADMIN_API_BASE}/admin/quiz-attempts?${params}`, { 
+                headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } 
+            });
+            
+            if (!res.ok) throw new Error(`Gagal memuat data. Status: ${res.status}`);
+            
+            const attempts = await res.json(); 
+            allQuizAttempts = Array.isArray(attempts) ? attempts : []; 
+            
+            const total = allQuizAttempts.length;
+            const passed = allQuizAttempts.filter(a => a.passed).length;
+            
+            const elTotal = document.getElementById('totalAttempts');
+            const elPassed = document.getElementById('passedAttempts');
+            const elFailed = document.getElementById('failedAttempts');
+            const elAvg = document.getElementById('avgScore');
+            
+            if (elTotal) elTotal.textContent = total;
+            if (elPassed) elPassed.textContent = passed;
+            if (elFailed) elFailed.textContent = total - passed;
+            if (elAvg) {
+                const avg = total > 0 ? Math.round(allQuizAttempts.reduce((s, a) => s + (a.score || 0), 0) / total) : 0;
+                elAvg.textContent = avg + '%';
+            }
+            
+            if (total === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px; color: #666;">Tidak ada data quiz ditemukan.</td></tr>';
+            } else {
+                tbody.innerHTML = allQuizAttempts.map((a, i) => {
+                    const score = a.score || 0;
+                    const isPassed = !!a.passed;
+                    const dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+                    
+                    return `<tr>
+                        <td>${i+1}</td>
+                        <td><strong>${escapeHtml(a.user_name || 'Unknown')}</strong><br><small style="color:#666;">${escapeHtml(a.user_email || '')}</small></td>
+                        <td>${escapeHtml(a.course_title || '-')}</td>
+                        <td>${escapeHtml(a.quiz_title || '-')}</td>
+                        <td><strong style="color:${score >= 70 ? '#10B981' : '#EF4444'}">${score}%</strong></td>
+                        <td><span class="status-badge ${isPassed ? 'active' : ''}" style="background:${isPassed ? '#DCFCE7' : '#FEE2E2'}; color:${isPassed ? '#166534' : '#991B1B'}">${isPassed ? '✅ Passed' : '❌ Failed'}</span></td>
+                        <td>#${a.attempt_number || 1}</td>
+                        <td>${dateStr}</td>
+                    </tr>`;
+                }).join('');
+            }
+            
+        } catch (err) { 
+            console.error('❌ Error loading quiz attempts:', err);
+            tbody.innerHTML = `<tr><td colspan="8" style="color:#EF4444; text-align:center; padding: 20px;">❌ Gagal memuat data: ${err.message}</td></tr>`; 
+        }
     }
-    function updateQuizStats(attempts) { const total = attempts.length; const passed = attempts.filter(a => a.passed).length; const failed = total - passed; const avgScore = total > 0 ? Math.round(attempts.reduce((sum, a) => sum + a.score, 0) / total) : 0; document.getElementById('totalAttempts').textContent = total; document.getElementById('passedAttempts').textContent = passed; document.getElementById('failedAttempts').textContent = failed; document.getElementById('avgScore').textContent = `${avgScore}%`; }
-    async function loadCoursesForQuizFilter() { const select = document.getElementById('filterCourse'); const token = api.getToken(); if (!token) return; try { const res = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } }); if (!res.ok) throw new Error('Failed to fetch courses'); const courses = await res.json(); select.innerHTML = '<option value="">All Courses</option>' + courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join(''); } catch (error) { console.error('Error loading courses for filter:', error); } }
-    function exportQuizAttempts() { if (!allQuizAttempts || allQuizAttempts.length === 0) { showNotification('⚠️ No data to export', 'error'); return; } const headers = ['#', 'Student Name', 'Student Email', 'Course', 'Quiz', 'Score', 'Status', 'Attempt #', 'Date']; const rows = allQuizAttempts.map((a, idx) => [idx + 1, a.user_name, a.user_email || '', a.course_title, a.quiz_title, `${a.score}%`, a.passed ? 'Passed' : 'Failed', a.attempt_number, new Date(a.created_at).toLocaleString('id-ID')]); const csvContent = [headers.join(','), ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))].join('\n'); const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `quiz-attempts-${new Date().toISOString().split('T')[0]}.csv`; link.click(); showNotification('✅ Quiz attempts exported to CSV!', 'success'); }
-    function formatDate(dateStr) { if (!dateStr) return '-'; return new Date(dateStr).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+    
+    async function loadCoursesForQuizFilter() {
+        try {
+            const res = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
+            if (res.ok) {
+                const courses = await res.json();
+                document.getElementById('filterCourse').innerHTML = '<option value="">All Courses</option>' + courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
+            }
+        } catch (err) {}
+    }
+
+    function exportQuizAttempts() {
+        if (!allQuizAttempts.length) { showNotification('⚠️ No data', 'error'); return; }
+        const headers = ['#', 'Student', 'Course', 'Quiz', 'Score', 'Status', 'Attempt', 'Date'];
+        const rows = allQuizAttempts.map((a, i) => [i+1, a.user_name, a.course_title, a.quiz_title, a.score+'%', a.passed?'Passed':'Failed', a.attempt_number, new Date(a.created_at).toLocaleString('id-ID')]);
+        const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
+        link.download = `quiz-attempts-${new Date().toISOString().split('T')[0]}.csv`; link.click();
+        showNotification('✅ Exported!', 'success');
+    }
     </script>
 </body>
 </html>

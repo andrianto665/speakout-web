@@ -158,7 +158,7 @@
 
         .course-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
             gap: 24px;
             margin-bottom: 40px;
         }
@@ -184,7 +184,7 @@
         }
 
         .course-thumbnail {
-            height: 180px;
+            height: 200px;
             background: linear-gradient(135deg, var(--purple), var(--blue));
             display: flex;
             align-items: center;
@@ -228,11 +228,32 @@
             padding: 24px;
         }
         .course-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
             margin-bottom: 8px;
             line-height: 1.4;
         }
+        
+        .course-meta-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .meta-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+        .meta-tag.category { color: var(--purple-accent); }
+        .meta-tag.level { color: var(--blue-accent); }
+        .meta-tag.duration { color: var(--warning); }
+
         .course-instructor {
             font-size: 13px;
             color: var(--gray);
@@ -334,7 +355,7 @@
         /* ===== AVAILABLE COURSES ===== */
         .available-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
         }
         .available-card {
@@ -349,7 +370,7 @@
             background: rgba(255,255,255,0.08);
         }
         .available-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
             margin-bottom: 8px;
         }
@@ -413,7 +434,7 @@
 </head>
 <body>
 
-    <!-- ✅ FIXED HEADER: Semua link ke dashboard.html untuk logged-in user -->
+    <!-- ✅ FIXED HEADER -->
     <header class="header">
         <div class="header-container">
             <a href="dashboard.html" class="logo">SPEAK<span>OUT</span></a>
@@ -509,20 +530,17 @@
     // INITIALIZATION
     // ========================================================================
     document.addEventListener('DOMContentLoaded', () => {
-        // Auth check - redirect to login if not authenticated
         if (!api.isLoggedIn()) {
             window.location.href = 'login.html';
             return;
         }
 
-        // Setup logout button
         document.getElementById('logoutBtn')?.addEventListener('click', () => {
             if (confirm('Are you sure you want to logout?')) {
                 api.logout();
             }
         });
 
-        // Load dashboard data
         loadDashboard();
     });
 
@@ -536,7 +554,6 @@
         const enrolledSection = document.getElementById('enrolledSection');
         const availableSection = document.getElementById('availableSection');
 
-        // Show loading state
         loading.style.display = 'block';
         error.style.display = 'none';
         empty.style.display = 'none';
@@ -544,7 +561,6 @@
         availableSection.style.display = 'none';
 
         try {
-            // Get user info for welcome message
             const user = api.getUser();
             if (user?.name) {
                 const firstName = user.name.split(' ')[0];
@@ -552,7 +568,6 @@
                 document.getElementById('welcomeName').textContent = firstName;
             }
 
-            // Fetch dashboard summary from API
             const token = api.getToken();
             const res = await fetch('http://127.0.0.1:8000/api/user/dashboard', {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
@@ -563,24 +578,20 @@
             const data = await res.json();
             loading.style.display = 'none';
 
-            // Update stats display
             document.getElementById('statEnrolled').textContent = data.stats.total_enrolled;
             document.getElementById('statInProgress').textContent = data.stats.in_progress;
             document.getElementById('statCompleted').textContent = data.stats.total_completed;
 
-            // Render enrolled courses if any
             if (data.in_progress_courses?.length > 0) {
                 enrolledSection.style.display = 'block';
                 renderEnrolledCourses(data.in_progress_courses);
             }
 
-            // Render available courses if any
             if (data.available_courses?.length > 0) {
                 availableSection.style.display = 'block';
                 renderAvailableCourses(data.available_courses);
             }
 
-            // Show empty state if no courses at all
             if (!data.in_progress_courses?.length && !data.available_courses?.length) {
                 empty.style.display = 'block';
             }
@@ -597,23 +608,17 @@
     // RENDER FUNCTIONS
     // ========================================================================
     
-    /**
-     * Render enrolled courses with conditional button logic
-     * @param {Array} courses - List of enrolled courses with progress
-     */
     function renderEnrolledCourses(courses) {
         const grid = document.getElementById('courseGrid');
         grid.innerHTML = '';
 
         courses.forEach(course => {
-            // ✅ Use API field is_completed if available, fallback to progress check
             const isCompleted = course.is_completed === true || course.progress >= 100;
             const statusClass = isCompleted ? 'completed' : 'in-progress';
             const badgeText = isCompleted ? '🏆 Completed' : `${course.progress}%`;
             const btnText = isCompleted ? '📄 View Certificate' : '▶ Continue Learning';
             const btnClass = isCompleted ? 'completed' : '';
             
-            // Get last lesson info for preview
             const lastLesson = course.last_lesson;
             const lessonPreview = lastLesson ? `
                 <div class="lesson-preview">
@@ -628,20 +633,29 @@
                 </div>
             ` : '';
 
-            // ✅ Conditional onclick: download certificate OR continue learning
             const buttonOnclick = isCompleted 
                 ? `downloadCertificate(${course.id})`
                 : `continueLearning(${course.id}, ${lastLesson?.id || 'null'})`;
+
+            // ✅ Display Category, Level, Duration
+            const metaTags = `
+                <div class="course-meta-tags">
+                    ${course.category ? `<span class="meta-tag category">📚 ${escapeHtml(course.category)}</span>` : ''}
+                    ${course.level ? `<span class="meta-tag level">🎓 ${escapeHtml(course.level)}</span>` : ''}
+                    ${course.duration ? `<span class="meta-tag duration">⏱️ ${escapeHtml(course.duration)}</span>` : ''}
+                </div>
+            `;
 
             const card = document.createElement('div');
             card.className = `course-card ${statusClass}`;
             card.innerHTML = `
                 <div class="course-thumbnail">
-                    ${course.thumbnail ? `<img src="${course.thumbnail}" alt="${escapeHtml(course.title)}">` : '📚'}
+                    ${course.thumbnail ? `<img src="http://127.0.0.1:8000/${course.thumbnail}" alt="${escapeHtml(course.title)}" onerror="this.style.display='none'">` : '📚'}
                     <span class="course-badge">${badgeText}</span>
                 </div>
                 <div class="course-content">
                     <h3 class="course-title">${escapeHtml(course.title)}</h3>
+                    ${metaTags}
                     <div class="course-instructor">${escapeHtml(course.instructor)}</div>
                     
                     <div class="progress-section">
@@ -653,15 +667,14 @@
                             <div class="progress-fill" style="width: ${course.progress}%"></div>
                         </div>
                         <div style="font-size:12px; color:var(--gray); margin-top:4px;">
-                            ${course.completed_lessons}/${course.total_lessons} lessons completed
+                            ${course.completed_lessons || 0}/${course.total_lessons || 0} lessons completed
                         </div>
                     </div>
 
                     ${lessonPreview}
 
                     <button class="btn-continue ${btnClass}" 
-                            onclick="${buttonOnclick}"
-                            ${isCompleted ? '' : ''}>
+                            onclick="${buttonOnclick}">
                         ${btnText}
                     </button>
                 </div>
@@ -670,10 +683,6 @@
         });
     }
 
-    /**
-     * Render available courses for enrollment
-     * @param {Array} courses - List of available courses
-     */
     function renderAvailableCourses(courses) {
         const grid = document.getElementById('availableGrid');
         grid.innerHTML = '';
@@ -699,11 +708,6 @@
     // ACTION FUNCTIONS
     // ========================================================================
 
-    /**
-     * Navigate to course details page
-     * @param {number} courseId - Course ID
-     * @param {number|null} lessonId - Optional lesson ID to jump to
-     */
     async function continueLearning(courseId, lessonId) {
         const url = lessonId 
             ? `course-details.html?course_id=${courseId}&lesson_id=${lessonId}`
@@ -711,11 +715,6 @@
         window.location.href = url;
     }
 
-    /**
-     * Enroll user in a course
-     * @param {number} courseId - Course ID to enroll
-     * @param {HTMLElement} btn - The enroll button element
-     */
     async function enrollCourse(courseId, btn) {
         const originalText = btn.textContent;
         btn.textContent = 'Enrolling...';
@@ -738,7 +737,7 @@
             }
 
             alert(`✅ Successfully enrolled in "${data.course.title}"!`);
-            loadDashboard(); // Refresh to show newly enrolled course
+            loadDashboard();
 
         } catch (err) {
             console.error('Enroll error:', err);
@@ -748,10 +747,6 @@
         }
     }
 
-    /**
-     * Download certificate PDF for a completed course
-     * @param {number} courseId - The course ID
-     */
     async function downloadCertificate(courseId) {
         const token = api.getToken();
         if (!token) {
@@ -761,7 +756,6 @@
         }
         
         try {
-            // Show loading state on button
             const btn = event?.target;
             const originalText = btn?.textContent;
             if (btn) {
@@ -769,7 +763,6 @@
                 btn.disabled = true;
             }
             
-            // ✅ Fetch certificate with Accept: application/json header
             const response = await fetch(`http://127.0.0.1:8000/api/user/certificates/${courseId}/download`, {
                 method: 'GET',
                 headers: {
@@ -785,7 +778,6 @@
                 throw new Error(`HTTP ${response.status}`);
             }
             
-            // Trigger file download via blob
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -796,14 +788,12 @@
             a.remove();
             window.URL.revokeObjectURL(url);
             
-            // Show success message
             alert('🎉 Certificate downloaded successfully! Check your Downloads folder.');
             
         } catch (error) {
             console.error('Download certificate error:', error);
             alert('❌ Failed to download certificate. Please try again.');
         } finally {
-            // Restore button state
             const btn = event?.target;
             if (btn && originalText) {
                 btn.textContent = originalText;
@@ -816,11 +806,6 @@
     // HELPER FUNCTIONS
     // ========================================================================
 
-    /**
-     * Get icon emoji based on lesson type
-     * @param {string} type - Lesson type
-     * @returns {string} Emoji icon
-     */
     function getLessonIcon(type) {
         const icons = {
             'video': '🎬',
@@ -834,11 +819,6 @@
         return icons[type] || '📄';
     }
 
-    /**
-     * Escape HTML to prevent XSS attacks
-     * @param {string} text - Text to escape
-     * @returns {string} Escaped HTML
-     */
     function escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');

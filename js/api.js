@@ -4,19 +4,14 @@
  * ✅ Compatible dengan auth.js, dashboard.js, course-details.js, courses.js
  * 
  * @module api
- * @version 2.1.0
+ * @version 2.2.0 - Fixed auto-login issue
  */
 
 // ============================================================================
 // ⚙️ CONFIGURATION
 // ============================================================================
 
-/**
- * Get API base URL based on environment
- * @returns {string} API base URL
- */
 const getApiBaseUrl = () => {
-    // Detect Android emulator (10.0.2.2 = localhost for emulator)
     const isAndroidEmulator = typeof navigator !== 'undefined' && 
                               navigator.userAgent?.includes('Android');
     
@@ -24,14 +19,10 @@ const getApiBaseUrl = () => {
         return 'http://10.0.2.2:8000/api';
     }
     
-    // Use 127.0.0.1 instead of localhost for better IPv4 consistency
     return 'http://127.0.0.1:8000/api';
 };
 
-/** @constant {string} */
 const API_BASE = getApiBaseUrl();
-
-/** @constant {number} Request timeout in milliseconds (15 seconds) */
 const API_TIMEOUT = 15000;
 
 // ============================================================================
@@ -44,35 +35,20 @@ const api = {
     // TOKEN & SESSION MANAGEMENT
     // =========================================================================
     
-    /**
-     * Get stored authentication token
-     * @returns {string|null} Bearer token or null
-     */
     getToken() {
         return localStorage.getItem('speakout_token');
     },
     
-    /**
-     * Save authentication token to storage
-     * @param {string} token - JWT token from backend
-     */
     setToken(token) {
         if (!token) return;
         localStorage.setItem('speakout_token', token);
     },
     
-    /**
-     * Clear all auth data from storage
-     */
     clearToken() {
         localStorage.removeItem('speakout_token');
         localStorage.removeItem('speakout_user');
     },
     
-    /**
-     * Check if user is authenticated
-     * @returns {boolean} True if token exists
-     */
     isLoggedIn() {
         return !!this.getToken();
     },
@@ -81,10 +57,6 @@ const api = {
     // USER INFO & ROLE
     // =========================================================================
     
-    /**
-     * Get stored user data
-     * @returns {Object|null} User object or null
-     */
     getUser() {
         try {
             const userStr = localStorage.getItem('speakout_user');
@@ -94,27 +66,15 @@ const api = {
         }
     },
     
-    /**
-     * Get user role with fallback
-     * @returns {string} 'admin' or 'user'
-     */
     getUserRole() {
         const user = this.getUser();
         return user?.role || 'user';
     },
     
     // =========================================================================
-    // HTTP HELPER: Fetch with timeout & error handling
+    // HTTP HELPER
     // =========================================================================
     
-    /**
-     * Internal: Fetch wrapper with timeout and default headers
-     * @private
-     * @param {string} url - Request URL
-     * @param {RequestInit} options - Fetch options
-     * @returns {Promise<Response>}
-     * @throws {Error} On timeout or network error
-     */
     async _fetchWithTimeout(url, options = {}) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
@@ -134,7 +94,6 @@ const api = {
             
         } catch (error) {
             clearTimeout(timeoutId);
-            
             if (error.name === 'AbortError') {
                 throw new Error('Request timeout. Server is taking too long to respond.');
             }
@@ -146,13 +105,6 @@ const api = {
     // 🔐 AUTHENTICATION METHODS
     // =========================================================================
     
-    /**
-     * Register a new user
-     * @param {string} name - User's full name
-     * @param {string} email - User's email
-     * @param {string} password - User's password
-     * @returns {Promise<{success: boolean, data: Object, status: number}>}
-     */
     async register(name, email, password) {
         try {
             const response = await this._fetchWithTimeout(`${API_BASE}/auth/register`, {
@@ -161,7 +113,7 @@ const api = {
                     name,
                     email,
                     password,
-                    password_confirmation: password // Laravel requires confirmation
+                    password_confirmation: password
                 })
             });
             
@@ -177,18 +129,12 @@ const api = {
             console.error('❌ Register API Error:', error);
             return {
                 success: false,
-                data: { message: error.message || 'Network error. Please check your connection.' },
+                data: { message: error.message || 'Network error.' },
                 status: 0
             };
         }
     },
     
-    /**
-     * Login user and store token
-     * @param {string} email - User's email
-     * @param {string} password - User's password
-     * @returns {Promise<{success: boolean, data: Object, status: number}>}
-     */
     async login(email, password) {
         try {
             const response = await this._fetchWithTimeout(`${API_BASE}/auth/login`, {
@@ -198,7 +144,6 @@ const api = {
             
             const data = await response.json();
             
-            // Store auth data on success
             if (response.ok && data.token) {
                 this.setToken(data.token);
                 if (data.user) {
@@ -216,20 +161,15 @@ const api = {
             console.error('❌ Login API Error:', error);
             return {
                 success: false,
-                data: { message: error.message || 'Network error. Is Laravel running?' },
+                data: { message: error.message || 'Network error.' },
                 status: 0
             };
         }
     },
     
-    /**
-     * Logout user and clear session
-     * ✅ FIXED: Redirect to login.html (bukan index.html)
-     */
     async logout() {
         const token = this.getToken();
         
-        // Notify backend (optional, don't fail if this fails)
         if (token) {
             try {
                 await this._fetchWithTimeout(`${API_BASE}/auth/logout`, {
@@ -241,28 +181,21 @@ const api = {
             }
         }
         
-        // Clear local session and redirect
         this.clearToken();
-        window.location.href = 'login.html'; // ✅ FIXED: ke login.html
+        window.location.href = 'login.html';
     },
     
     // =========================================================================
     // 📚 COURSE METHODS
     // =========================================================================
     
-    /**
-     * Get all available courses (public endpoint - no auth required)
-     * @returns {Promise<Array>} List of courses or empty array
-     */
     async getCourses() {
         try {
             const response = await this._fetchWithTimeout(`${API_BASE}/courses`, {
                 method: 'GET'
-                // ✅ No auth header needed for public courses listing
             });
             
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            
             return await response.json();
             
         } catch (error) {
@@ -271,11 +204,6 @@ const api = {
         }
     },
     
-    /**
-     * Get course details by ID (requires auth for enrolled content)
-     * @param {number} courseId - Course ID
-     * @returns {Promise<Object|null>} Course data or null
-     */
     async getCourseDetails(courseId) {
         const token = this.getToken();
         
@@ -290,7 +218,6 @@ const api = {
             });
             
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            
             return await response.json();
             
         } catch (error) {
@@ -300,17 +227,9 @@ const api = {
     },
     
     // =========================================================================
-    // 📊 PROGRESS TRACKING METHODS
+    // 📊 PROGRESS TRACKING
     // =========================================================================
     
-    /**
-     * Update progress for a specific lesson/meeting
-     * @param {number} courseId - Course ID
-     * @param {number} meetingId - Meeting/Lesson ID (from meetings table)
-     * @param {boolean} isCompleted - Completion status
-     * @returns {Promise<Object>} Updated progress data
-     * @throws {Error} On auth or API error
-     */
     async updateProgress(courseId, meetingId, isCompleted) {
         const token = this.getToken();
         
@@ -324,7 +243,6 @@ const api = {
                 {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
-                    // ✅ Laravel expects snake_case keys
                     body: JSON.stringify({
                         meeting_id: meetingId,
                         is_completed: isCompleted
@@ -345,16 +263,10 @@ const api = {
             
         } catch (error) {
             console.error('❌ Update Progress Error:', error);
-            throw error; // Re-throw for UI to handle
+            throw error;
         }
     },
     
-    /**
-     * Get progress percentage for a course
-     * @param {number} courseId - Course ID
-     * @returns {Promise<Object>} Progress data: {progress, total_lessons, completed_lessons}
-     * @throws {Error} On auth or API error
-     */
     async getCourseProgress(courseId) {
         const token = this.getToken();
         
@@ -391,12 +303,6 @@ const api = {
     // 🎓 ENROLLMENT METHODS
     // =========================================================================
     
-    /**
-     * Enroll current user in a course
-     * @param {number} courseId - Course ID to enroll in
-     * @returns {Promise<Object>} Enrollment confirmation data
-     * @throws {Error} On auth or API error
-     */
     async enrollInCourse(courseId) {
         const token = this.getToken();
         
@@ -427,10 +333,6 @@ const api = {
         }
     },
     
-    /**
-     * Get all courses that user is enrolled in (with progress)
-     * @returns {Promise<Array>} List of enrolled courses with progress data
-     */
     async getEnrolledCourses() {
         const token = this.getToken();
         
@@ -459,10 +361,6 @@ const api = {
         }
     },
     
-    /**
-     * Get dashboard summary (stats + courses)
-     * @returns {Promise<Object>} Dashboard data: {stats, in_progress_courses, available_courses}
-     */
     async getDashboardSummary() {
         const token = this.getToken();
         
@@ -492,14 +390,9 @@ const api = {
     },
     
     // =========================================================================
-    // ✍️ QUIZ METHODS (NEW: Untuk Udemy-style Quiz System)
+    // ✍️ QUIZ METHODS
     // =========================================================================
     
-    /**
-     * Get quiz questions (tanpa kunci jawaban - aman untuk frontend)
-     * @param {number} quizId - Quiz ID
-     * @returns {Promise<Object|null>} Quiz data with questions (no correct_answer)
-     */
     async getQuiz(quizId) {
         const token = this.getToken();
         
@@ -528,13 +421,6 @@ const api = {
         }
     },
     
-    /**
-     * Submit quiz answers & get auto-graded result
-     * @param {number} quizId - Quiz ID
-     * @param {Object} answers - Object dengan format { question_id: "A", ... }
-     * @returns {Promise<Object>} Result: { score, passed, message, attempt }
-     * @throws {Error} On auth or API error
-     */
     async submitQuiz(quizId, answers) {
         const token = this.getToken();
         
@@ -567,15 +453,9 @@ const api = {
     },
     
     // =========================================================================
-    // 📄 CERTIFICATE METHODS (NEW)
+    // 📄 CERTIFICATE METHODS
     // =========================================================================
     
-    /**
-     * Download certificate PDF for completed course
-     * @param {number} courseId - Course ID
-     * @returns {Promise<Blob>} PDF blob for download
-     * @throws {Error} On auth or API error
-     */
     async downloadCertificate(courseId) {
         const token = this.getToken();
         
@@ -584,14 +464,13 @@ const api = {
         }
         
         try {
-            // ✅ Gunakan Accept: application/json agar Laravel tidak redirect ke login page
             const response = await this._fetchWithTimeout(
                 `${API_BASE}/user/certificates/${courseId}/download`,
                 {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json' // ← WAJIB untuk API request
+                        'Accept': 'application/json'
                     }
                 }
             );
@@ -604,7 +483,6 @@ const api = {
                 throw new Error(error.message || `HTTP ${response.status}`);
             }
             
-            // Return blob untuk trigger download di frontend
             return await response.blob();
             
         } catch (error) {
@@ -617,10 +495,6 @@ const api = {
     // 🔄 UTILITY METHODS
     // =========================================================================
     
-    /**
-     * Refresh user data from backend
-     * @returns {Promise<Object|null>} Updated user data or null
-     */
     async refreshUser() {
         const token = this.getToken();
         
@@ -646,56 +520,68 @@ const api = {
 };
 
 // ============================================================================
-// 🔄 AUTO-AUTH CHECK (Global Page Protection)
+// 🔒 PAGE PROTECTION (IMPROVED - No Auto-Redirect from Landing Pages)
 // ============================================================================
 
-/**
- * Auto-redirect based on auth status
- * Runs when DOM is ready on all pages
- */
 document.addEventListener('DOMContentLoaded', () => {
-    // ✅ UPDATED: Tambah courses.html & teachers.html sebagai public pages
-    const publicPages = [
-        'index.html', 
-        'login.html', 
-        'register.html', 
-        'courses.html',      // ✅ Bisa diakses tanpa login (browse courses)
-        'teachers.html',     // ✅ Bisa diakses tanpa login (lihat teachers)
+    // ✅ Halaman yang SELALU tampil tanpa auto-redirect (landing & auth pages)
+    const alwaysPublicPages = [
+        'index.html',       // Landing page - selalu tampil
+        'login.html',       // Login page - selalu tampil
+        'register.html',    // Register page - selalu tampil
         ''                  // Root path
     ];
     
+    // ✅ Halaman publik yang bisa diakses tanpa login (tapi tidak auto-redirect)
+    const publicPages = [
+        ...alwaysPublicPages,
+        'courses.html',     // Browse courses
+        'teachers.html'     // Browse teachers
+    ];
+    
     const currentPage = window.location.pathname.split('/').pop();
+    const isAlwaysPublic = alwaysPublicPages.includes(currentPage);
     const isPublicPage = publicPages.includes(currentPage);
     
-    // 1. If logged in + on public page → redirect to dashboard
-    if (api.isLoggedIn() && isPublicPage) {
+    // ✅ RULE 1: Halaman yang selalu publik → JANGAN auto-redirect apapun
+    // Biarkan user memutuskan mau login sebagai siapa
+    if (isAlwaysPublic) {
+        console.log('📄 Public page:', currentPage, '- No auto-redirect');
+        return; // STOP! Jangan lakukan apapun
+    }
+    
+    // ✅ RULE 2: Jika TIDAK login + di halaman protected → redirect ke login
+    if (!api.isLoggedIn() && !isPublicPage) {
+        console.log('🔒 Protected page - redirecting to login');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // ✅ RULE 3: Jika sudah login + di dashboard.html tapi role admin → redirect ke admin.html
+    if (api.isLoggedIn() && currentPage === 'dashboard.html') {
         const role = api.getUserRole();
-        const target = role === 'admin' ? 'admin.html' : 'dashboard.html';
-        
-        // Avoid redirect loop
-        if (!window.location.pathname.includes(target)) {
-            window.location.href = target;
+        if (role === 'admin') {
+            console.log('👑 Admin detected on dashboard - redirecting to admin.html');
+            window.location.href = 'admin.html';
+            return;
         }
     }
     
-    // 2. If NOT logged in + on protected page → redirect to login
-    if (!api.isLoggedIn() && !isPublicPage) {
-        // ✅ Kecuali courses.html & teachers.html yang boleh diakses public
-        const protectedButPublic = ['courses.html', 'teachers.html'];
-        if (!protectedButPublic.includes(currentPage)) {
-            window.location.href = 'login.html';
+    // ✅ RULE 4: Jika sudah login + di admin.html tapi role bukan admin → redirect ke dashboard
+    if (api.isLoggedIn() && currentPage === 'admin.html') {
+        const role = api.getUserRole();
+        if (role !== 'admin') {
+            console.log('👤 Non-admin on admin.html - redirecting to dashboard.html');
+            window.location.href = 'dashboard.html';
+            return;
         }
     }
 });
 
 // ============================================================================
-// 📦 MODULE EXPORT (Optional: for bundlers like Webpack/Vite)
+// 📦 MODULE EXPORT
 // ============================================================================
 
-// For CommonJS (Node.js)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = api;
 }
-
-// For ES Modules (uncomment if using type="module" in HTML)
-// export default api;
