@@ -4,7 +4,7 @@
  * ✅ Compatible dengan auth.js, dashboard.js, course-details.js, courses.js
  * 
  * @module api
- * @version 2.2.0 - Fixed auto-login issue
+ * @version 2.3.0 - Fixed duplicate login, added clearUserData
  */
 
 // ============================================================================
@@ -44,9 +44,34 @@ const api = {
         localStorage.setItem('speakout_token', token);
     },
     
+    /**
+     * ✅ Clear token & user data (basic logout)
+     */
     clearToken() {
         localStorage.removeItem('speakout_token');
         localStorage.removeItem('speakout_user');
+    },
+    
+    /**
+     * ✅ NEW: Clear SEMUA data user termasuk course progress
+     * Dipanggil saat login user baru atau logout
+     */
+    clearUserData() {
+        // 1. Hapus token & user info
+        localStorage.removeItem('speakout_token');
+        localStorage.removeItem('speakout_user');
+        
+        // 2. Hapus semua course progress (key mengandung '_completed')
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.includes('_completed')) {
+                keysToRemove.push(key);
+            }
+        }
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+        
+        console.log('🧹 Cleared user data & progress');
     },
     
     isLoggedIn() {
@@ -69,6 +94,11 @@ const api = {
     getUserRole() {
         const user = this.getUser();
         return user?.role || 'user';
+    },
+    
+    getUserId() {
+        const user = this.getUser();
+        return user?.id || 'guest';
     },
     
     // =========================================================================
@@ -135,6 +165,9 @@ const api = {
         }
     },
     
+    /**
+     * ✅ FIXED: Login dengan clearUserData untuk mencegah data user lama terbaca
+     */
     async login(email, password) {
         try {
             const response = await this._fetchWithTimeout(`${API_BASE}/auth/login`, {
@@ -145,14 +178,18 @@ const api = {
             const data = await response.json();
             
             if (response.ok && data.token) {
-                this.setToken(data.token);
-                if (data.user) {
-                    localStorage.setItem('speakout_user', JSON.stringify(data.user));
-                }
+                // ✅ PENTING: Clear SEMUA data user lama sebelum simpan user baru
+                this.clearUserData();
+                
+                // Simpan data user baru
+                localStorage.setItem('speakout_token', data.token);
+                localStorage.setItem('speakout_user', JSON.stringify(data.user));
+                
+                return { success: true, data };
             }
             
             return {
-                success: response.ok,
+                success: false,
                 data,
                 status: response.status
             };
@@ -181,7 +218,8 @@ const api = {
             }
         }
         
-        this.clearToken();
+        // ✅ Clear semua data termasuk progress
+        this.clearUserData();
         window.location.href = 'login.html';
     },
     
@@ -520,58 +558,41 @@ const api = {
 };
 
 // ============================================================================
-// 🔒 PAGE PROTECTION (IMPROVED - No Auto-Redirect from Landing Pages)
+// 🔒 PAGE PROTECTION
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // ✅ Halaman yang SELALU tampil tanpa auto-redirect (landing & auth pages)
-    const alwaysPublicPages = [
-        'index.html',       // Landing page - selalu tampil
-        'login.html',       // Login page - selalu tampil
-        'register.html',    // Register page - selalu tampil
-        ''                  // Root path
-    ];
-    
-    // ✅ Halaman publik yang bisa diakses tanpa login (tapi tidak auto-redirect)
-    const publicPages = [
-        ...alwaysPublicPages,
-        'courses.html',     // Browse courses
-        'teachers.html'     // Browse teachers
-    ];
+    const alwaysPublicPages = ['index.html', 'login.html', 'register.html', ''];
+    const publicPages = [...alwaysPublicPages, 'courses.html', 'teachers.html'];
     
     const currentPage = window.location.pathname.split('/').pop();
     const isAlwaysPublic = alwaysPublicPages.includes(currentPage);
     const isPublicPage = publicPages.includes(currentPage);
     
-    // ✅ RULE 1: Halaman yang selalu publik → JANGAN auto-redirect apapun
-    // Biarkan user memutuskan mau login sebagai siapa
     if (isAlwaysPublic) {
         console.log('📄 Public page:', currentPage, '- No auto-redirect');
-        return; // STOP! Jangan lakukan apapun
+        return;
     }
     
-    // ✅ RULE 2: Jika TIDAK login + di halaman protected → redirect ke login
     if (!api.isLoggedIn() && !isPublicPage) {
         console.log('🔒 Protected page - redirecting to login');
         window.location.href = 'login.html';
         return;
     }
     
-    // ✅ RULE 3: Jika sudah login + di dashboard.html tapi role admin → redirect ke admin.html
     if (api.isLoggedIn() && currentPage === 'dashboard.html') {
         const role = api.getUserRole();
         if (role === 'admin') {
-            console.log('👑 Admin detected on dashboard - redirecting to admin.html');
+            console.log('👑 Admin detected - redirecting to admin.html');
             window.location.href = 'admin.html';
             return;
         }
     }
     
-    // ✅ RULE 4: Jika sudah login + di admin.html tapi role bukan admin → redirect ke dashboard
     if (api.isLoggedIn() && currentPage === 'admin.html') {
         const role = api.getUserRole();
         if (role !== 'admin') {
-            console.log('👤 Non-admin on admin.html - redirecting to dashboard.html');
+            console.log('👤 Non-admin - redirecting to dashboard.html');
             window.location.href = 'dashboard.html';
             return;
         }

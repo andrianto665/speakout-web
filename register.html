@@ -5,210 +5,239 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - SpeakOut</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        :root {
+            --dark: #0f0f1a;
+            --dark2: #14142a;
+            --purple: #5b2d8e;
+            --purple-light: #7b4db5;
+            --purple-accent: #a67cda;
+            --blue: #0A4D9B;
+            --blue-light: #1565c0;
+            --blue-accent: #4a90d9;
+            --white: #ffffff;
+            --gray: #a0a0b8;
+            --surface: #1a1a35;
+            --surface2: #f4f4fc;
         }
 
-        body{
-            font-family:'Poppins',sans-serif;
-            background:#f7f9fc;
-            overflow-x:hidden;
-            color:#1f2937;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        a{
-            text-decoration:none;
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surface2);
+            overflow-x: hidden;
+            color: #1f1f3a;
+        }
+
+        a {
+            text-decoration: none;
         }
 
         /* ================= HEADER ================= */
-
-        .header{
-            width:100%;
-            background:white;
-            padding:16px 0;
-            position:sticky;
-            top:0;
-            z-index:999;
-            box-shadow:0 2px 15px rgba(0,0,0,0.05);
+        .header {
+            width: 100%;
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: rgba(10,15,35,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
 
-        .header-container{
-            max-width:1200px;
-            margin:auto;
-            padding:0 20px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
+        .header-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .logo{
-            display:flex;
-            align-items:center;
-            gap:12px;
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--white);
+            letter-spacing: -0.5px;
         }
 
-        .logo-icon{
-            width:45px;
-            height:45px;
-            border-radius:10px;
-            background:#0A4D9B;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            color:white;
-            font-size:22px;
-            font-weight:700;
+        .logo span { color: var(--blue-accent); }
+
+        .nav-menu {
+            display: flex;
+            gap: 36px;
+            list-style: none;
         }
 
-        .logo-text h1{
-            font-size:24px;
-            color:#0A4D9B;
-            line-height:1;
+        .nav-menu a {
+            color: var(--gray);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: color 0.3s;
         }
 
-        .logo-text p{
-            font-size:12px;
-            color:#666;
+        .nav-menu a:hover {
+            color: var(--white);
         }
 
-        .nav-menu{
-            display:flex;
-            gap:30px;
-            list-style:none;
+        .btn-login {
+            background: var(--blue);
+            color: white;
+            padding: 11px 26px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
         }
 
-        .nav-menu a{
-            color:#222;
-            font-weight:500;
-            transition:0.3s;
-        }
-
-        .nav-menu a:hover{
-            color:#0A4D9B;
-        }
-
-        .btn-login{
-            background:#0A4D9B;
-            color:white;
-            padding:13px 28px;
-            border-radius:8px;
-            font-weight:600;
-            transition:0.3s;
-        }
-
-        .btn-login:hover{
-            background:#083a74;
+        .btn-login:hover {
+            background: var(--blue-light);
+            transform: translateY(-1px);
         }
 
         /* ================= REGISTER SECTION ================= */
-
-        .register-section{
-            min-height:calc(100vh - 80px);
-            background:linear-gradient(to right,#0A4D9B,#1E73BE);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:50px 20px;
+        .register-section {
+            min-height: calc(100vh - 80px);
+            background: linear-gradient(135deg, var(--dark) 0%, #1a0a35 50%, #0a1a40 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .register-container{
-            max-width:1100px;
-            width:100%;
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:50px;
-            align-items:center;
+        .register-section::before {
+            content: "Register";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Playfair Display', serif;
+            font-size: 200px;
+            font-weight: 900;
+            color: rgba(255,255,255,0.03);
+            white-space: nowrap;
+            pointer-events: none;
         }
 
-        .register-text{
-            color:white;
+        .register-container {
+            max-width: 1100px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
         }
 
-        .register-text h1{
-            font-size:52px;
-            line-height:1.2;
-            margin-bottom:20px;
-            font-weight:800;
+        .register-text {
+            color: white;
         }
 
-        .register-text p{
-            font-size:18px;
-            line-height:1.8;
-            color:#f3f3f3;
+        .register-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 5vw, 52px);
+            line-height: 1.2;
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+
+        .register-text h1 em {
+            font-style: italic;
+            color: var(--purple-accent);
+        }
+
+        .register-text p {
+            font-size: clamp(14px, 1.5vw, 17px);
+            line-height: 1.8;
+            color: var(--gray);
+            font-weight: 300;
         }
 
         /* ================= FORM CARD ================= */
-
-        .register-card{
-            background:white;
-            padding:40px;
-            border-radius:20px;
-            box-shadow:0 15px 40px rgba(0,0,0,0.15);
+        .register-card {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
-        .register-card h2{
-            text-align:center;
-            color:#0A4D9B;
-            font-size:32px;
-            margin-bottom:30px;
+        .register-card h2 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            color: var(--blue);
+            font-size: 32px;
+            margin-bottom: 30px;
+            font-weight: 900;
         }
 
-        .form-group{
-            margin-bottom:18px;
+        .form-group {
+            margin-bottom: 18px;
         }
 
-        label{
-            display:block;
-            margin-bottom:8px;
-            font-size:14px;
-            font-weight:500;
-            color:#333;
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
         }
 
-        input{
-            width:100%;
-            padding:14px;
-            border:2px solid #e5e7eb;
-            border-radius:10px;
-            outline:none;
-            font-size:15px;
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+            transition: 0.3s;
         }
 
-        input:focus{
-            border-color:#0A4D9B;
+        input:focus {
+            border-color: var(--blue);
         }
 
-        .register-btn{
-            width:100%;
-            background:#E53935;
-            color:white;
-            padding:15px;
-            border:none;
-            border-radius:10px;
-            font-size:16px;
-            font-weight:600;
-            cursor:pointer;
-            transition:0.3s;
+        .register-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
-        .register-btn:hover{
-            background:#c62828;
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(91, 45, 142, 0.3);
         }
 
-        .link{
-            text-align:center;
-            margin-top:20px;
-            font-size:14px;
+        .link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
         }
 
-        .link a{
-            color:#0A4D9B;
-            font-weight:600;
+        .link a {
+            color: var(--blue);
+            font-weight: 600;
         }
 
         /* ================= NOTIFICATION TOAST ================= */
@@ -283,23 +312,21 @@
         }
 
         /* ================= RESPONSIVE ================= */
-
-        @media(max-width:992px){
-
-            .register-container{
-                grid-template-columns:1fr;
+        @media (max-width: 992px) {
+            .register-container {
+                grid-template-columns: 1fr;
             }
 
-            .register-text{
-                text-align:center;
+            .register-text {
+                text-align: center;
             }
 
-            .register-text h1{
-                font-size:40px;
+            .register-text h1 {
+                font-size: 40px;
             }
 
-            .nav-menu{
-                display:none;
+            .nav-menu {
+                display: none;
             }
 
             .notification {
@@ -309,26 +336,22 @@
             }
         }
 
-        @media(max-width:600px){
-
-            .register-card{
-                padding:25px;
+        @media (max-width: 600px) {
+            .register-card {
+                padding: 28px;
             }
 
-            .register-text h1{
-                font-size:30px;
+            .register-text h1 {
+                font-size: 30px;
             }
 
-            .register-text p{
-                font-size:16px;
+            .register-text p {
+                font-size: 16px;
             }
 
-            .btn-login{
-                padding:10px 18px;
-            }
-
-            .logo-text h1{
-                font-size:20px;
+            .btn-login {
+                padding: 10px 18px;
+                font-size: 13px;
             }
 
             .notification {
@@ -344,14 +367,7 @@
 
 <header class="header">
     <div class="header-container">
-
-        <div class="logo">
-            <div class="logo-icon">S</div>
-            <div class="logo-text">
-                <h1>SpeakOut</h1>
-                <p>Ngomong Inggris Jadi Mudah</p>
-            </div>
-        </div>
+        <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
 
         <nav>
             <ul class="nav-menu">
@@ -362,7 +378,6 @@
         </nav>
 
         <a href="login.html" class="btn-login">Login</a>
-
     </div>
 </header>
 
@@ -373,7 +388,7 @@
         <div class="register-text">
             <h1>
                 Bergabung dengan<br>
-                SpeakOut Sekarang
+                <em>SpeakOut</em> Sekarang
             </h1>
 
             <p>

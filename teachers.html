@@ -194,173 +194,155 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== GRID ===== */
+        /* ===== GRID - ✅ CHANGED TO 4 COLUMNS ===== */
         .teachers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
         }
 
-        /* ===== CARD ===== */
+        /* ===== CARD - ✅ NEW DESIGN: Full Photo + Pattern ===== */
         .teacher-card {
+            position: relative;
             background: white;
-            border-radius: 24px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 24px rgba(91,45,142,0.08);
-            border: 1px solid rgba(91,45,142,0.08);
-            transition: 0.3s;
+            box-shadow: 0 10px 40px rgba(91,45,142,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
             display: flex;
             flex-direction: column;
         }
 
         .teacher-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 16px 48px rgba(91,45,142,0.16);
+            box-shadow: 0 20px 60px rgba(91,45,142,0.25);
         }
 
-        /* Banner dengan foto profil */
-        .teacher-banner {
-            height: 160px;
-            background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
+        /* ✅ PHOTO CONTAINER WITH "INSTRUKTUR" PATTERN */
+        .teacher-photo-container {
             position: relative;
+            height: 360px;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
             overflow: hidden;
         }
 
-        .teacher-banner::after {
-            content: '';
+        /* Pattern "INSTRUKTUR" background */
+        .teacher-photo-container::before {
+            content: 'INSTRUKTUR';
             position: absolute;
-            inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-
-        .teacher-avatar-wrap {
-            position: absolute;
-            bottom: -40px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
+            transform: translate(-50%, -50%);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.12);
+            text-align: center;
+            z-index: 1;
+            white-space: nowrap;
+            letter-spacing: 3px;
         }
 
-        .teacher-avatar {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            border: 4px solid white;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        /* Multiple layers of pattern */
+        .teacher-photo-container::after {
+            content: 'INSTRUKTUR\A INSTRUKTUR\A INSTRUKTUR\A INSTRUKTUR\A INSTRUKTUR\A INSTRUKTUR';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.06);
+            text-align: center;
+            white-space: pre;
+            z-index: 1;
+            line-height: 1.5;
+            letter-spacing: 2px;
+        }
+
+        /* Teacher photo */
+        .teacher-photo {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            background: #ddd;
+            object-position: top center;
             display: block;
         }
 
-        /* Fallback avatar dengan inisial */
-        .teacher-avatar-fallback {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            border: 4px solid white;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            background: linear-gradient(135deg, var(--purple-accent), var(--blue-accent));
+        /* Fallback when photo not available */
+        .teacher-photo-fallback {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Playfair Display', serif;
-            font-size: 30px;
-            font-weight: 700;
-            color: white;
+            font-size: 80px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, var(--purple-light) 0%, var(--blue-accent) 100%);
         }
 
-        .teacher-content {
-            padding: 52px 28px 28px;
+        /* ===== TEACHER INFO ===== */
+        .teacher-info {
+            padding: 20px;
+            background: white;
             text-align: center;
             flex: 1;
             display: flex;
             flex-direction: column;
-        }
-
-        .teacher-content h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 22px;
-            color: var(--dark);
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .teacher-role {
-            font-size: 13px;
-            color: var(--purple);
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-
-        /* ===== STATS ===== */
-        .teacher-stats {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 22px;
-        }
-
-        .stat-box {
-            background: rgba(91,45,142,0.06);
-            padding: 14px 16px;
-            border-radius: 14px;
-            min-width: 90px;
-            border: 1px solid rgba(91,45,142,0.1);
-        }
-
-        .stat-number {
-            display: block;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--purple);
-            font-family: 'Playfair Display', serif;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #888;
-            font-weight: 500;
-        }
-
-        /* ===== SPECIALTIES ===== */
-        .teacher-tags {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
             gap: 8px;
-            margin-bottom: 24px;
         }
 
-        .teacher-tag {
-            background: rgba(10,77,155,0.08);
-            color: var(--blue);
-            padding: 5px 12px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 500;
+        /* Name button with gradient */
+        .teacher-name-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
+    color: white;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    word-break: break-word;
+    white-space: normal;
         }
 
-        /* ===== BUTTON ===== */
-        .teacher-btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--purple), var(--blue));
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: auto;
-        }
-
-        .teacher-btn:hover {
+        .teacher-name-btn:hover {
+            background: linear-gradient(135deg, var(--purple-light) 0%, var(--blue-light) 100%);
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(91,45,142,0.35);
+            box-shadow: 0 8px 20px rgba(91, 45, 142, 0.3);
+        }
+
+        /* Dynamic font sizing based on name length */
+        .teacher-name-btn.short-name {
+            font-size: 16px;
+             letter-spacing: 1px;
+        }
+
+        .teacher-name-btn.medium-name {
+            font-size: 14px;
+            letter-spacing: 0.8px;
+        }
+
+        .teacher-name-btn.long-name {
+            font-size: 13px;
+            letter-spacing: 0.5px;
         }
 
         /* ===== ERROR ===== */
@@ -373,19 +355,36 @@
         }
 
         /* ===== RESPONSIVE ===== */
+        @media(max-width: 1200px) {
+            .teachers-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
         @media(max-width: 992px) {
             .nav-menu { display: none; }
-            .teachers-grid { grid-template-columns: repeat(2, 1fr); }
+            .teachers-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .teacher-photo-container {
+                height: 320px;
+            }
         }
 
         @media(max-width: 768px) {
             .header-container { padding: 0 24px; }
             .hero::before { font-size: 80px; }
+            .teacher-photo-container {
+                height: 300px;
+            }
         }
 
         @media(max-width: 560px) {
             .teachers-grid { grid-template-columns: 1fr; }
             .btn-login { padding: 10px 20px; font-size: 13px; }
+            .teacher-photo-container {
+                height: 360px;
+            }
         }
     </style>
 </head>
@@ -429,7 +428,7 @@
             <p>Loading teachers...</p>
         </div>
 
-        <div id="teachersList" class="teachers-grid"></div>
+        <div id="teachersList" class="teachers-grid" style="display:none;"></div>
 
         <div id="errorState" class="error-state" style="display:none;">
             Gagal memuat data teachers.
@@ -438,43 +437,159 @@
     </div>
 </section>
 
-<script src="js/teachers.js"></script>
+<!-- API Service -->
+<script src="js/api.js"></script>
 
+<!-- Teachers Logic -->
 <script>
-    // Patch: tambah foto profil & stats ke card setelah teachers.js render
-    // Jalankan setelah teachers.js selesai load data
-    function enhanceTeacherCards() {
-        const cards = document.querySelectorAll('.teacher-card');
-        cards.forEach(card => {
-            const avatarWrap = card.querySelector('.teacher-avatar-wrap');
-            if (!avatarWrap) return;
+/**
+ * 📁 teachers.html - Load Teachers dengan Foto
+ * 🎯 Menampilkan daftar tutor dengan foto dari public/assets/teachers/
+ */
 
-            const nameEl = card.querySelector('h3');
-            const name = nameEl ? nameEl.textContent.trim() : '?';
-            const initial = name.charAt(0).toUpperCase();
+const TEACHERS_API = 'http://127.0.0.1:8000/api/teachers';
 
-            // Kalau img gagal load, tampilkan fallback inisial
-            const img = avatarWrap.querySelector('img');
-            if (img) {
-                img.onerror = function() {
-                    const fallback = document.createElement('div');
-                    fallback.className = 'teacher-avatar-fallback';
-                    fallback.textContent = initial;
-                    img.replaceWith(fallback);
-                };
-            }
-        });
+// Default teachers data (fallback jika API belum tersedia)
+const defaultTeachers = [
+    {
+        id: 1,
+        name: 'Martina Wati',
+        role: 'Tutor SpeakOut',
+        photo: 'assets/teachers/martinawati.png',
+        expertise: ['Speaking', 'Grammar', 'TOEFL']
+    },
+    {
+        id: 2,
+        name: 'Hafiz Varintio RA',
+        role: 'Tutor SpeakOut',
+        photo: 'assets/teachers/hafishvarintiora.png',
+        expertise: ['Conversation', 'Writing', 'Business']
+    },
+    {
+        id: 3,
+        name: 'Visa Ranico',
+        role: 'Tutor SpeakOut',
+        photo: 'assets/teachers/visaranico.png',
+        expertise: ['Pronunciation', 'Listening', 'IELTS']
+    },
+    {
+        id: 4,
+        name: 'Krisna Islami',
+        role: 'Tutor SpeakOut',
+        photo: 'assets/teachers/krisnaislami.png',
+        expertise: ['Vocabulary', 'Reading', 'TOEFL']
     }
+];
 
-    // Observasi perubahan DOM untuk patch cards setelah JS load data
-    const observer = new MutationObserver(() => {
-        const list = document.getElementById('teachersList');
-        if (list && list.children.length > 0) {
-            enhanceTeacherCards();
-            observer.disconnect();
+// ========================================================================
+// INIT
+// ========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    loadTeachers();
+});
+
+// ========================================================================
+// LOAD TEACHERS
+// ========================================================================
+async function loadTeachers() {
+    const loading = document.getElementById('loadingState');
+    const grid = document.getElementById('teachersList');
+    const error = document.getElementById('errorState');
+
+    try {
+        // Try to fetch from API
+        const response = await fetch(TEACHERS_API, {
+            headers: { 'Accept': 'application/json' }
+        });
+
+        let teachers = [];
+        
+        if (response.ok) {
+            teachers = await response.json();
+            console.log('✅ Loaded teachers from API:', teachers.length);
+        } else {
+            // Fallback to default data
+            console.log('⚠️ API not available, using default teachers');
+            teachers = defaultTeachers;
         }
+
+        loading.style.display = 'none';
+
+        if (teachers.length === 0) {
+            // Use default if API returns empty
+            teachers = defaultTeachers;
+        }
+
+        grid.style.display = 'grid';
+        renderTeachers(teachers);
+
+    } catch (err) {
+        console.error('❌ Error loading teachers:', err);
+        loading.style.display = 'none';
+        
+        // Fallback to default data on error
+        grid.style.display = 'grid';
+        renderTeachers(defaultTeachers);
+    }
+}
+
+// ========================================================================
+// RENDER TEACHERS
+// ========================================================================
+function renderTeachers(teachers) {
+    const grid = document.getElementById('teachersList');
+    grid.innerHTML = '';
+
+    teachers.forEach(teacher => {
+        const card = document.createElement('div');
+        card.className = 'teacher-card';
+        
+        // Photo path
+        const photoPath = teacher.photo || `assets/teachers/teacher-${teacher.id}.jpg`;
+        const fullName = teacher.name || teacher.full_name || 'Teacher';
+        const role = teacher.role || teacher.title || 'Tutor Bahasa Inggris';
+        
+        // ✅ Tampilkan nama lengkap
+        const displayName = fullName;
+        
+        // ✅ Tentukan class berdasarkan panjang nama
+        const nameLength = fullName.length;
+        let nameClass = 'short-name';
+        if (nameLength > 20) {
+            nameClass = 'long-name';
+        } else if (nameLength > 12) {
+            nameClass = 'medium-name';
+        }
+        
+        // Get initial for fallback
+        const initial = fullName.charAt(0).toUpperCase();
+
+        card.innerHTML = `
+            <div class="teacher-photo-container">
+                <img src="http://127.0.0.1:8000/${photoPath}" 
+                     alt="${escapeHtml(fullName)}" 
+                     class="teacher-photo"
+                     onerror="this.outerHTML='<div class=\\'teacher-photo-fallback\\'>${initial}</div>'">
+            </div>
+            <div class="teacher-info">
+                <button class="teacher-name-btn ${nameClass}">${escapeHtml(displayName)}</button>
+                <div class="teacher-role">${escapeHtml(role)}</div>
+            </div>
+        `;
+
+        grid.appendChild(card);
     });
-    observer.observe(document.getElementById('teachersList') || document.body, { childList: true, subtree: true });
+}
+
+// ========================================================================
+// HELPER
+// ========================================================================
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 </script>
 
 </body>

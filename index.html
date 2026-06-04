@@ -20,6 +20,8 @@
             --white: #ffffff;
             --gray: #a0a0b8;
             --gray-light: #f5f5f5;
+            --surface: #1a1a35;
+            --surface2: #f4f4fc;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -36,11 +38,11 @@
         /* ===== HEADER ===== */
         .header {
             width: 100%;
-            padding: 22px 0;
+            padding: 18px 0;
             position: fixed;
             top: 0;
             z-index: 999;
-            background: rgba(10,15,35,0.88);
+            background: rgba(10,15,35,0.92);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255,255,255,0.06);
         }
@@ -56,7 +58,7 @@
 
         .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 900;
             color: var(--white);
             letter-spacing: -0.5px;
@@ -68,7 +70,7 @@
 
         .nav-menu {
             display: flex;
-            gap: 40px;
+            gap: 36px;
             list-style: none;
         }
 
@@ -81,16 +83,17 @@
             transition: color 0.3s;
         }
 
-        .nav-menu a:hover { color: var(--white); }
+        .nav-menu a:hover {
+            color: var(--white);
+        }
 
         .btn-login {
             background: var(--blue);
             color: white;
-            padding: 12px 28px;
+            padding: 11px 26px;
             border-radius: 50px;
             font-size: 14px;
             font-weight: 600;
-            letter-spacing: 0.5px;
             transition: 0.3s;
         }
 
@@ -142,20 +145,20 @@
         .hero-eyebrow {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 28px;
+            gap: 10px;
+            margin-bottom: 24px;
             opacity: 0;
             animation: fadeUp 0.8s ease 0.3s forwards;
         }
 
         .hero-eyebrow-line {
-            width: 40px;
+            width: 32px;
             height: 2px;
             background: var(--blue-accent);
         }
 
         .hero-eyebrow span {
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 3px;
             text-transform: uppercase;
             color: var(--blue-accent);
@@ -164,10 +167,10 @@
 
         .hero-title {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(32px, 4.5vw, 72px);
+            font-size: clamp(32px, 5vw, 64px);
             line-height: 1.1;
             font-weight: 900;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             max-width: 620px;
             opacity: 0;
             animation: fadeUp 0.8s ease 0.5s forwards;
@@ -181,8 +184,8 @@
         .hero-desc {
             font-size: clamp(14px, 1.5vw, 17px);
             color: var(--gray);
-            line-height: 1.75;
-            max-width: 440px;
+            line-height: 1.8;
+            max-width: 600px;
             margin-bottom: 40px;
             font-weight: 300;
             opacity: 0;
@@ -203,9 +206,9 @@
             gap: 10px;
             background: linear-gradient(135deg, var(--purple), var(--blue));
             color: white;
-            padding: 18px 38px;
+            padding: 14px 32px;
             border-radius: 50px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             transition: 0.3s;
         }
@@ -221,19 +224,23 @@
             transition: transform 0.3s;
         }
 
-        .btn-register:hover .arrow { transform: translateX(4px); }
+        .btn-register:hover .arrow {
+            transform: translateX(4px);
+        }
 
         .btn-explore {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             color: var(--gray);
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
             transition: color 0.3s;
         }
 
-        .btn-explore:hover { color: var(--white); }
+        .btn-explore:hover {
+            color: var(--white);
+        }
 
         .btn-explore-icon {
             width: 36px;
@@ -254,31 +261,35 @@
         /* ===== BENEFITS ===== */
         .benefits {
             background: var(--dark2);
-            padding: 80px 0;
+            padding: 80px 20px;
             border-top: 1px solid rgba(255,255,255,0.06);
         }
 
         .benefits-container {
             max-width: 1200px;
             margin: auto;
-            padding: 0 40px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1px;
-            background: rgba(255,255,255,0.06);
+            gap: 24px;
         }
 
         .benefit-card {
-            background: var(--dark2);
-            padding: 40px 32px;
-            transition: background 0.3s;
+            background: rgba(255,255,255,0.04);
+            padding: 32px 28px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s;
         }
 
-        .benefit-card:hover { background: #1a1a35; }
+        .benefit-card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.15);
+        }
 
         .benefit-icon {
             font-size: 32px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             display: block;
         }
 
@@ -302,32 +313,60 @@
             letter-spacing: 2px;
             color: var(--purple-accent);
             text-transform: uppercase;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             font-weight: 500;
         }
 
         /* ===== RESPONSIVE ===== */
         @media(max-width: 1024px) {
-            .benefits-container { grid-template-columns: repeat(2, 1fr); }
+            .benefits-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media(max-width: 768px) {
-            .nav-menu { display: none; }
-            .header-container { padding: 0 24px; }
-            .hero-container { padding: 120px 24px 60px; }
-            .hero-eyebrow span { font-size: 10px; letter-spacing: 2px; }
-            .hero-actions { gap: 16px; }
-            .btn-register { padding: 15px 28px; font-size: 15px; }
+            .nav-menu {
+                display: none;
+            }
+            .header-container {
+                padding: 0 24px;
+            }
+            .hero-container {
+                padding: 120px 24px 60px;
+            }
+            .hero-actions {
+                gap: 16px;
+            }
+            .btn-register {
+                padding: 12px 28px;
+                font-size: 14px;
+            }
+            .benefits-container {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
         }
 
         @media(max-width: 480px) {
-            .hero-container { padding: 100px 20px 50px; }
-            .hero-actions { flex-direction: column; align-items: flex-start; gap: 14px; }
-            .btn-register { width: 100%; justify-content: center; }
-            .benefits-container { grid-template-columns: 1fr; padding: 0; }
-            .benefit-card { padding: 28px 24px; }
-            .logo { font-size: 22px; }
-            .btn-login { padding: 10px 20px; font-size: 13px; }
+            .hero-container {
+                padding: 100px 20px 50px;
+            }
+            .hero-actions {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+            .btn-register {
+                width: 100%;
+                justify-content: center;
+            }
+            .logo {
+                font-size: 22px;
+            }
+            .btn-login {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
@@ -336,16 +375,15 @@
 <!-- HEADER -->
 <header class="header">
     <div class="header-container">
-        <div class="logo">SPEAK<span>OUT</span></div>
+        <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
         <nav>
             <ul class="nav-menu">
-                <li><a href="index.html">Beranda</a></li>
+                <li><a href="index.html" class="active">Beranda</a></li>
                 <li><a href="courses.html">Course</a></li>
                 <li><a href="teachers.html">Teachers</a></li>
-                <li><a href="#">Kontak</a></li>
             </ul>
         </nav>
-        <a href="login.html" class="btn-login">Masuk</a>
+        <a href="login.html" class="btn-login">Login</a>
     </div>
 </header>
 
@@ -361,9 +399,7 @@
         </div>
 
         <h1 class="hero-title">
-            Belajar Inggris<br>
-            Jadi <em>Mudah</em><br>
-            & Menyenangkan
+            Belajar Inggris Jadi <em>Mudah</em> & Menyenangkan
         </h1>
 
         <p class="hero-desc">

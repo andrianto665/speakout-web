@@ -83,7 +83,8 @@
         .nav-menu a:hover,
         .nav-menu .active { color: var(--white); }
 
-        .btn-auth {
+        /* ✅ FIXED: btn-login styling - konsisten dengan halaman lain */
+        .btn-login {
             background: var(--blue);
             color: white;
             padding: 11px 26px;
@@ -93,20 +94,22 @@
             transition: 0.3s;
             border: none;
             cursor: pointer;
+            display: inline-block;
         }
 
-        .btn-auth:hover {
+        .btn-login:hover {
             background: var(--blue-light);
             transform: translateY(-1px);
         }
 
-        .btn-auth.logout {
+        /* ✅ Style untuk user yang sudah login */
+        .btn-login.logged-in {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: var(--gray);
         }
 
-        .btn-auth.logout:hover {
+        .btn-login.logged-in:hover {
             background: rgba(255, 255, 255, 0.1);
             color: var(--white);
         }
@@ -447,35 +450,35 @@
         }
 
         /* Course placeholder untuk yang tidak ada gambar */
-.course-image.no-image {
-    background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
-    min-height: 240px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
+        .course-image.no-image {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
+            min-height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
 
-.course-placeholder {
-    color: white;
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
-    font-weight: 700;
-    text-align: center;
-    padding: 40px 20px;
-    line-height: 1.4;
-}
+        .course-placeholder {
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            padding: 40px 20px;
+            line-height: 1.4;
+        }
 
-.course-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
+        .course-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
-.course-image.no-image img {
-    display: none;
-}
+        .course-image.no-image img {
+            display: none;
+        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 992px) {
@@ -510,25 +513,24 @@
         @media (max-width: 480px) {
             .course-content { padding: 22px; }
             .course-footer { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .btn-auth { padding: 10px 20px; font-size: 13px; }
+            .btn-login { padding: 10px 20px; font-size: 13px; }
         }
     </style>
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- ✅ FIXED HEADER: Konsisten dengan halaman lain -->
 <header class="header">
     <div class="header-container">
-        <a href="dashboard.html" class="logo">SPEAK<span>OUT</span></a>
+        <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
         <nav>
             <ul class="nav-menu">
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="dashboard.html#my-courses">My Courses</a></li>
-                <li><a href="courses.html" class="active">All Courses</a></li>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="courses.html" class="active">Course</a></li>
                 <li><a href="teachers.html">Teachers</a></li>
             </ul>
         </nav>
-        <button id="authBtn" class="btn-auth">Loading...</button>
+        <a id="authBtn" href="login.html" class="btn-login">Login</a>
     </div>
 </header>
 
@@ -666,11 +668,13 @@ let allCourses = [];
 // INIT: Auth Check + Setup
 // ========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Setup dynamic auth button
+    // ✅ Setup dynamic auth button (Login/Dashboard/Logout)
     updateAuthButton();
     
     // Setup auth button click handler
-    authBtn.addEventListener('click', handleAuthClick);
+    if (authBtn) {
+        authBtn.addEventListener('click', handleAuthClick);
+    }
     
     // Setup filter & sorting listeners
     filterKategori.addEventListener('change', applyFilters);
@@ -683,36 +687,43 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Update auth button text & behavior based on login state
+ * ✅ Update auth button based on login state
+ * - Not logged in → "Login" (link ke login.html)
+ * - Logged in → "Dashboard [Name]" (link ke dashboard.html)
  */
 function updateAuthButton() {
+    if (!authBtn) return;
+    
     if (api.isLoggedIn()) {
         const user = api.getUser();
         const userName = user?.name?.split(' ')[0] || 'User';
         
-        authBtn.textContent = `Logout ${userName}`;
-        authBtn.className = 'btn-auth logout';
-        authBtn.title = 'Click to logout';
+        authBtn.textContent = `Dashboard ${userName}`;
+        authBtn.href = 'dashboard.html';
+        authBtn.className = 'btn-login logged-in';
+        authBtn.title = 'Go to Dashboard';
     } else {
         authBtn.textContent = 'Login';
-        authBtn.className = 'btn-auth';
+        authBtn.href = 'login.html';
+        authBtn.className = 'btn-login';
         authBtn.title = 'Click to login';
     }
 }
 
 /**
- * Handle auth button click: login or logout
+ * Handle auth button click
  */
-function handleAuthClick() {
+function handleAuthClick(e) {
     if (api.isLoggedIn()) {
-        // Logout
-        if (confirm('Are you sure you want to logout?')) {
+        // User sudah login → tanyakan apakah mau logout
+        e.preventDefault();
+        if (confirm('Apakah Anda ingin logout?')) {
             api.logout();
+            // Refresh halaman untuk update button
+            window.location.reload();
         }
-    } else {
-        // Login
-        window.location.href = 'login.html';
     }
+    // Jika belum login, link akan otomatis redirect ke login.html
 }
 
 /**
@@ -791,7 +802,6 @@ function applyFilters() {
             filteredCourses.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             break;
         case 'popular':
-            // Sort by total_lessons as proxy for popularity
             filteredCourses.sort((a, b) => (b.total_lessons || 0) - (a.total_lessons || 0));
             break;
         case 'price-low':
@@ -831,7 +841,6 @@ function renderCourses(courses) {
         const card = document.createElement('div');
         card.className = 'course-card';
         
-        // ✅ FIXED: Tanpa external placeholder
         const hasThumbnail = course.thumbnail && course.thumbnail.trim() !== '';
         const thumbnailUrl = hasThumbnail ? 
             `http://127.0.0.1:8000/${course.thumbnail}` : 
@@ -842,7 +851,6 @@ function renderCourses(courses) {
         const btnClass = isEnrolled ? 'enrolled' : '';
         const btnDisabled = isEnrolled ? 'disabled' : '';
         
-        // ✅ Background gradient untuk course tanpa gambar
         const imageSection = hasThumbnail ? 
             `<img src="${thumbnailUrl}" alt="${escapeHtml(course.title)}" onerror="this.style.display='none'; this.parentElement.classList.add('no-image');">` :
             `<div class="course-placeholder">${escapeHtml(course.title).substring(0, 30)}${escapeHtml(course.title).length > 30 ? '...' : ''}</div>`;
