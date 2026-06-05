@@ -83,7 +83,6 @@
         .nav-menu a:hover,
         .nav-menu .active { color: var(--white); }
 
-        /* ✅ FIXED: btn-login styling - konsisten dengan halaman lain */
         .btn-login {
             background: var(--blue);
             color: white;
@@ -102,7 +101,6 @@
             transform: translateY(-1px);
         }
 
-        /* ✅ Style untuk user yang sudah login */
         .btn-login.logged-in {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -302,6 +300,7 @@
             grid-template-columns: 300px 1fr;
             transition: 0.3s;
             border: 1px solid rgba(91, 45, 142, 0.08);
+            cursor: pointer;
         }
 
         .course-card:hover {
@@ -396,10 +395,35 @@
             align-items: center;
         }
 
+        /* ===== COURSE PRICE ===== */
         .course-price {
-            font-size: 26px;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 4px;
+            background: linear-gradient(135deg, #0A4D9B 0%, #1565c0 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 24px;
             font-weight: 700;
-            color: var(--purple);
+            box-shadow: 0 4px 12px rgba(10, 77, 155, 0.3);
+        }
+
+        .course-price .currency {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .course-price .amount {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        /* Untuk harga gratis */
+        .course-price.free-price {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
         .btn-enroll {
@@ -449,7 +473,7 @@
             color: #e53935;
         }
 
-        /* Course placeholder untuk yang tidak ada gambar */
+        /* Course placeholder */
         .course-image.no-image {
             background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
             min-height: 240px;
@@ -467,13 +491,6 @@
             text-align: center;
             padding: 40px 20px;
             line-height: 1.4;
-        }
-
-        .course-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
         }
 
         .course-image.no-image img {
@@ -519,7 +536,7 @@
 </head>
 <body>
 
-<!-- ✅ FIXED HEADER: Konsisten dengan halaman lain -->
+<!-- HEADER -->
 <header class="header">
     <div class="header-container">
         <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
@@ -644,10 +661,15 @@
 
 <!-- Courses Logic -->
 <script>
-/**
- * 📁 courses.html - Logic dengan Filter & Sorting
- * 🎯 Handle course listing, enroll, filter, dan sorting
- */
+// ✅ FALLBACK IMAGE MAP
+const courseImages = {
+    "Public Speaking 101": "publicspeaking.png",
+    "Debate & Argumentation": "debate.png",
+    "English For Family": "englishforfamily.png",
+    "English For Society": "englishforsociety.png",
+    "English For Professional": "englishforprofessional.png"
+};
+const BASE_IMAGE_URL = 'http://127.0.0.1:8000/assets/courses/';
 
 // DOM Elements
 const authBtn = document.getElementById('authBtn');
@@ -665,32 +687,23 @@ const sortBy = document.getElementById('sortBy');
 let allCourses = [];
 
 // ========================================================================
-// INIT: Auth Check + Setup
+// INIT
 // ========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // ✅ Setup dynamic auth button (Login/Dashboard/Logout)
     updateAuthButton();
     
-    // Setup auth button click handler
     if (authBtn) {
         authBtn.addEventListener('click', handleAuthClick);
     }
     
-    // Setup filter & sorting listeners
     filterKategori.addEventListener('change', applyFilters);
     filterLevel.addEventListener('change', applyFilters);
     filterHarga.addEventListener('change', applyFilters);
     sortBy.addEventListener('change', applyFilters);
     
-    // Load courses
     loadCourses();
 });
 
-/**
- * ✅ Update auth button based on login state
- * - Not logged in → "Login" (link ke login.html)
- * - Logged in → "Dashboard [Name]" (link ke dashboard.html)
- */
 function updateAuthButton() {
     if (!authBtn) return;
     
@@ -710,20 +723,14 @@ function updateAuthButton() {
     }
 }
 
-/**
- * Handle auth button click
- */
 function handleAuthClick(e) {
     if (api.isLoggedIn()) {
-        // User sudah login → tanyakan apakah mau logout
         e.preventDefault();
         if (confirm('Apakah Anda ingin logout?')) {
             api.logout();
-            // Refresh halaman untuk update button
             window.location.reload();
         }
     }
-    // Jika belum login, link akan otomatis redirect ke login.html
 }
 
 /**
@@ -751,7 +758,6 @@ async function loadCourses() {
             return;
         }
         
-        // Apply initial filters
         applyFilters();
         
     } catch (error) {
@@ -767,7 +773,6 @@ async function loadCourses() {
 function applyFilters() {
     let filteredCourses = [...allCourses];
     
-    // Apply category filter
     const category = filterKategori.value;
     if (category) {
         filteredCourses = filteredCourses.filter(course => 
@@ -775,7 +780,6 @@ function applyFilters() {
         );
     }
     
-    // Apply level filter
     const level = filterLevel.value;
     if (level) {
         filteredCourses = filteredCourses.filter(course => 
@@ -783,7 +787,6 @@ function applyFilters() {
         );
     }
     
-    // Apply price filter
     const price = filterHarga.value;
     if (price === 'free') {
         filteredCourses = filteredCourses.filter(course => 
@@ -795,7 +798,6 @@ function applyFilters() {
         );
     }
     
-    // Apply sorting
     const sort = sortBy.value;
     switch (sort) {
         case 'newest':
@@ -815,7 +817,6 @@ function applyFilters() {
             break;
     }
     
-    // Render filtered courses
     if (filteredCourses.length === 0) {
         coursesList.innerHTML = `
             <div class="no-results">
@@ -832,6 +833,36 @@ function applyFilters() {
 }
 
 /**
+ * ✅ Get image URL
+ */
+function getImageUrl(course) {
+    if (course.thumbnail && course.thumbnail.trim() !== '') {
+        return `http://127.0.0.1:8000/${course.thumbnail}`;
+    }
+    
+    const imageName = courseImages[course.title] || 'default.png';
+    return BASE_IMAGE_URL + imageName;
+}
+
+/**
+ * ✅ Format harga - TAMPILKAN HARGA PENUH
+ */
+function formatPrice(price) {
+    if (!price || price === 0 || price === 'free') {
+        return {
+            html: 'Gratis',
+            isFree: true
+        };
+    }
+    
+    // Tampilkan harga penuh dengan format Indonesia
+    return {
+        html: `Rp ${price.toLocaleString('id-ID')}`,
+        isFree: false
+    };
+}
+
+/**
  * Render course cards
  */
 function renderCourses(courses) {
@@ -841,18 +872,20 @@ function renderCourses(courses) {
         const card = document.createElement('div');
         card.className = 'course-card';
         
+        const imageUrl = getImageUrl(course);
         const hasThumbnail = course.thumbnail && course.thumbnail.trim() !== '';
-        const thumbnailUrl = hasThumbnail ? 
-            `http://127.0.0.1:8000/${course.thumbnail}` : 
-            '';
         
         const isEnrolled = api.isLoggedIn() && course.is_enrolled;
         const btnText = isEnrolled ? '✓ Enrolled' : 'Enroll Now';
         const btnClass = isEnrolled ? 'enrolled' : '';
         const btnDisabled = isEnrolled ? 'disabled' : '';
         
+        // ✅ Format harga
+        const priceData = formatPrice(course.price);
+        const priceClass = priceData.isFree ? 'free-price' : '';
+        
         const imageSection = hasThumbnail ? 
-            `<img src="${thumbnailUrl}" alt="${escapeHtml(course.title)}" onerror="this.style.display='none'; this.parentElement.classList.add('no-image');">` :
+            `<img src="${imageUrl}" alt="${escapeHtml(course.title)}" onerror="this.style.display='none'; this.parentElement.classList.add('no-image');">` :
             `<div class="course-placeholder">${escapeHtml(course.title).substring(0, 30)}${escapeHtml(course.title).length > 30 ? '...' : ''}</div>`;
         
         card.innerHTML = `
@@ -875,15 +908,24 @@ function renderCourses(courses) {
                 </div>
                 
                 <div class="course-footer">
-                    <span class="course-price">${course.price && course.price > 0 ? 'Rp ' + course.price.toLocaleString('id-ID') : 'Free'}</span>
+                    <span class="course-price ${priceClass}">
+                        ${priceData.html}
+                    </span>
                     <button class="btn-enroll ${btnClass}" 
                             ${btnDisabled}
-                            onclick="handleEnroll(${course.id}, this)">
+                            onclick="handleEnroll(${course.id}, this, event)">
                         ${btnText}
                     </button>
                 </div>
             </div>
         `;
+        
+        card.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-enroll')) return;
+            
+            const encodedTitle = encodeURIComponent(course.title);
+            window.location.href = `course-details.html?course_id=${course.id}&title=${encodedTitle}`;
+        });
         
         coursesList.appendChild(card);
     });
@@ -892,8 +934,9 @@ function renderCourses(courses) {
 /**
  * Handle enroll button click
  */
-async function handleEnroll(courseId, btn) {
-    // Check auth first
+function handleEnroll(courseId, btn, event) {
+    event.stopPropagation();
+    
     if (!api.isLoggedIn()) {
         alert('Please login first to enroll in courses!');
         window.location.href = 'login.html';
@@ -904,38 +947,26 @@ async function handleEnroll(courseId, btn) {
     btn.textContent = 'Enrolling...';
     btn.disabled = true;
     
-    try {
-        const token = api.getToken();
-        const response = await fetch(`http://127.0.0.1:8000/api/user/enroll/${courseId}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
-            }
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.message || 'Enrollment failed');
+    fetch(`http://127.0.0.1:8000/api/user/enroll/${courseId}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${api.getToken()}`,
+            'Accept': 'application/json'
         }
-        
+    })
+    .then(response => response.json())
+    .then(data => {
         alert(`✅ Successfully enrolled in "${data.course.title}"!\n\nRedirecting to your dashboard...`);
-        
-        // Redirect to dashboard after successful enrollment
         window.location.href = 'dashboard.html';
-        
-    } catch (error) {
+    })
+    .catch(error => {
         console.error('Enroll error:', error);
-        alert('❌ ' + error.message);
+        alert('❌ ' + (error.message || 'Enrollment failed'));
         btn.textContent = originalText;
         btn.disabled = false;
-    }
+    });
 }
 
-/**
- * Escape HTML to prevent XSS
- */
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');

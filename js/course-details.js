@@ -597,6 +597,9 @@ async function submitQuizAnswers(quizId) {
             saveCompletedMeetings(currentCourseId);
             updateCourseProgressBar();
             renderMeetings(courseData.meetings || []);
+
+            // ✅ Check if course is now complete
+            await checkCourseCompletion(currentCourseId);
         }
         
         if (typeof showNotification === 'function') {
@@ -675,6 +678,9 @@ async function toggleLessonComplete(courseId, meetingId, isCompleted) {
         
         updateCourseProgressBar();
         renderMeetings(courseData.meetings || []);
+
+        // ✅ Check course completion
+        await checkCourseCompletion(courseId);
         
         try {
             await updateProgress(courseId, meetingId, isCompleted);
@@ -712,16 +718,33 @@ async function updateProgress(courseId, meetingId, isCompleted) {
     return await response.json();
 }
 
+// Pastikan fungsi ini dipanggil setiap kali lesson/quiz selesai
 async function checkCourseCompletion(courseId) {
-    const meetings = courseData?.meetings || [];
+    if (!courseData || !courseData.meetings) return;
+    
+    const meetings = courseData.meetings;
     const actualLessons = meetings.filter(m => {
         return m.content || m.quiz_id || (m.type && ['test', 'quiz', 'final'].includes(m.type));
     });
     
     const allCompleted = actualLessons.every(m => completedMeetings.has(m.id));
     
+    console.log('📊 Course Completion Check:', {
+        total: actualLessons.length,
+        completed: actualLessons.filter(m => completedMeetings.has(m.id)).length,
+        allCompleted: allCompleted
+    });
+    
     if (allCompleted && actualLessons.length > 0) {
-        showCourseCompletedCelebration(courseId);
+        // Cek apakah celebration sudah pernah ditampilkan
+        const hasCelebrated = sessionStorage.getItem(`celebrated_course_${courseId}`);
+        
+        if (!hasCelebrated) {
+            sessionStorage.setItem(`celebrated_course_${courseId}`, 'true');
+            setTimeout(() => {
+                showCourseCompletedCelebration(courseId);
+            }, 500);
+        }
     }
     
     return { course_completed: allCompleted };

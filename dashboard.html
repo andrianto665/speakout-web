@@ -20,6 +20,7 @@
             --gray-light: #f5f5f5;
             --success: #10b981;
             --warning: #f59e0b;
+            --error: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -139,7 +140,7 @@
             letter-spacing: 1px;
         }
 
-        /* ===== COURSE CARD ===== */
+        /* ===== SECTION TITLE ===== */
         .section-title {
             font-family: 'Playfair Display', serif;
             font-size: 24px;
@@ -156,6 +157,7 @@
             background: linear-gradient(90deg, var(--purple-accent), transparent);
         }
 
+        /* ===== COURSE CARD ===== */
         .course-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
@@ -313,9 +315,7 @@
             padding: 8px 0;
             font-size: 14px;
         }
-        .lesson-icon {
-            font-size: 16px;
-        }
+        .lesson-icon { font-size: 16px; }
         .lesson-status {
             margin-left: auto;
             font-size: 14px;
@@ -350,6 +350,371 @@
         }
         .btn-continue.completed {
             background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        /* ===== CERTIFICATE SECTION ===== */
+        .certificate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .certificate-card {
+            background: var(--dark2);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .certificate-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--purple-accent);
+            box-shadow: 0 20px 40px rgba(91, 45, 142, 0.2);
+        }
+
+        .certificate-header {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .certificate-header::before {
+            content: '🎓';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 60px;
+            opacity: 0.2;
+        }
+        .certificate-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .certificate-course-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 4px;
+        }
+        .certificate-issued-date {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .certificate-body {
+            padding: 24px;
+        }
+
+        .certificate-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .certificate-status.approved {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .certificate-status.pending {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .certificate-status.rejected {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .certificate-status-icon {
+            font-size: 32px;
+        }
+        .certificate-status-info {
+            flex: 1;
+        }
+        .certificate-status-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gray);
+            margin-bottom: 4px;
+        }
+        .certificate-status-value {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .certificate-status.approved .certificate-status-value { color: var(--success); }
+        .certificate-status.pending .certificate-status-value { color: var(--warning); }
+        .certificate-status.rejected .certificate-status-value { color: var(--error); }
+
+        .certificate-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .certificate-detail-item {
+            padding: 12px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+        }
+        .certificate-detail-label {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .certificate-detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .certificate-rejection {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 20px;
+        }
+        .certificate-rejection-title {
+            font-size: 12px;
+            color: var(--error);
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .certificate-rejection-reason {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .btn-download-cert {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-download-cert:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+        .btn-download-cert:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .btn-download-cert.pending {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+        }
+        .btn-download-cert.rejected {
+            background: linear-gradient(135deg, var(--error), #dc2626);
+        }
+
+        /* ===== GRADEBOOK SECTION ===== */
+        .gradebook-grid {
+            display: grid;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .gradebook-card {
+            background: var(--dark2);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .gradebook-card:hover {
+            border-color: var(--purple-accent);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(91,45,142,0.3);
+        }
+
+        .gradebook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .gradebook-course-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--white);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .gradebook-average {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.05);
+            padding: 8px 16px;
+            border-radius: 10px;
+        }
+
+        .gradebook-average-label {
+            font-size: 13px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .gradebook-average-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--purple-accent);
+        }
+
+        .gradebook-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .gradebook-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            min-width: 100px;
+        }
+
+        .gradebook-stat-label {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .gradebook-stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .gradebook-quizzes {
+            display: grid;
+            gap: 12px;
+        }
+
+        .gradebook-empty {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--gray);
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .quiz-result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.2s;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .quiz-result-item:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .quiz-result-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .quiz-result-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .quiz-result-meta {
+            font-size: 12px;
+            color: var(--gray);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .quiz-result-score {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-score-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--success);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .quiz-score-value.failed {
+            color: var(--error);
+        }
+
+        .quiz-status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quiz-status-badge.passed {
+            background: rgba(16,185,129,0.2);
+            color: var(--success);
+        }
+
+        .quiz-status-badge.failed {
+            background: rgba(239,68,68,0.2);
+            color: var(--error);
+        }
+
+        .quiz-status-badge.pending {
+            background: rgba(245,158,11,0.2);
+            color: var(--warning);
         }
 
         /* ===== AVAILABLE COURSES ===== */
@@ -428,27 +793,28 @@
         @media (max-width: 600px) {
             .welcome-section { flex-direction: column; }
             .stats-bar { flex-wrap: wrap; }
-            .course-grid, .available-grid { grid-template-columns: 1fr; }
+            .course-grid, .available-grid, .certificate-grid { grid-template-columns: 1fr; }
+            .certificate-details { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
     <!-- HEADER -->
-<header class="header">
-    <div class="header-container">
-        <a href="dashboard.html" class="logo">SPEAK<span>OUT</span></a>
-        <nav>
-            <ul class="nav-menu">
-                <li><a href="dashboard.html" class="active">Dashboard</a></li>
-            </ul>
-        </nav>
-        <div class="user-menu">
-            <span class="user-name" id="userName">Loading...</span>
-            <button class="btn-logout" id="logoutBtn">Logout</button>
+    <header class="header">
+        <div class="header-container">
+            <a href="dashboard.html" class="logo">SPEAK<span>OUT</span></a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name" id="userName">Loading...</span>
+                <button class="btn-logout" id="logoutBtn">Logout</button>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
     <!-- DASHBOARD HERO -->
     <section class="dashboard-hero">
@@ -470,6 +836,10 @@
                     <div class="stat-item">
                         <div class="stat-value" id="statCompleted">0</div>
                         <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statCertificates">0</div>
+                        <div class="stat-label">Certificates</div>
                     </div>
                 </div>
             </div>
@@ -506,6 +876,24 @@
             <div id="courseGrid" class="course-grid"></div>
         </div>
 
+        <!-- ✅ CERTIFICATES SECTION (NEW) -->
+        <div id="certificatesSection" style="display:none;">
+            <h2 class="section-title">🎓 My Certificates</h2>
+            <p style="color:var(--gray); margin-bottom:20px; font-size:14px;">
+                Status dan sertifikat dari course yang telah Anda selesaikan
+            </p>
+            <div id="certificatesGrid" class="certificate-grid"></div>
+        </div>
+
+        <!-- ✅ GRADEBOOK SECTION -->
+        <div id="gradebookSection" style="display:none;">
+            <h2 class="section-title">📊 Gradebook</h2>
+            <p style="color:var(--gray); margin-bottom:20px; font-size:14px;">
+                Pantau nilai quiz dan progress belajar Anda di setiap course
+            </p>
+            <div id="gradebookGrid" class="gradebook-grid"></div>
+        </div>
+
         <!-- Available Courses Section -->
         <div id="availableSection" style="display:none;">
             <h2 class="section-title">🔓 Unlock More Courses</h2>
@@ -520,7 +908,7 @@
     <script>
     /**
      * 📁 dashboard.html - Premium Dashboard Logic
-     * 🎯 Handle user dashboard with course tracking & certificate download
+     * 🎯 Handle user dashboard with course tracking, certificates & gradebook
      */
 
     // ========================================================================
@@ -593,11 +981,195 @@
                 empty.style.display = 'block';
             }
 
+            // ✅ Load certificates dan gradebook setelah dashboard
+            await loadUserCertificates();
+            await loadGradebook();
+
         } catch (err) {
             console.error('Dashboard error:', err);
             loading.style.display = 'none';
             error.style.display = 'block';
             document.getElementById('errorMessage').textContent = err.message || 'Connection error';
+        }
+    }
+
+    // ========================================================================
+    // ✅ USER CERTIFICATES FUNCTIONS
+    // ========================================================================
+
+    /**
+     * Load user certificates dari backend API
+     */
+    async function loadUserCertificates() {
+        try {
+            const token = api.getToken();
+            if (!token) return;
+
+            // Fetch semua course yang sudah enrolled
+            const res = await fetch('http://127.0.0.1:8000/api/user/enrolled-courses', {
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json' 
+                }
+            });
+
+            if (!res.ok) return;
+
+            const courses = await res.json();
+            
+            // Filter hanya course yang sudah completed
+            const completedCourses = courses.filter(c => c.is_completed || c.progress >= 100);
+            
+            if (completedCourses.length === 0) {
+                document.getElementById('certificatesSection').style.display = 'none';
+                return;
+            }
+
+            // Fetch status certificate untuk setiap completed course
+            const certificates = [];
+            for (const course of completedCourses) {
+                try {
+                    const certRes = await fetch(`http://127.0.0.1:8000/api/user/certificates/${course.id}/status`, {
+                        headers: { 
+                            'Authorization': `Bearer ${token}`, 
+                            'Accept': 'application/json' 
+                        }
+                    });
+
+                    if (certRes.ok) {
+                        const certData = await certRes.json();
+                        if (certData.has_certificate) {
+                            certificates.push({
+                                course: course,
+                                certificate: certData.certificate
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.warn(`Failed to fetch certificate for course ${course.id}:`, e);
+                }
+            }
+
+            if (certificates.length > 0) {
+                document.getElementById('certificatesSection').style.display = 'block';
+                document.getElementById('statCertificates').textContent = certificates.filter(c => c.certificate.status === 'approved').length;
+                renderCertificates(certificates);
+            } else {
+                document.getElementById('certificatesSection').style.display = 'none';
+            }
+
+        } catch (err) {
+            console.error('❌ Certificates error:', err);
+            document.getElementById('certificatesSection').style.display = 'none';
+        }
+    }
+
+    /**
+     * Render certificates ke HTML
+     */
+    function renderCertificates(certificates) {
+        const grid = document.getElementById('certificatesGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = '';
+
+        certificates.forEach(({ course, certificate }) => {
+            const card = document.createElement('div');
+            card.className = 'certificate-card';
+
+            const status = certificate.status;
+            const statusIcon = status === 'approved' ? '✅' : status === 'pending' ? '⏳' : '❌';
+            const statusText = status === 'approved' ? 'Approved' : status === 'pending' ? 'Menunggu Persetujuan' : 'Ditolak';
+            
+            // Format tanggal
+            const issuedDate = certificate.issued_at ? formatCertDate(certificate.issued_at) : '-';
+            const approvedDate = certificate.approved_at ? formatCertDate(certificate.approved_at) : '-';
+            const approvedBy = certificate.approved_by || '-';
+
+            // Tombol berdasarkan status
+            let buttonHtml = '';
+            if (status === 'approved') {
+                buttonHtml = `
+                    <button class="btn-download-cert" onclick="downloadCertificate(${course.id})">
+                        📥 Download Certificate (PDF)
+                    </button>
+                `;
+            } else if (status === 'pending') {
+                buttonHtml = `
+                    <button class="btn-download-cert pending" disabled>
+                        ⏳ Menunggu Persetujuan Admin
+                    </button>
+                `;
+            } else if (status === 'rejected') {
+                buttonHtml = `
+                    <button class="btn-download-cert rejected" disabled>
+                        ❌ Certificate Ditolak
+                    </button>
+                `;
+            }
+
+            // Rejection reason (jika ada)
+            const rejectionHtml = (status === 'rejected' && certificate.rejection_reason) ? `
+                <div class="certificate-rejection">
+                    <div class="certificate-rejection-title">💬 Alasan Penolakan</div>
+                    <div class="certificate-rejection-reason">${escapeHtml(certificate.rejection_reason)}</div>
+                </div>
+            ` : '';
+
+            card.innerHTML = `
+                <div class="certificate-header">
+                    <div class="certificate-number">${escapeHtml(certificate.certificate_number || 'N/A')}</div>
+                    <div class="certificate-course-title">${escapeHtml(course.title)}</div>
+                    <div class="certificate-issued-date">📅 Issued: ${issuedDate}</div>
+                </div>
+                <div class="certificate-body">
+                    <div class="certificate-status ${status}">
+                        <div class="certificate-status-icon">${statusIcon}</div>
+                        <div class="certificate-status-info">
+                            <div class="certificate-status-label">Status</div>
+                            <div class="certificate-status-value">${statusText}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="certificate-details">
+                        <div class="certificate-detail-item">
+                            <div class="certificate-detail-label">Approved Date</div>
+                            <div class="certificate-detail-value">${approvedDate}</div>
+                        </div>
+                        <div class="certificate-detail-item">
+                            <div class="certificate-detail-label">Approved By</div>
+                            <div class="certificate-detail-value">${escapeHtml(approvedBy)}</div>
+                        </div>
+                    </div>
+
+                    ${rejectionHtml}
+
+                    ${buttonHtml}
+                </div>
+            `;
+            
+            grid.appendChild(card);
+        });
+    }
+
+    /**
+     * Format tanggal untuk certificate
+     */
+    function formatCertDate(dateString) {
+        if (!dateString) return '-';
+        
+        try {
+            const date = new Date(dateString);
+            const options = { 
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return date.toLocaleDateString('id-ID', options);
+        } catch (e) {
+            return dateString;
         }
     }
 
@@ -613,7 +1185,9 @@
             const isCompleted = course.is_completed === true || course.progress >= 100;
             const statusClass = isCompleted ? 'completed' : 'in-progress';
             const badgeText = isCompleted ? '🏆 Completed' : `${course.progress}%`;
-            const btnText = isCompleted ? '📄 View Certificate' : '▶ Continue Learning';
+            
+            // ✅ UBAH: Untuk completed course, tampilkan tombol "🏆 Completed" yang scroll ke section certificates
+            const btnText = isCompleted ? '🏆 Completed' : '▶ Continue Learning';
             const btnClass = isCompleted ? 'completed' : '';
             
             const lastLesson = course.last_lesson;
@@ -630,11 +1204,11 @@
                 </div>
             ` : '';
 
+            // ✅ UBAH: Untuk completed course, scroll ke section certificates
             const buttonOnclick = isCompleted 
-                ? `downloadCertificate(${course.id})`
+                ? `scrollToCertificates()`
                 : `continueLearning(${course.id}, ${lastLesson?.id || 'null'})`;
 
-            // ✅ Display Category, Level, Duration
             const metaTags = `
                 <div class="course-meta-tags">
                     ${course.category ? `<span class="meta-tag category">📚 ${escapeHtml(course.category)}</span>` : ''}
@@ -671,7 +1245,8 @@
                     ${lessonPreview}
 
                     <button class="btn-continue ${btnClass}" 
-                            onclick="${buttonOnclick}">
+                            onclick="${buttonOnclick}"
+                            ${isCompleted ? 'title="Lihat status certificate di bagian My Certificates"' : ''}>
                         ${btnText}
                     </button>
                 </div>
@@ -710,6 +1285,22 @@
             ? `course-details.html?course_id=${courseId}&lesson_id=${lessonId}`
             : `course-details.html?course_id=${courseId}`;
         window.location.href = url;
+    }
+
+    // ✅ FUNGSI BARU: Scroll ke section certificates
+    function scrollToCertificates() {
+        const certSection = document.getElementById('certificatesSection');
+        if (certSection) {
+            certSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Highlight section sebentar
+            certSection.style.transition = 'all 0.5s';
+            certSection.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                certSection.style.transform = 'scale(1)';
+            }, 500);
+        } else {
+            alert('📋 Certificate sedang menunggu persetujuan admin. Silakan cek kembali nanti.');
+        }
     }
 
     async function enrollCourse(courseId, btn) {
@@ -796,6 +1387,137 @@
                 btn.textContent = originalText;
                 btn.disabled = false;
             }
+        }
+    }
+
+    // ========================================================================
+    // ✅ GRADEBOOK FUNCTIONS
+    // ========================================================================
+
+    async function loadGradebook() {
+        try {
+            const token = api.getToken();
+            if (!token) return;
+            
+            const res = await fetch('http://127.0.0.1:8000/api/user/gradebook', {
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json' 
+                }
+            });
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+            
+            if (data.success && data.gradebook && data.gradebook.length > 0) {
+                document.getElementById('gradebookSection').style.display = 'block';
+                renderGradebook(data.gradebook);
+            } else {
+                document.getElementById('gradebookSection').style.display = 'none';
+            }
+        } catch (err) {
+            console.error('❌ Gradebook error:', err);
+            document.getElementById('gradebookSection').style.display = 'none';
+        }
+    }
+
+    function renderGradebook(gradebook) {
+        const grid = document.getElementById('gradebookGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = '';
+
+        gradebook.forEach(course => {
+            const card = document.createElement('div');
+            card.className = 'gradebook-card';
+            
+            let quizResultsHtml = '';
+            
+            if (course.quiz_results && course.quiz_results.length > 0) {
+                quizResultsHtml = course.quiz_results.map(quiz => {
+                    const passedClass = quiz.passed ? 'passed' : 'failed';
+                    const statusText = quiz.passed ? '✓ Passed' : '✗ Failed';
+                    const scoreClass = quiz.passed ? '' : 'failed';
+                    
+                    return `
+                        <div class="quiz-result-item">
+                            <div class="quiz-result-info">
+                                <div class="quiz-result-title">${escapeHtml(quiz.quiz_title)}</div>
+                                <div class="quiz-result-meta">
+                                    <span>📝 Attempt #${quiz.attempt_number}</span>
+                                    <span>📅 ${formatGradeDate(quiz.submitted_at)}</span>
+                                </div>
+                            </div>
+                            <div class="quiz-result-score">
+                                <div class="quiz-score-value ${scoreClass}">${quiz.score}%</div>
+                                <span class="quiz-status-badge ${passedClass}">${statusText}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                quizResultsHtml = `
+                    <div class="gradebook-empty">
+                        📝 Belum ada quiz yang dikerjakan di course ini
+                    </div>
+                `;
+            }
+            
+            const progressColor = course.overall_progress === 100 
+                ? 'var(--success)' 
+                : course.overall_progress > 0 
+                    ? 'var(--warning)' 
+                    : 'var(--gray)';
+            
+            card.innerHTML = `
+                <div class="gradebook-header">
+                    <div class="gradebook-course-title">${escapeHtml(course.course_title)}</div>
+                    <div class="gradebook-average">
+                        <span class="gradebook-average-label">Average:</span>
+                        <span class="gradebook-average-value">${course.average_score}%</span>
+                    </div>
+                </div>
+                
+                <div class="gradebook-stats">
+                    <div class="gradebook-stat">
+                        <span class="gradebook-stat-label">Progress</span>
+                        <span class="gradebook-stat-value" style="color:${progressColor}">${course.overall_progress}%</span>
+                    </div>
+                    <div class="gradebook-stat">
+                        <span class="gradebook-stat-label">Quizzes</span>
+                        <span class="gradebook-stat-value">${course.completed_quizzes}/${course.total_quizzes}</span>
+                    </div>
+                    <div class="gradebook-stat">
+                        <span class="gradebook-stat-label">Instructor</span>
+                        <span class="gradebook-stat-value" style="font-size:13px;">${escapeHtml(course.instructor || '-')}</span>
+                    </div>
+                </div>
+                
+                <div class="gradebook-quizzes">
+                    ${quizResultsHtml}
+                </div>
+            `;
+            
+            grid.appendChild(card);
+        });
+    }
+
+    function formatGradeDate(dateString) {
+        if (!dateString) return '-';
+        
+        try {
+            const date = new Date(dateString);
+            const options = { 
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return date.toLocaleDateString('id-ID', options);
+        } catch (e) {
+            return dateString;
         }
     }
 

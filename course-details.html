@@ -1078,12 +1078,13 @@
         overlay.innerHTML = `
             <div class="emoji">🎉</div>
             <h2>Course Completed!</h2>
-            <p>Selamat! Kamu telah menyelesaikan course ini dan mendapatkan certificate. 🏆</p>
+            <p>Selamat! Kamu telah menyelesaikan course ini.</p>
+            <p style="color: var(--warning); margin: 20px 0;">
+            ⏳ Certificate sedang menunggu persetujuan admin.<br>
+            Kamu akan mendapat notifikasi saat certificate disetujui.
+            </p>
             <div class="btn-group">
                 <button class="btn btn-certificate" onclick="downloadCertificate(${courseId})">
-                    📥 Download Certificate
-                </button>
-                <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">
                     🏠 View Dashboard
                 </button>
                 <button class="btn btn-secondary" onclick="this.closest('.celebration-overlay').remove()">
@@ -1139,7 +1140,7 @@
     });
 
     /**
-     * 🔔 Override toggleLessonComplete for notifications
+     * 🔄 Override toggleLessonComplete for notifications
      */
     const originalToggleLessonComplete = window.toggleLessonComplete;
     window.toggleLessonComplete = async function(courseId, meetingId, isCompleted) {
