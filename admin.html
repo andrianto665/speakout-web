@@ -1715,45 +1715,75 @@
         selectedCourseId = null;
     }
 
-    async function loadCourseContent(courseId) {
-        const container = document.getElementById('contentItemsList');
-        container.innerHTML = '<div class="loading"><div class="spinner"></div> Loading content...</div>';
-        
-        try {
-            const res = await fetch(`${ADMIN_API_BASE}/courses/${courseId}`, { headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
-            if (res.ok) {
-                const items = (await res.json()).meetings || [];
-                if (items.length === 0) {
-                    container.innerHTML = '<div style="text-align:center; padding:40px; color:#666;">No content yet. Click "+ Add Item" to add content.</div>';
-                    return;
+    // ===== GANTI FUNGSI loadCourseContent DENGAN INI =====
+async function loadCourseContent(courseId) {
+    const container = document.getElementById('contentItemsList');
+    container.innerHTML = '<div class="loading"><div class="spinner"></div> Loading content...</div>';
+    
+    try {
+        const res = await fetch(`${ADMIN_API_BASE}/courses/${courseId}`, { 
+            headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } 
+        });
+        if (res.ok) {
+            const items = (await res.json()).meetings || [];
+            
+            // ✅ SORTING: Urutkan berdasarkan order_number
+            const sortedItems = items.sort((a, b) => (a.order_number || 0) - (b.order_number || 0));
+            
+            if (sortedItems.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:#666;">No content yet. Click "+ Add Item" to add content.</div>';
+                return;
+            }
+            
+            container.innerHTML = sortedItems.map((item, index) => {
+                let typeLabel = '📄 Lesson';
+                let typeColor = '#6B7280';
+                let typeBg = '#F3F4F6';
+                
+                if (item.type === 'test') { 
+                    typeLabel = '✍️ Duolingo Quiz'; 
+                    typeColor = '#F59E0B'; 
+                    typeBg = '#FEF3C7';
+                }
+                else if (item.type === 'final') { 
+                    typeLabel = '🏆 Final Test'; 
+                    typeColor = '#10B981';
+                    typeBg = '#D1FAE5';
+                }
+                else if (item.type === 'normal') { 
+                    typeLabel = (!item.content || item.content === null) ? '📁 Meeting Header' : '📄 Lesson'; 
+                    typeColor = item.content ? '#3B82F6' : '#6B7280';
+                    typeBg = item.content ? '#DBEAFE' : '#F3F4F6';
                 }
                 
-                container.innerHTML = items.map((item, index) => {
-                    let typeLabel = '📄 Lesson';
-                    let typeColor = '#6B7280';
-                    if (item.type === 'test') { typeLabel = '✍️ Quiz'; typeColor = '#F59E0B'; }
-                    else if (item.type === 'final') { typeLabel = '🏆 Final'; typeColor = '#10B981'; }
-                    else if (item.type === 'normal') { typeLabel = (!item.content || item.content === null) ? '📁 Meeting Header' : '📄 Lesson'; typeColor = item.content ? '#3B82F6' : '#6B7280'; }
-                    
-                    const linkDisplay = item.content ? `<a href="${item.content}" target="_blank" style="color:#667eea; text-decoration:none;">🔗 Link</a>` : '<span style="color:#999;">-</span>';
-                    
-                    return `<div class="content-item">
-                        <div class="content-item-info">
-                            <div class="content-item-title">${index + 1}. ${escapeHtml(item.title)}</div>
-                            <div class="content-item-meta">
-                                <span style="color:${typeColor}; font-weight:500;">${typeLabel}</span>
-                                ${item.content ? '• ' + linkDisplay : ''}
-                            </div>
+                const linkDisplay = item.content ? `<a href="${item.content}" target="_blank" style="color:#667eea; text-decoration:none;">🔗 Link</a>` : '<span style="color:#999;">-</span>';
+                
+                return `<div class="content-item" style="border-left: 4px solid ${typeColor};">
+                    <div class="content-item-info">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                            <span style="background:${typeBg}; color:${typeColor}; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">
+                                ${typeLabel}
+                            </span>
+                            <span style="background:#E5E7EB; color:#374151; padding:4px 10px; border-radius:6px; font-size:12px; font-weight:600;">
+                                Order: ${item.order_number}
+                            </span>
                         </div>
-                        <div class="content-item-actions">
-                            <button class="btn-action btn-edit" onclick="editContentItem(${item.id}, '${escapeHtml(item.title)}', '${item.type}', '${item.content||''}', ${item.order_number})">Edit</button>
-                            <button class="btn-action btn-delete" onclick="deleteContentItem(${item.id})">Delete</button>
+                        <div class="content-item-title">${index + 1}. ${escapeHtml(item.title)}</div>
+                        <div class="content-item-meta">
+                            ${item.content ? '• ' + linkDisplay : ''}
                         </div>
-                    </div>`;
-                }).join('');
-            }
-        } catch (err) { container.innerHTML = `<div style="color:#EF4444; text-align:center; padding:20px;">Error loading content</div>`; }
+                    </div>
+                    <div class="content-item-actions">
+                        <button class="btn-action btn-edit" onclick="editContentItem(${item.id}, '${escapeHtml(item.title)}', '${item.type}', '${item.content||''}', ${item.order_number})">Edit</button>
+                        <button class="btn-action btn-delete" onclick="deleteContentItem(${item.id})">Delete</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+    } catch (err) { 
+        container.innerHTML = `<div style="color:#EF4444; text-align:center; padding:20px;">Error loading content</div>`; 
     }
+}
 
     function openCourseModal(course = null) {
         console.log('Modal opened with course:', course); // Debug
@@ -1847,56 +1877,82 @@
         toggleContentFields();
     }
 
-    async function handleContentSubmit(e) {
-        e.preventDefault();
-        const id = document.getElementById('contentId').value;
-        const courseId = document.getElementById('contentCourseId').value;
-        const type = document.getElementById('contentItemType').value;
-        
-        let dbType = 'normal';
-        if (type === 'test') dbType = 'test';
-        if (type === 'final') dbType = 'final';
-        
-        let link = document.getElementById('contentDriveLink').value.trim();
-        if (link && link.includes('/view')) { 
-            const m = link.match(/\/d\/([^\/\?]+)/); 
-            if (m) link = `https://drive.google.com/file/d/${m[1]}/preview`; 
-        }
-        
-        const payload = { 
-            title: document.getElementById('contentTitle').value.trim(), 
-            type: dbType,
-            content: (dbType === 'normal' && type === 'meeting') ? null : link, 
-            order_number: parseInt(document.getElementById('contentOrder').value) || 1 
-        };
-        
-        const btn = e.target.querySelector('.btn-save'); 
-        const originalText = btn.textContent;
-        btn.disabled = true; 
-        btn.textContent = 'Saving...';
-        
-        try {
-            const url = id ? `${ADMIN_API_BASE}/admin/content/${id}` : `${ADMIN_API_BASE}/admin/courses/${courseId}/content`;
-            const method = id ? 'PUT' : 'POST';
-            const res = await fetch(url, {
-                method: method,
-                headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
+    // ===== GANTI FUNGSI handleContentSubmit DENGAN INI =====
+async function handleContentSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('contentId').value;
+    const courseId = document.getElementById('contentCourseId').value;
+    const type = document.getElementById('contentItemType').value;
+    const orderNumber = parseInt(document.getElementById('contentOrder').value) || 1;
+    
+    // ✅ VALIDASI: Cek apakah ada item lain dengan order_number yang sama
+    try {
+        const res = await fetch(`${ADMIN_API_BASE}/courses/${courseId}`, { 
+            headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } 
+        });
+        if (res.ok) {
+            const courseData = await res.json();
+            const existingItems = courseData.meetings || [];
             
-            showNotification('✅ Content saved successfully!', 'success');
-            closeContentModal(); 
-            if (courseId) loadCourseContent(courseId);
-        } catch (err) { 
-            console.error('Save content error:', err);
-            showNotification(`❌ Failed: ${err.message}`, 'error'); 
-        } finally { 
-            btn.disabled = false; 
-            btn.textContent = originalText; 
+            // Cek duplikasi order_number (kecuali untuk item yang sedang diedit)
+            const duplicate = existingItems.find(item => 
+                item.order_number === orderNumber && item.id != id
+            );
+            
+            if (duplicate) {
+                if (!confirm(`⚠️ Order number ${orderNumber} sudah digunakan oleh "${duplicate.title}".\n\nLanjutkan jika Anda ingin mengubah urutan secara manual.`)) {
+                    return; // Batalkan submit
+                }
+            }
         }
+    } catch (err) {
+        console.error('Error checking order number:', err);
     }
+    
+    let dbType = 'normal';
+    if (type === 'test') dbType = 'test';
+    if (type === 'final') dbType = 'final';
+    
+    let link = document.getElementById('contentDriveLink').value.trim();
+    if (link && link.includes('/view')) { 
+        const m = link.match(/\/d\/([^\/\?]+)/); 
+        if (m) link = `https://drive.google.com/file/d/${m[1]}/preview`; 
+    }
+    
+    const payload = { 
+        title: document.getElementById('contentTitle').value.trim(), 
+        type: dbType,
+        content: (dbType === 'normal' && type === 'meeting') ? null : link, 
+        order_number: orderNumber
+    };
+    
+    const btn = e.target.querySelector('.btn-save'); 
+    const originalText = btn.textContent;
+    btn.disabled = true; 
+    btn.textContent = 'Saving...';
+    
+    try {
+        const url = id ? `${ADMIN_API_BASE}/admin/content/${id}` : `${ADMIN_API_BASE}/admin/courses/${courseId}/content`;
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+            method: method,
+            headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || data.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}`);
+        
+        showNotification('✅ Content saved successfully!', 'success');
+        closeContentModal(); 
+        if (courseId) loadCourseContent(courseId);
+    } catch (err) { 
+        console.error('Save content error:', err);
+        showNotification(`❌ Failed: ${err.message}`, 'error'); 
+    } finally { 
+        btn.disabled = false; 
+        btn.textContent = originalText; 
+    }
+}
 
     async function deleteContentItem(id) {
         if (!confirm('Delete?')) return;

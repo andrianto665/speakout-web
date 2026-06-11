@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakOut Quiz - Duolingo Style</title>
+    
+    <!-- Font: Nunito (mirip Duolingo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== SPEAKOUT COLOR PALETTE ===== */
+        :root {
+            --primary: #7B2D8E;        /* Ungu SpeakOut */
+            --primary-light: #9B4DCA;  /* Ungu terang */
+            --primary-dark: #5A1D6B;   /* Ungu gelap */
+            --primary-bg: #F3E5F5;     /* Ungu sangat muda (background selection) */
+            --accent: #FF6B35;         /* Orange "Ngomong Inggris Jadi Mudah" */
+            --accent-light: #FFB088;   /* Orange muda */
+            --success: #7B2D8E;        /* Hijau diganti ungu (benar) */
+            --success-bg: #F3E5F5;     /* Background benar */
+            --error: #FF6B35;          /* Orange (salah) */
+            --error-bg: #FFF0E8;       /* Background salah */
+            --white: #ffffff;
+            --gray-light: #f7f7f7;
+            --gray-border: #e5e5e5;
+            --gray-text: #afafaf;
+            --text-dark: #3c3c3c;
+        }
+
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--white);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* ===== TOP BAR (Progress + Hearts) ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--gray-text);
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        
+        .close-btn:hover {
+            color: var(--primary);
+        }
+        
+        /* Progress Bar - UNGU */
+        .progress-container {
+            flex: 1;
+            height: 16px;
+            background: var(--gray-border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary); /* UNGU */
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 25%;
+        }
+        
+        /* Hearts - tetap merah (universal) */
+        .hearts {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #ff4b4b;
+        }
+        
+        .heart-icon {
+            font-size: 28px;
+        }
+        
+        /* ===== MAIN CONTENT ===== */
+        .quiz-container {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 24px 100px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Category Badge - UNGU */
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-light);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        
+        .category-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--primary); /* UNGU */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        /* Question */
+        .question-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--text-dark);
+            margin-bottom: 40px;
+            line-height: 1.3;
+        }
+        
+        /* ===== OPTIONS GRID ===== */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .option-card {
+            background: var(--white);
+            border: 2px solid var(--gray-border);
+            border-radius: 16px;
+            padding: 24px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .option-card:hover {
+            background: var(--gray-light);
+            border-color: #d0d0d0;
+            transform: translateY(-2px);
+        }
+        
+        /* Selected - UNGU MUDA */
+        .option-card.selected {
+            background: var(--primary-bg);
+            border-color: var(--primary-light);
+            border-width: 3px;
+        }
+        
+        /* Correct - UNGU */
+        .option-card.correct {
+            background: var(--success-bg);
+            border-color: var(--primary);
+            border-width: 3px;
+        }
+        
+        /* Wrong - ORANGE */
+        .option-card.wrong {
+            background: var(--error-bg);
+            border-color: var(--accent);
+            border-width: 3px;
+        }
+        
+        .emoji {
+            font-size: 80px;
+            line-height: 1;
+        }
+        
+        .label {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .option-number {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            border: 2px solid var(--gray-border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gray-text);
+        }
+        
+        .option-card.selected .option-number {
+            border-color: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .option-card.correct .option-number {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .option-card.wrong .option-number {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        /* ===== FOOTER ===== */
+        .quiz-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 2px solid var(--gray-border);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-skip {
+            background: var(--white);
+            border: 2px solid var(--gray-border);
+            border-radius: 16px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--gray-text);
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+        
+        .btn-skip:hover {
+            background: var(--gray-light);
+            color: var(--text-dark);
+            border-color: var(--primary-light);
+        }
+        
+        /* Tombol PERIKSA - UNGU */
+        .btn-check {
+            background: var(--gray-border);
+            border: none;
+            border-radius: 16px;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--gray-text);
+            cursor: not-allowed;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+        
+        .btn-check.active {
+            background: var(--primary); /* UNGU */
+            color: var(--white);
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--primary-dark); /* Shadow ungu gelap */
+        }
+        
+        .btn-check.active:hover {
+            background: var(--primary-light);
+        }
+        
+        .btn-check.active:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 var(--primary-dark);
+        }
+        
+        /* ===== FEEDBACK BAR ===== */
+        .feedback-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 24px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+        }
+        
+        /* Feedback BENAR - UNGU */
+        .feedback-bar.correct {
+            background: var(--success-bg);
+            display: flex;
+        }
+        
+        /* Feedback SALAH - ORANGE */
+        .feedback-bar.wrong {
+            background: var(--error-bg);
+            display: flex;
+        }
+        
+        .feedback-content {
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .feedback-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+        
+        .feedback-bar.correct .feedback-icon {
+            background: var(--primary); /* UNGU */
+            color: white;
+        }
+        
+        .feedback-bar.wrong .feedback-icon {
+            background: var(--accent); /* ORANGE */
+            color: white;
+        }
+        
+        .feedback-text h3 {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+        
+        .feedback-bar.correct .feedback-text h3 {
+            color: var(--primary-dark); /* UNGU GELAP */
+        }
+        
+        .feedback-bar.wrong .feedback-text h3 {
+            color: var(--accent); /* ORANGE */
+        }
+        
+        .feedback-text p {
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        
+        /* Tombol LANJUTKAN - UNGU untuk benar, ORANGE untuk salah */
+        .btn-continue {
+            border: none;
+            border-radius: 16px;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--white);
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+        
+        .feedback-bar.correct .btn-continue {
+            background: var(--primary);
+            box-shadow: 0 4px 0 var(--primary-dark);
+        }
+        
+        .feedback-bar.correct .btn-continue:hover {
+            background: var(--primary-light);
+        }
+        
+        .feedback-bar.wrong .btn-continue {
+            background: var(--accent);
+            box-shadow: 0 4px 0 #D95A2A; /* Orange gelap */
+        }
+        
+        .feedback-bar.wrong .btn-continue:hover {
+            background: var(--accent-light);
+        }
+        
+        .btn-continue:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0;
+        }
+        
+        /* ===== SPEAKOUT BRANDING (Optional) ===== */
+        .speakout-brand {
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            color: var(--gray-text);
+            font-weight: 600;
+        }
+        
+        .speakout-brand span {
+            color: var(--primary);
+            font-weight: 800;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .question-title {
+                font-size: 24px;
+            }
+            
+            .emoji {
+                font-size: 60px;
+            }
+            
+            .feedback-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <button class="close-btn" onclick="closeQuiz()">✕</button>
+        <div class="progress-container">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="hearts">
+            <span class="heart-icon">❤️</span>
+            <span id="heartsCount">5</span>
+        </div>
+    </div>
+
+    <!-- MAIN QUIZ CONTENT -->
+    <div class="quiz-container">
+        
+        <!-- Category Badge -->
+        <div class="category-badge">
+            <div class="category-icon">✨</div>
+            <span>KOSAKATA BARU</span>
+        </div>
+        
+        <!-- Question -->
+        <h1 class="question-title">Mana yang artinya "gula"?</h1>
+        
+        <!-- Options Grid -->
+        <div class="options-grid">
+            
+            <div class="option-card" onclick="selectOption(this, 1)">
+                <div class="emoji">🥛</div>
+                <div class="label">milk</div>
+                <div class="option-number">1</div>
+            </div>
+            
+            <div class="option-card" onclick="selectOption(this, 2)">
+                <div class="emoji">☕</div>
+                <div class="label">coffee</div>
+                <div class="option-number">2</div>
+            </div>
+            
+            <div class="option-card" onclick="selectOption(this, 3)">
+                <div class="emoji">🍬</div>
+                <div class="label">sugar</div>
+                <div class="option-number">3</div>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <!-- FOOTER -->
+    <div class="quiz-footer" id="quizFooter">
+        <div class="footer-content">
+            <button class="btn-skip" onclick="skipQuestion()">LOMPATI</button>
+            <button class="btn-check" id="btnCheck" onclick="checkAnswer()" disabled>PERIKSA</button>
+        </div>
+    </div>
+
+    <!-- FEEDBACK BAR (Hidden by default) -->
+    <div class="feedback-bar" id="feedbackBar">
+        <div class="feedback-content">
+            <div class="feedback-icon" id="feedbackIcon">✓</div>
+            <div class="feedback-text">
+                <h3 id="feedbackTitle">Bagus!</h3>
+                <p id="feedbackMessage"></p>
+            </div>
+            <button class="btn-continue" onclick="nextQuestion()">LANJUTKAN</button>
+        </div>
+    </div>
+
+    <!-- SpeakOut Branding -->
+    <div class="speakout-brand">
+        Powered by <span>SpeakOut</span> - Ngomong Inggris Jadi Mudah
+    </div>
+
+    <script>
+        // ===== STATE =====
+        let selectedOption = null;
+        let selectedElement = null;
+        let currentQuestion = 1;
+        let totalQuestions = 4;
+        let hearts = 5;
+        
+        // Jawaban benar untuk soal ini (sugar = option 3)
+        const correctAnswer = 3;
+        
+        // ===== FUNCTIONS =====
+        
+        function selectOption(element, optionNumber) {
+            // Reset semua option
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Set option yang dipilih
+            element.classList.add('selected');
+            selectedOption = optionNumber;
+            selectedElement = element;
+            
+            // Aktifkan tombol PERIKSA
+            const btnCheck = document.getElementById('btnCheck');
+            btnCheck.disabled = false;
+            btnCheck.classList.add('active');
+        }
+        
+        function checkAnswer() {
+            if (!selectedOption) return;
+            
+            const feedbackBar = document.getElementById('feedbackBar');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            const quizFooter = document.getElementById('quizFooter');
+            
+            // Cek jawaban
+            if (selectedOption === correctAnswer) {
+                // BENAR - UNGU
+                selectedElement.classList.add('correct');
+                feedbackBar.classList.add('correct');
+                feedbackBar.classList.remove('wrong');
+                feedbackIcon.textContent = '✓';
+                feedbackTitle.textContent = 'Bagus!';
+                feedbackMessage.textContent = '';
+                
+                // Update progress
+                updateProgress();
+                
+            } else {
+                // SALAH - ORANGE
+                selectedElement.classList.add('wrong');
+                feedbackBar.classList.add('wrong');
+                feedbackBar.classList.remove('correct');
+                feedbackIcon.textContent = '✗';
+                feedbackTitle.textContent = 'Jawaban yang benar:';
+                feedbackMessage.textContent = 'sugar 🍬';
+                
+                // Kurangi hearts
+                hearts--;
+                document.getElementById('heartsCount').textContent = hearts;
+                
+                // Highlight jawaban yang benar
+                document.querySelectorAll('.option-card').forEach((card, index) => {
+                    if (index + 1 === correctAnswer) {
+                        card.classList.add('correct');
+                    }
+                });
+            }
+            
+            // Sembunyikan footer, tampilkan feedback
+            quizFooter.style.display = 'none';
+        }
+        
+        function nextQuestion() {
+            // Reset state
+            selectedOption = null;
+            selectedElement = null;
+            
+            // Reset UI
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected', 'correct', 'wrong');
+            });
+            
+            const feedbackBar = document.getElementById('feedbackBar');
+            feedbackBar.classList.remove('correct', 'wrong');
+            feedbackBar.style.display = 'none';
+            
+            const quizFooter = document.getElementById('quizFooter');
+            quizFooter.style.display = 'flex';
+            
+            const btnCheck = document.getElementById('btnCheck');
+            btnCheck.disabled = true;
+            btnCheck.classList.remove('active');
+            
+            // Pindah ke soal berikutnya (simulasi)
+            currentQuestion++;
+            if (currentQuestion > totalQuestions) {
+                alert('🎉 Kuis selesai! Kamu hebat!');
+                currentQuestion = 1;
+                hearts = 5;
+                document.getElementById('heartsCount').textContent = hearts;
+            }
+            
+            updateProgress();
+        }
+        
+        function skipQuestion() {
+            if (confirm('Yakin mau lewati soal ini?')) {
+                nextQuestion();
+            }
+        }
+        
+        function closeQuiz() {
+            if (confirm('Yakin mau keluar dari kuis? Progress tidak akan disimpan.')) {
+                window.history.back();
+            }
+        }
+        
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '1') selectOption(document.querySelectorAll('.option-card')[0], 1);
+            if (e.key === '2') selectOption(document.querySelectorAll('.option-card')[1], 2);
+            if (e.key === '3') selectOption(document.querySelectorAll('.option-card')[2], 3);
+            if (e.key === 'Enter' && selectedOption) checkAnswer();
+        });
+    </script>
+
+</body>
+</html>
