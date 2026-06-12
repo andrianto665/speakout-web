@@ -20,14 +20,26 @@
 <header class="header">
     <div class="header-container">
         <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
+        
+        <!-- HAMBURGER MENU -->
+        <button class="hamburger-menu" onclick="toggleMenu()" aria-label="Toggle Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
         <nav>
             <ul class="nav-menu">
                 <li><a href="index.html">Beranda</a></li>
                 <li><a href="courses.html">Course</a></li>
-                <li><a href="teachers.html" class="active">Teachers</a></li>
+                <li><a href="teachers.html">Teachers</a></li>
+                <li class="mobile-login-item">
+                    <a href="login.html" class="btn-login-mobile">Login</a>
+                </li>
             </ul>
         </nav>
-        <a href="login.html" class="btn-login">Login</a>
+        
+        <a href="login.html" class="btn-login desktop-only">Login</a>
     </div>
 </header>
 
@@ -63,7 +75,9 @@
     </div>
 </section>
 
-<!-- API Service -->
+<!-- Scripts - URUTAN YANG BENAR -->
+<script src="/js/app.js"></script>
+<script src="/js/splash.js"></script>
 <script src="js/api.js"></script>
 
 <!-- Teachers Logic -->

@@ -8,12 +8,12 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Main CSS - WAJIB ADA! -->
+    <!-- Main CSS -->
     <link rel="stylesheet" href="/css/main.css">
 
     <!-- Page-specific CSS -->
-    <link rel="stylesheet" href="/css/courses.css"> <!-- untuk courses.html -->
-    <link rel="stylesheet" href="/css/teachers.css"> <!-- untuk teachers.html -->
+    <link rel="stylesheet" href="/css/courses.css">
+    <link rel="stylesheet" href="/css/teachers.css">
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
@@ -23,107 +23,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SpeakOut">
     <link rel="apple-touch-icon" href="/images/icon-192.png">
-</head>
-<body class="page-fade-in">
 
-    <!-- Splash Screen -->
-    <div id="splash-screen">
-        <div class="splash-content">
-            <img src="/images/logo-speakout.png" alt="SpeakOut" class="splash-logo">
-            <div class="splash-loader"></div>
-            <p class="splash-text">Memuat konten...</p>
-        </div>
-    </div>
-
-    <!-- HEADER -->
-    <header class="header">
-        <div class="header-container">
-            <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.html" class="active">Beranda</a></li>
-                    <li><a href="courses.html">Course</a></li>
-                    <li><a href="teachers.html">Teachers</a></li>
-                </ul>
-            </nav>
-            <a href="login.html" class="btn-login">Login</a>
-        </div>
-    </header>
-
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-bg"></div>
-        <div class="hero-overlay"></div>
-        <div class="hero-container">
-
-            <div class="hero-eyebrow">
-                <div class="hero-eyebrow-line"></div>
-                <span>Platform Kursus Bahasa Inggris</span>
-            </div>
-
-            <h1 class="hero-title">
-                Belajar Inggris Jadi <em>Mudah</em> & Menyenangkan
-            </h1>
-
-            <p class="hero-desc">
-                Program kursus bahasa Inggris SpeakOut membantu meningkatkan
-                kemampuan speaking dengan metode aktif, praktis, dan mentor ahli.
-            </p>
-
-            <div class="hero-actions">
-                <a href="register.html" class="btn-register">
-                    Daftar Gratis <span class="arrow">→</span>
-                </a>
-                <a href="courses.html" class="btn-explore">
-                    <div class="btn-explore-icon">🔍</div>
-                    Lihat Course
-                </a>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- BENEFITS -->
-    <section class="benefits">
-        <div class="benefits-container">
-
-            <div class="benefit-card">
-                <span class="benefit-number">01</span>
-                <span class="benefit-icon">💻</span>
-                <h3>100% Praktik</h3>
-                <p>Belajar langsung aktif speaking setiap sesi, bukan hanya teori.</p>
-            </div>
-
-            <div class="benefit-card">
-                <span class="benefit-number">02</span>
-                <span class="benefit-icon">✅</span>
-                <h3>Mentor Ahli</h3>
-                <p>Dibimbing mentor profesional berpengalaman di bidangnya.</p>
-            </div>
-
-            <div class="benefit-card">
-                <span class="benefit-number">03</span>
-                <span class="benefit-icon">🏆</span>
-                <h3>Sertifikat Resmi</h3>
-                <p>Dapatkan sertifikat resmi setelah menyelesaikan program.</p>
-            </div>
-
-            <div class="benefit-card">
-                <span class="benefit-number">04</span>
-                <span class="benefit-icon">📱</span>
-                <h3>Belajar Online</h3>
-                <p>Akses materi kapan saja dan di mana saja sesuai jadwalmu.</p>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Scripts -->
-    <script src="/js/app.js"></script>
-    <script src="/js/splash.js"></script>
-
-    <!-- Inline CSS untuk Hero & Benefits (hanya di index.html) -->
+    <!-- Hero & Benefits CSS -->
     <style>
+        /* ===== HERO ===== */
         .hero {
             width: 100%;
             min-height: 100vh;
@@ -147,7 +50,7 @@
 
         @keyframes zoomOut {
             from { transform: scale(1.08); }
-            to { transform: scale(1.0); }
+            to   { transform: scale(1.0); }
         }
 
         .hero-overlay {
@@ -276,16 +179,11 @@
         }
 
         @keyframes fadeUp {
-            from { 
-                opacity: 0; 
-                transform: translateY(30px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* ===== BENEFITS ===== */
         .benefits {
             background: var(--dark2);
             padding: 80px 20px;
@@ -344,6 +242,7 @@
             font-weight: 500;
         }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .benefits-container {
                 grid-template-columns: repeat(2, 1fr);
@@ -354,16 +253,13 @@
             .hero-container {
                 padding: 120px 24px 60px;
             }
-            
             .hero-actions {
                 gap: 16px;
             }
-            
             .btn-register {
                 padding: 12px 28px;
                 font-size: 14px;
             }
-            
             .benefits-container {
                 grid-template-columns: 1fr;
                 gap: 16px;
@@ -374,18 +270,126 @@
             .hero-container {
                 padding: 100px 20px 50px;
             }
-            
             .hero-actions {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 14px;
             }
-            
             .btn-register {
                 width: 100%;
                 justify-content: center;
             }
         }
     </style>
+</head>
+<body>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <img src="/images/logo-speakout.png" alt="SpeakOut" class="splash-logo">
+            <div class="splash-loader"></div>
+            <p class="splash-text">Memuat konten...</p>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
+
+            <button class="hamburger-menu" onclick="toggleMenu()" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="active">Beranda</a></li>
+                    <li><a href="courses.html">Course</a></li>
+                    <li><a href="teachers.html">Teachers</a></li>
+                    <li class="mobile-login-item">
+                        <a href="login.html" class="btn-login-mobile">Login</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <a href="login.html" class="btn-login desktop-only">Login</a>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-container">
+
+            <div class="hero-eyebrow">
+                <div class="hero-eyebrow-line"></div>
+                <span>Platform Kursus Bahasa Inggris</span>
+            </div>
+
+            <h1 class="hero-title">
+                Belajar Inggris Jadi <em>Mudah</em> & Menyenangkan
+            </h1>
+
+            <p class="hero-desc">
+                Program kursus bahasa Inggris SpeakOut membantu meningkatkan
+                kemampuan speaking dengan metode aktif, praktis, dan mentor ahli.
+            </p>
+
+            <div class="hero-actions">
+                <a href="register.html" class="btn-register">
+                    Daftar Gratis <span class="arrow">→</span>
+                </a>
+                <a href="courses.html" class="btn-explore">
+                    <div class="btn-explore-icon">🔍</div>
+                    Lihat Course
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- BENEFITS -->
+    <section class="benefits">
+        <div class="benefits-container">
+
+            <div class="benefit-card">
+                <span class="benefit-number">01</span>
+                <span class="benefit-icon">💻</span>
+                <h3>100% Praktik</h3>
+                <p>Belajar langsung aktif speaking setiap sesi, bukan hanya teori.</p>
+            </div>
+
+            <div class="benefit-card">
+                <span class="benefit-number">02</span>
+                <span class="benefit-icon">✅</span>
+                <h3>Mentor Ahli</h3>
+                <p>Dibimbing mentor profesional berpengalaman di bidangnya.</p>
+            </div>
+
+            <div class="benefit-card">
+                <span class="benefit-number">03</span>
+                <span class="benefit-icon">🏆</span>
+                <h3>Sertifikat Resmi</h3>
+                <p>Dapatkan sertifikat resmi setelah menyelesaikan program.</p>
+            </div>
+
+            <div class="benefit-card">
+                <span class="benefit-number">04</span>
+                <span class="benefit-icon">📱</span>
+                <h3>Belajar Online</h3>
+                <p>Akses materi kapan saja dan di mana saja sesuai jadwalmu.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="/js/app.js"></script>
+    <script src="/js/splash.js"></script>
+
 </body>
 </html>

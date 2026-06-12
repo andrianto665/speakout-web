@@ -83,9 +83,10 @@ a {
     transition: color 0.3s;
 }
 
-.nav-menu a:hover,
-.nav-menu .active {
+.nav-menu a.active,
+.nav-menu a:hover {
     color: var(--white);
+    font-weight: 600;
 }
 
 .btn-login {
@@ -109,17 +110,14 @@ body.page-fade-in {
 }
 
 @keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    0%   { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== SPLASH SCREEN ===== */
+/* =========================================
+   SPLASH SCREEN - FIXED CENTER
+========================================= */
+
 #splash-screen {
     position: fixed;
     top: 0;
@@ -131,7 +129,10 @@ body.page-fade-in {
     align-items: center;
     justify-content: center;
     z-index: 9999;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    /* ✅ FIX: reset transform & animation dari body.page-fade-in */
+    transform: none !important;
+    animation: none !important;
 }
 
 #splash-screen.hidden {
@@ -141,75 +142,276 @@ body.page-fade-in {
 }
 
 .splash-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
     text-align: center;
-    animation: fadeInUpSplash 0.8s ease;
+    padding: 0 20px;
+    animation: splashFadeIn 0.8s ease;
 }
 
 .splash-logo {
-    max-width: 350px;
+    width: 300px;
+    max-width: 75vw;
     height: auto;
-    margin-bottom: 40px;
-    animation: scaleInSplash 0.5s ease;
+    animation: splashScaleIn 0.8s ease;
 }
 
 .splash-loader {
-    width: 50px;
-    height: 50px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
+    width: 44px;
+    height: 44px;
+    border: 3.5px solid rgba(255, 255, 255, 0.25);
     border-top-color: white;
     border-radius: 50%;
-    margin: 0 auto 20px;
-    animation: spinSplash 1s linear infinite;
+    flex-shrink: 0;
+    animation: splashSpin 0.9s linear infinite;
 }
 
 .splash-text {
-    color: white;
+    color: rgba(255, 255, 255, 0.9);
     font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    letter-spacing: 2px;
-    animation: pulseSplash 1.5s ease infinite;
+    font-size: 14px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    animation: splashPulse 1.5s ease infinite;
 }
 
-@keyframes fadeInUpSplash {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes splashFadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes scaleInSplash {
-    from {
-        transform: scale(0.5);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+@keyframes splashScaleIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
 }
 
-@keyframes spinSplash {
+@keyframes splashSpin {
     to { transform: rotate(360deg); }
 }
 
-@keyframes pulseSplash {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .nav-menu { display: none; }
-    .header-container { padding: 0 24px; }
-    .splash-logo { max-width: 250px; }
-    .splash-text { font-size: 14px; }
+@keyframes splashPulse {
+    0%, 100% { opacity: 0.9; }
+    50%       { opacity: 0.4; }
 }
 
 @media (max-width: 480px) {
-    .logo { font-size: 22px; }
+    .splash-logo   { width: 220px; }
+    .splash-loader { width: 38px; height: 38px; }
+    .splash-text   { font-size: 13px; }
+}
+
+@media (max-width: 380px) {
+    .splash-logo   { width: 180px; }
+    .splash-loader { width: 32px; height: 32px; }
+    .splash-text   { font-size: 12px; }
+}
+
+/* =========================================
+   RESPONSIVE - HEADER
+========================================= */
+@media (max-width: 768px) {
+    .header-container { padding: 0 24px; }
+}
+
+@media (max-width: 480px) {
+    .logo      { font-size: 22px; }
     .btn-login { padding: 10px 20px; font-size: 13px; }
+}
+
+/* =========================================
+   MOBILE HAMBURGER MENU
+========================================= */
+
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+    transition: all 0.3s ease;
+}
+
+.hamburger-menu span {
+    width: 18px;
+    height: 2.5px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 998;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* =========================================
+   MOBILE STYLES (max-width: 768px)
+========================================= */
+@media (max-width: 768px) {
+
+    .hamburger-menu {
+        display: flex;
+        order: 3;
+    }
+
+    .btn-login.desktop-only {
+        display: none !important;
+    }
+
+    .nav-menu {
+        position: fixed !important;
+        top: 0 !important;
+        right: -320px !important;
+        width: 300px !important;
+        height: 100vh !important;
+        background: linear-gradient(180deg, #0f0f1a 0%, #14142a 100%) !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        padding-top: 80px !important;
+        gap: 0 !important;
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5) !important;
+        z-index: 999 !important;
+        list-style: none !important;
+        margin: 0 !important;
+    }
+
+    .nav-menu.active {
+        right: 0 !important;
+    }
+
+    .nav-menu li {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        opacity: 0 !important;
+        transform: translateX(30px) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .nav-menu.active li {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+    }
+
+    .nav-menu.active li:nth-child(1) { transition-delay: 0.1s !important; }
+    .nav-menu.active li:nth-child(2) { transition-delay: 0.2s !important; }
+    .nav-menu.active li:nth-child(3) { transition-delay: 0.3s !important; }
+    .nav-menu.active li:nth-child(4) { transition-delay: 0.4s !important; }
+
+    .nav-menu a {
+        display: block !important;
+        padding: 22px 32px !important;
+        font-size: 17px !important;
+        font-weight: 600 !important;
+        color: #a0a0b8 !important;
+        border-left: 3px solid transparent !important;
+        transition: all 0.3s ease !important;
+        text-decoration: none !important;
+        text-align: left !important;
+    }
+
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #ffffff !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-left-color: #4a90d9 !important;
+        padding-left: 38px !important;
+    }
+
+    .mobile-login-item {
+        margin-top: auto !important;
+        padding: 32px !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .btn-login-mobile {
+        display: block !important;
+        width: 100% !important;
+        padding: 15px !important;
+        background: linear-gradient(135deg, #0A4D9B 0%, #1565c0 100%) !important;
+        color: white !important;
+        text-align: center !important;
+        border-radius: 50px !important;
+        font-weight: 600 !important;
+        font-size: 16px !important;
+        transition: transform 0.3s ease !important;
+        text-decoration: none !important;
+    }
+
+    .btn-login-mobile:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 20px rgba(10, 77, 155, 0.4) !important;
+    }
+
+    .hamburger-menu.active {
+        border-color: transparent !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .hamburger-menu.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px) !important;
+    }
+
+    .hamburger-menu.active span:nth-child(2) {
+        opacity: 0 !important;
+        transform: scaleX(0) !important;
+    }
+
+    .hamburger-menu.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px) !important;
+    }
+
+    .header-container {
+        padding: 0 20px !important;
+    }
+
+    .logo {
+        font-size: 20px !important;
+    }
+}
+
+/* =========================================
+   DESKTOP STYLES (min-width: 769px)
+========================================= */
+@media (min-width: 769px) {
+    .mobile-login-item {
+        display: none !important;
+    }
+
+    .desktop-only {
+        display: inline-block !important;
+    }
+
+    .menu-overlay {
+        display: none !important;
+    }
+
+    .hamburger-menu {
+        display: none !important;
+    }
 }

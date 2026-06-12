@@ -5,114 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - SpeakOut</title>
 
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#8B2C98">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SpeakOut">
+    <link rel="apple-touch-icon" href="/images/icon-192.png">
+</head>
+<body>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <img src="/images/logo-speakout.png" alt="SpeakOut" class="splash-logo">
+            <div class="splash-loader"></div>
+            <p class="splash-text">Memuat konten...</p>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+<header class="header">
+    <div class="header-container">
+        <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
+        
+        <!-- HAMBURGER MENU -->
+        <button class="hamburger-menu" onclick="toggleMenu()" aria-label="Toggle Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="courses.html">Course</a></li>
+                <li><a href="teachers.html">Teachers</a></li>
+                <li class="mobile-login-item">
+                    <a href="login.html" class="btn-login-mobile">Login</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <a href="login.html" class="btn-login desktop-only">Login</a>
+    </div>
+</header>
+
+    <!-- REGISTER SECTION -->
+    <section class="register-section">
+        <div class="register-container">
+
+            <div class="register-text">
+                <h1>
+                    Bergabung dengan<br>
+                    <em>SpeakOut</em> Sekarang
+                </h1>
+
+                <p>
+                    Daftarkan akunmu dan mulai belajar bahasa Inggris
+                    dengan metode aktif, mentor ahli, dan akses belajar
+                    kapan saja di mana saja.
+                </p>
+            </div>
+
+            <div class="register-card">
+
+                <h2>Create Account</h2>
+
+                <form id="registerForm">
+
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="Masukkan nama" required autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" name="email" placeholder="Masukkan email" required autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" name="password" placeholder="Minimal 6 karakter" minlength="6" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Ulangi password" required>
+                    </div>
+
+                    <button type="submit" class="register-btn">
+                        Daftar Sekarang
+                    </button>
+
+                </form>
+
+                <div class="link">
+                    Sudah punya akun? <a href="login.html">Login di sini</a>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+        <!-- Inline CSS untuk Register Page -->
     <style>
-        :root {
-            --dark: #0f0f1a;
-            --dark2: #14142a;
-            --purple: #5b2d8e;
-            --purple-light: #7b4db5;
-            --purple-accent: #a67cda;
-            --blue: #0A4D9B;
-            --blue-light: #1565c0;
-            --blue-accent: #4a90d9;
-            --white: #ffffff;
-            --gray: #a0a0b8;
-            --surface: #1a1a35;
-            --surface2: #f4f4fc;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--surface2);
-            overflow-x: hidden;
-            color: #1f1f3a;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        /* ================= HEADER ================= */
-        .header {
-            width: 100%;
-            padding: 18px 0;
-            position: sticky;
-            top: 0;
-            z-index: 999;
-            background: rgba(10,15,35,0.92);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 0 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--white);
-            letter-spacing: -0.5px;
-        }
-
-        .logo span { color: var(--blue-accent); }
-
-        .nav-menu {
-            display: flex;
-            gap: 36px;
-            list-style: none;
-        }
-
-        .nav-menu a {
-            color: var(--gray);
-            font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            transition: color 0.3s;
-        }
-
-        .nav-menu a:hover {
-            color: var(--white);
-        }
-
-        .btn-login {
-            background: var(--blue);
-            color: white;
-            padding: 11px 26px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .btn-login:hover {
-            background: var(--blue-light);
-            transform: translateY(-1px);
-        }
-
-        /* ================= REGISTER SECTION ================= */
         .register-section {
             min-height: calc(100vh - 80px);
             background: linear-gradient(135deg, var(--dark) 0%, #1a0a35 50%, #0a1a40 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 80px 20px;
+            padding: 60px 20px;
             position: relative;
             overflow: hidden;
         }
@@ -148,8 +160,8 @@
 
         .register-text h1 {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(32px, 5vw, 52px);
-            line-height: 1.2;
+            font-size: clamp(28px, 5vw, 48px);
+            line-height: 1.3;
             margin-bottom: 20px;
             font-weight: 900;
         }
@@ -166,12 +178,14 @@
             font-weight: 300;
         }
 
-        /* ================= FORM CARD ================= */
         .register-card {
             background: white;
             padding: 40px;
             border-radius: 24px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
         }
 
         .register-card h2 {
@@ -183,64 +197,70 @@
             font-weight: 900;
         }
 
-        .form-group {
-            margin-bottom: 18px;
+        .register-card .form-group {
+            margin-bottom: 20px;
         }
 
-        label {
+        .register-card label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 15px;
+            font-weight: 600;
             color: #333;
         }
 
-        input {
+        .register-card input {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
             outline: none;
-            font-size: 14px;
+            font-size: 16px;
             font-family: inherit;
             transition: 0.3s;
         }
 
-        input:focus {
+        .register-card input:focus {
             border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(10, 77, 155, 0.1);
         }
 
         .register-btn {
             width: 100%;
             background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
             color: white;
-            padding: 15px;
+            padding: 18px;
             border: none;
             border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 17px;
+            font-weight: 700;
             cursor: pointer;
             transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(91, 45, 142, 0.3);
         }
 
         .register-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(91, 45, 142, 0.3);
+            box-shadow: 0 8px 24px rgba(91, 45, 142, 0.4);
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
         }
 
         .link {
             text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
+            margin-top: 25px;
+            font-size: 15px;
             color: #666;
         }
 
         .link a {
             color: var(--blue);
-            font-weight: 600;
+            font-weight: 700;
+            text-decoration: underline;
         }
 
-        /* ================= NOTIFICATION TOAST ================= */
         .notification {
             position: fixed;
             top: 20px;
@@ -311,22 +331,43 @@
             }
         }
 
-        /* ================= RESPONSIVE ================= */
+        /* =========================================
+           MOBILE OPTIMIZATION
+        ========================================= */
         @media (max-width: 992px) {
+            .register-section {
+                padding: 80px 20px 40px;
+            }
+
             .register-container {
                 grid-template-columns: 1fr;
+                gap: 30px;
             }
 
             .register-text {
                 text-align: center;
+                padding: 0 15px;
             }
 
             .register-text h1 {
-                font-size: 40px;
+                font-size: 26px;
+                line-height: 1.3;
+                margin-bottom: 12px;
             }
 
-            .nav-menu {
-                display: none;
+            .register-text p {
+                font-size: 14px;
+                margin-bottom: 15px;
+                line-height: 1.6;
+            }
+
+            .register-section::before {
+                font-size: 80px;
+            }
+
+            .register-card {
+                max-width: 100%;
+                margin: 0;
             }
 
             .notification {
@@ -337,21 +378,64 @@
         }
 
         @media (max-width: 600px) {
-            .register-card {
-                padding: 28px;
+            .register-section {
+                padding: 100px 16px 30px;
+                min-height: 100vh;
+            }
+
+            .register-container {
+                padding: 0;
+                gap: 25px;
+            }
+
+            .register-text {
+                padding: 0 10px;
             }
 
             .register-text h1 {
-                font-size: 30px;
+                font-size: 22px;
+                line-height: 1.35;
+                margin-bottom: 10px;
             }
 
             .register-text p {
+                font-size: 13px;
+                line-height: 1.6;
+                margin-bottom: 12px;
+            }
+
+            .register-card {
+                padding: 24px 18px;
+                border-radius: 20px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            }
+
+            .register-card h2 {
+                font-size: 26px;
+            }
+
+            .register-card .form-group {
+                margin-bottom: 16px;
+            }
+
+            .register-card label {
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
+
+            .register-card input {
+                padding: 14px;
+                font-size: 15px;
+            }
+
+            .register-btn {
+                padding: 16px;
                 font-size: 16px;
             }
 
-            .btn-login {
-                padding: 10px 18px;
+            .link {
                 font-size: 13px;
+                margin-top: 16px;
             }
 
             .notification {
@@ -361,220 +445,156 @@
                 padding: 12px 16px;
             }
         }
-    </style>
-</head>
-<body class="page-fade-in">
 
-<header class="header">
-    <div class="header-container">
-        <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
-
-        <nav>
-            <ul class="nav-menu">
-                <li><a href="index.html">Beranda</a></li>
-                <li><a href="courses.html">Course</a></li>
-                <li><a href="teachers.html">Teachers</a></li>
-            </ul>
-        </nav>
-
-        <a href="login.html" class="btn-login">Login</a>
-    </div>
-</header>
-
-<section class="register-section">
-
-    <div class="register-container">
-
-        <div class="register-text">
-            <h1>
-                Bergabung dengan<br>
-                <em>SpeakOut</em> Sekarang
-            </h1>
-
-            <p>
-                Daftarkan akunmu dan mulai belajar bahasa Inggris
-                dengan metode aktif, mentor ahli, dan akses belajar
-                kapan saja di mana saja.
-            </p>
-        </div>
-
-        <div class="register-card">
-
-            <h2>Create Account</h2>
-
-            <form id="registerForm">
-
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="name" name="name" placeholder="Masukkan nama" required autocomplete="off">
-                </div>
-
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="email" name="email" placeholder="Masukkan email" required autocomplete="off">
-                </div>
-
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="password" name="password" placeholder="Minimal 6 karakter" minlength="6" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Ulangi password" required>
-                </div>
-
-                <button type="submit" class="register-btn">
-                    Daftar Sekarang
-                </button>
-
-            </form>
-
-            <div class="link">
-                Sudah punya akun? <a href="login.html">Login di sini</a>
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-<script src="js/api.js"></script>
-<script>
-// ============================================
-// 📁 FILE: register.html - Script
-// 🎯 Fungsi: Handle Register dengan Notifikasi
-// ============================================
-
-/**
- * Show notification toast
- * @param {string} message - Pesan notifikasi
- * @param {string} type - 'success', 'error', atau 'warning'
- */
-function showNotification(message, type = 'success') {
-    // Hapus notifikasi lama jika ada
-    const existingNotification = document.querySelector('.notification');
-    if (existingNotification) {
-        existingNotification.remove();
-    }
-
-    // Buat elemen notifikasi
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    
-    // Icon berdasarkan tipe
-    const icons = {
-        success: '✅',
-        error: '❌',
-        warning: '⚠️'
-    };
-
-    // Judul berdasarkan tipe
-    const titles = {
-        success: 'Berhasil!',
-        error: 'Gagal!',
-        warning: 'Perhatian!'
-    };
-
-    notification.innerHTML = `
-        <span class="notification-icon">${icons[type]}</span>
-        <div class="notification-content">
-            <div class="notification-title">${titles[type]}</div>
-            <div class="notification-message">${message}</div>
-        </div>
-    `;
-
-    // Tambahkan ke body
-    document.body.appendChild(notification);
-
-    // Auto-remove setelah 4 detik
-    setTimeout(() => {
-        notification.style.animation = 'slideOutRight 0.4s ease forwards';
-        setTimeout(() => {
-            notification.remove();
-        }, 400);
-    }, 4000);
-}
-
-// ============================================
-// 📝 REGISTER HANDLER
-// ============================================
-document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById('name')?.value.trim();
-    const email = document.getElementById('email')?.value.trim();
-    const password = document.getElementById('password')?.value;
-    const confirmPassword = document.getElementById('confirmPassword')?.value;
-    const btn = document.querySelector('#registerForm .register-btn');
-
-    // ✅ Validasi frontend
-    if (!name || !email || !password) {
-        showNotification('Mohon lengkapi semua field!', 'error');
-        return;
-    }
-
-    // ✅ Validasi confirm password
-    if (password !== confirmPassword) {
-        showNotification('Password tidak cocok!', 'error');
-        return;
-    }
-
-    // ✅ Validasi panjang password
-    if (password.length < 6) {
-        showNotification('Password minimal 6 karakter!', 'error');
-        return;
-    }
-
-    // ✅ Clear localStorage sebelum register
-    localStorage.removeItem('speakout_token');
-    localStorage.removeItem('speakout_user');
-
-    // Tampilkan loading
-    const originalBtnText = btn?.textContent || 'Daftar Sekarang';
-    if (btn) {
-        btn.textContent = 'Mendaftar...';
-        btn.disabled = true;
-    }
-
-    try {
-        const result = await api.register(name, email, password);
-        console.log('🔹 Register Response:', result);
-
-        if (result.success) {
-            // ✅ Tampilkan notifikasi sukses
-            showNotification('Registrasi berhasil! Silakan login.', 'success');
-            
-            // ✅ Tunggu 2 detik lalu redirect ke login
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 2000);
-        } else {
-            // Handle validation errors dari Laravel
-            const errors = result.data?.errors;
-            let errorMsg = 'Registrasi gagal.';
-            
-            if (errors) {
-                const firstError = Object.values(errors)[0]?.[0];
-                errorMsg = firstError || errorMsg;
-            } else if (result.data?.message) {
-                errorMsg = result.data.message;
+        @media (max-width: 380px) {
+            .register-section {
+                padding: 90px 14px 25px;
             }
+
+            .register-text h1 {
+                font-size: 20px;
+                line-height: 1.4;
+            }
+
+            .register-text p {
+                font-size: 12px;
+            }
+
+            .register-card {
+                padding: 22px 16px;
+            }
+
+            .register-card h2 {
+                font-size: 24px;
+            }
+
+            .register-btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+        }
+    </style>
+
+    <!-- Scripts - URUTAN YANG BENAR -->
+    <script src="/js/app.js"></script>
+    <script src="/js/splash.js"></script>
+    <script src="js/api.js"></script>
+
+    <!-- Register Page Scripts -->
+    <script>
+        // Show notification toast
+        function showNotification(message, type = 'success') {
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
             
-            showNotification(errorMsg, 'error');
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️'
+            };
+
+            const titles = {
+                success: 'Berhasil!',
+                error: 'Gagal!',
+                warning: 'Perhatian!'
+            };
+
+            notification.innerHTML = `
+                <span class="notification-icon">${icons[type]}</span>
+                <div class="notification-content">
+                    <div class="notification-title">${titles[type]}</div>
+                    <div class="notification-message">${message}</div>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.4s ease forwards';
+                setTimeout(() => {
+                    notification.remove();
+                }, 400);
+            }, 4000);
         }
-    } catch (error) {
-        console.error('❌ Register Error:', error);
-        showNotification('Koneksi error. Pastikan server Laravel berjalan.', 'error');
-    } finally {
-        if (btn) {
-            btn.textContent = originalBtnText;
-            btn.disabled = false;
-        }
-    }
-});
-</script>
+
+        // Register Form Handler
+        document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name')?.value.trim();
+            const email = document.getElementById('email')?.value.trim();
+            const password = document.getElementById('password')?.value;
+            const confirmPassword = document.getElementById('confirmPassword')?.value;
+            const btn = document.querySelector('#registerForm .register-btn');
+
+            // Validasi frontend
+            if (!name || !email || !password) {
+                showNotification('Mohon lengkapi semua field!', 'error');
+                return;
+            }
+
+            // Validasi confirm password
+            if (password !== confirmPassword) {
+                showNotification('Password tidak cocok!', 'error');
+                return;
+            }
+
+            // Validasi panjang password
+            if (password.length < 6) {
+                showNotification('Password minimal 6 karakter!', 'error');
+                return;
+            }
+
+            // Clear localStorage sebelum register
+            localStorage.removeItem('speakout_token');
+            localStorage.removeItem('speakout_user');
+
+            // Tampilkan loading
+            const originalBtnText = btn?.textContent || 'Daftar Sekarang';
+            if (btn) {
+                btn.textContent = 'Mendaftar...';
+                btn.disabled = true;
+            }
+
+            try {
+                const result = await api.register(name, email, password);
+                console.log('🔹 Register Response:', result);
+
+                if (result.success) {
+                    showNotification('Registrasi berhasil! Silakan login.', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    const errors = result.data?.errors;
+                    let errorMsg = 'Registrasi gagal.';
+                    
+                    if (errors) {
+                        const firstError = Object.values(errors)[0]?.[0];
+                        errorMsg = firstError || errorMsg;
+                    } else if (result.data?.message) {
+                        errorMsg = result.data.message;
+                    }
+                    
+                    showNotification(errorMsg, 'error');
+                }
+            } catch (error) {
+                console.error('❌ Register Error:', error);
+                showNotification('Koneksi error. Pastikan server Laravel berjalan.', 'error');
+            } finally {
+                if (btn) {
+                    btn.textContent = originalBtnText;
+                    btn.disabled = false;
+                }
+            }
+        });
+    </script>
 
 </body>
 </html>

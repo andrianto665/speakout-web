@@ -1,29 +1,28 @@
 /**
  * Splash Screen Controller
- * Handle show/hide splash screen
+ * Force reset dulu baru hide — agar cache SW tidak membekukan state hidden
  */
 
-// Hide splash screen setelah semua resource load
-window.addEventListener('load', () => {
+// ✅ IIFE: jalan LANGSUNG saat script dibaca, sebelum apapun
+// Paksa splash kembali visible, buang state lama dari cache
+(function () {
     const splash = document.getElementById('splash-screen');
-    
-    // Minimal tampil 1.5 detik
-    setTimeout(() => {
-        hideSplashScreen();
-    }, 1500);
-});
+    if (!splash) return;
+    splash.classList.remove('hidden');
+    splash.style.removeProperty('display');
+})();
 
-/**
- * Hide splash screen dengan animasi
- */
 function hideSplashScreen() {
     const splash = document.getElementById('splash-screen');
-    
-    if (splash) {
-        splash.classList.add('hidden');
-        
-        setTimeout(() => {
-            splash.style.display = 'none';
-        }, 500);
-    }
+    if (!splash) return;
+    splash.classList.add('hidden');
+    setTimeout(() => { splash.style.display = 'none'; }, 500);
+}
+
+if (document.readyState === 'complete') {
+    setTimeout(hideSplashScreen, 3000); // ← ganti 1500 jadi 3000
+} else {
+    window.addEventListener('load', () => {
+        setTimeout(hideSplashScreen, 3000); // ← ganti 1500 jadi 3000
+    });
 }

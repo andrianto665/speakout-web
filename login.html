@@ -5,446 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SpeakOut</title>
 
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --dark: #0f0f1a;
-            --dark2: #14142a;
-            --purple: #5b2d8e;
-            --purple-light: #7b4db5;
-            --purple-accent: #a67cda;
-            --blue: #0A4D9B;
-            --blue-light: #1565c0;
-            --blue-accent: #4a90d9;
-            --white: #ffffff;
-            --gray: #a0a0b8;
-            --surface: #1a1a35;
-            --surface2: #f4f4fc;
-        }
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/css/main.css">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--surface2);
-            overflow-x: hidden;
-            color: #1f1f3a;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        /* ================= HEADER ================= */
-        .header {
-            width: 100%;
-            padding: 18px 0;
-            position: sticky;
-            top: 0;
-            z-index: 999;
-            background: rgba(10,15,35,0.92);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 0 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--white);
-            letter-spacing: -0.5px;
-        }
-
-        .logo span { color: var(--blue-accent); }
-
-        .nav-menu {
-            display: flex;
-            gap: 36px;
-            list-style: none;
-        }
-
-        .nav-menu a {
-            color: var(--gray);
-            font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            transition: color 0.3s;
-        }
-
-        .nav-menu a:hover {
-            color: var(--white);
-        }
-
-        .btn-login {
-            background: var(--blue);
-            color: white;
-            padding: 11px 26px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .btn-login:hover {
-            background: var(--blue-light);
-            transform: translateY(-1px);
-        }
-
-        /* ================= LOGIN HERO ================= */
-        .login-hero {
-            width: 100%;
-            min-height: calc(100vh - 80px);
-            background: linear-gradient(135deg, var(--dark) 0%, #1a0a35 50%, #0a1a40 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            padding: 80px 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-hero::before {
-            content: "Login";
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Playfair Display', serif;
-            font-size: 200px;
-            font-weight: 900;
-            color: rgba(255,255,255,0.03);
-            white-space: nowrap;
-            pointer-events: none;
-        }
-
-        .login-container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 0 40px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .login-text h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(32px, 5vw, 52px);
-            line-height: 1.2;
-            margin-bottom: 20px;
-            font-weight: 900;
-        }
-
-        .login-text h1 em {
-            font-style: italic;
-            color: var(--purple-accent);
-        }
-
-        .login-text p {
-            font-size: clamp(14px, 1.5vw, 17px);
-            line-height: 1.8;
-            color: var(--gray);
-            margin-bottom: 30px;
-            font-weight: 300;
-        }
-
-        .login-benefits {
-            display: grid;
-            gap: 15px;
-        }
-
-        .benefit-item {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 14px 18px;
-            border-radius: 12px;
-            font-size: 15px;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        /* ================= LOGIN CARD ================= */
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            color: #1f1f3a;
-        }
-
-        .login-badge {
-            display: inline-block;
-            background: rgba(10, 77, 155, 0.1);
-            color: var(--blue);
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 18px;
-            letter-spacing: 0.5px;
-        }
-
-        .login-card h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 34px;
-            color: var(--blue);
-            margin-bottom: 10px;
-            font-weight: 900;
-        }
-
-        .login-subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        /* LOGIN TYPE */
-        .login-type {
-            display: flex;
-            background: var(--surface2);
-            border-radius: 12px;
-            padding: 5px;
-            margin-bottom: 25px;
-        }
-
-        .login-tab {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            color: var(--gray);
-        }
-
-        .login-tab.active {
-            background: var(--blue);
-            color: white;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            outline: none;
-            font-family: inherit;
-            transition: 0.3s;
-            font-size: 14px;
-        }
-
-        input:focus {
-            border-color: var(--blue);
-        }
-
-        .password-wrapper {
-            position: relative;
-        }
-
-        .show-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 13px;
-            color: var(--blue);
-            font-weight: 600;
-        }
-
-        .login-btn {
-            width: 100%;
-            border: none;
-            background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(91, 45, 142, 0.3);
-        }
-
-        .register-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .register-link a {
-            color: var(--blue);
-            font-weight: 600;
-        }
-
-        /* ================= NOTIFICATION TOAST ================= */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 24px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            z-index: 10000;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: slideInRight 0.4s ease;
-            max-width: 400px;
-        }
-
-        .notification.success {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-
-        .notification.error {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-        }
-
-        .notification.warning {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-
-        .notification-icon {
-            font-size: 20px;
-        }
-
-        .notification-content {
-            flex: 1;
-        }
-
-        .notification-title {
-            font-size: 15px;
-            margin-bottom: 2px;
-        }
-
-        .notification-message {
-            font-size: 13px;
-            opacity: 0.9;
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .login-container {
-                grid-template-columns: 1fr;
-            }
-
-            .login-text {
-                text-align: center;
-            }
-
-            .login-text h1 {
-                font-size: 40px;
-            }
-
-            .nav-menu {
-                display: none;
-            }
-
-            .notification {
-                left: 20px;
-                right: 20px;
-                max-width: none;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .login-card {
-                padding: 28px;
-            }
-
-            .login-text h1 {
-                font-size: 30px;
-            }
-
-            .login-text p {
-                font-size: 16px;
-            }
-
-            .notification {
-                top: 10px;
-                left: 10px;
-                right: 10px;
-                padding: 12px 16px;
-            }
-        }
-    </style>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#8B2C98">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SpeakOut">
+    <link rel="apple-touch-icon" href="/images/icon-192.png">
 </head>
-<body class="page-fade-in">
+<body>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <img src="/images/logo-speakout.png" alt="SpeakOut" class="splash-logo">
+            <div class="splash-loader"></div>
+            <p class="splash-text">Memuat konten...</p>
+        </div>
+    </div>
 
     <!-- HEADER -->
     <header class="header">
         <div class="header-container">
             <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
-
+            
+            <!-- HAMBURGER MENU -->
+            <button class="hamburger-menu" onclick="toggleMenu()" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
             <nav>
                 <ul class="nav-menu">
                     <li><a href="index.html">Beranda</a></li>
                     <li><a href="courses.html">Course</a></li>
                     <li><a href="teachers.html">Teachers</a></li>
+                    <li class="mobile-login-item">
+                        <a href="login.html" class="btn-login-mobile">Login</a>
+                    </li>
                 </ul>
             </nav>
-
-            <a href="login.html" class="btn-login">Login</a>
+            
+            <a href="login.html" class="btn-login desktop-only">Login</a>
         </div>
     </header>
 
@@ -523,7 +133,498 @@
         </div>
     </section>
 
-    <!-- JAVASCRIPT -->
+    <!-- Inline CSS untuk Login Page (SUDAH DIGABUNG & DIOPTIMASI) -->
+    <style>
+        .login-hero {
+            width: 100%;
+            min-height: calc(100vh - 80px);
+            background: linear-gradient(135deg, var(--dark) 0%, #1a0a35 50%, #0a1a40 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-hero::before {
+            content: "Login";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Playfair Display', serif;
+            font-size: 200px;
+            font-weight: 900;
+            color: rgba(255,255,255,0.03);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .login-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(28px, 5vw, 48px);
+            line-height: 1.2;
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+
+        .login-text h1 em {
+            font-style: italic;
+            color: var(--purple-accent);
+        }
+
+        .login-text p {
+            font-size: clamp(14px, 1.5vw, 17px);
+            line-height: 1.8;
+            color: var(--gray);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .login-benefits {
+            display: grid;
+            gap: 15px;
+        }
+
+        .benefit-item {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 15px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            color: #1f1f3a;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .login-badge {
+            display: inline-block;
+            background: rgba(10, 77, 155, 0.1);
+            color: var(--blue);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        .login-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--blue);
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .login-subtitle {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+        .login-type {
+            display: flex;
+            background: var(--surface2);
+            border-radius: 12px;
+            padding: 6px;
+            margin-bottom: 30px;
+        }
+
+        .login-tab {
+            flex: 1;
+            text-align: center;
+            padding: 14px 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--gray);
+        }
+
+        .login-tab.active {
+            background: var(--blue);
+            color: white;
+            box-shadow: 0 2px 8px rgba(10, 77, 155, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .login-card label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            outline: none;
+            font-family: inherit;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+        .login-card input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(10, 77, 155, 0.1);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--blue);
+            font-weight: 600;
+            padding: 4px 8px;
+        }
+
+        .login-btn {
+            width: 100%;
+            border: none;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(91, 45, 142, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(91, 45, 142, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .register-link a {
+            color: var(--blue);
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.4s ease;
+            max-width: 400px;
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .notification-icon {
+            font-size: 20px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+
+        .notification-message {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* =========================================
+   MOBILE OPTIMIZATION
+========================================= */
+@media (max-width: 992px) {
+    .login-hero {
+        padding: 80px 20px 40px;  /* ✅ Top padding lebih besar */
+        min-height: 100vh;
+    }
+
+    .login-container {
+        grid-template-columns: 1fr;
+        gap: 30px;  /* ✅ Gap lebih kecil */
+    }
+
+    .login-text {
+        text-align: center;
+        padding: 0 15px;
+    }
+
+    .login-text h1 {
+        font-size: 26px;  /* ✅ Dari 32px jadi 26px */
+        line-height: 1.3;  /* ✅ Line height lebih besar */
+        margin-bottom: 12px;
+    }
+
+    .login-text p {
+        font-size: 14px;
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+
+    /* ✅ TAMPILKAN benefits di mobile */
+    .login-benefits {
+        display: grid;
+        gap: 8px;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .benefit-item {
+        padding: 8px 12px;
+        font-size: 12px;  /* ✅ Font lebih kecil */
+    }
+
+    .login-hero::before {
+        font-size: 80px;  /* ✅ Background text lebih kecil */
+    }
+
+    .login-card {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .notification {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .login-hero {
+        padding: 100px 16px 30px;  /* ✅ Top padding 100px untuk hindari notch */
+        min-height: 100vh;
+    }
+
+    .login-container {
+        padding: 0;
+        gap: 25px;
+    }
+
+    .login-text {
+        padding: 0 10px;
+    }
+
+    .login-text h1 {
+        font-size: 22px;  /* ✅ Dari 28px jadi 22px */
+        line-height: 1.35;  /* ✅ Line height lebih besar */
+        margin-bottom: 10px;
+    }
+
+    .login-text p {
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 12px;
+    }
+
+    /* ✅ Benefits tetap tampil di mobile */
+    .login-benefits {
+        gap: 6px;
+    }
+
+    .benefit-item {
+        padding: 8px 10px;
+        font-size: 11px;  /* ✅ Font lebih kecil */
+        border-radius: 8px;
+    }
+
+    .login-card {
+        padding: 24px 18px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .login-card h2 {
+        font-size: 24px;
+    }
+
+    .login-subtitle {
+        font-size: 13px;
+    }
+
+    .login-type {
+        padding: 5px;
+    }
+
+    .login-tab {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    .login-card label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .login-card input {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .show-password {
+        font-size: 11px;
+        right: 10px;
+    }
+
+    .login-btn {
+        padding: 14px;
+        font-size: 15px;
+        margin-top: 10px;
+    }
+
+    .register-link {
+        font-size: 12px;
+        margin-top: 14px;
+    }
+
+    .notification {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        padding: 10px 14px;
+    }
+}
+
+@media (max-width: 380px) {
+    .login-hero {
+        padding: 90px 14px 25px;  /* ✅ Extra padding untuk HP kecil */
+    }
+
+    .login-text h1 {
+        font-size: 20px;  /* ✅ Lebih kecil lagi */
+        line-height: 1.4;
+    }
+
+    .login-text p {
+        font-size: 12px;
+    }
+
+    .benefit-item {
+        font-size: 10px;  /* ✅ Super compact */
+        padding: 6px 8px;
+    }
+
+    .login-card {
+        padding: 22px 16px;
+    }
+
+    .login-card h2 {
+        font-size: 22px;
+    }
+
+    .login-tab {
+        font-size: 12px;
+        padding: 9px 7px;
+    }
+
+    .login-btn {
+        padding: 13px;
+        font-size: 14px;
+    }
+}
+    </style>
+
+    <!-- Scripts - URUTAN YANG BENAR -->
+    <script src="/js/app.js"></script>
+    <script src="/js/splash.js"></script>
+    <script src="js/api.js"></script>
+
+    <!-- Login Page Scripts -->
     <script>
         // Toggle Show/Hide Password
         function togglePassword() {
@@ -550,30 +651,22 @@
             element.classList.add('active');
         }
 
-        /**
-         * Show notification toast
-         * @param {string} message - Pesan notifikasi
-         * @param {string} type - 'success', 'error', atau 'warning'
-         */
+        // Show notification toast
         function showNotification(message, type = 'success') {
-            // Hapus notifikasi lama jika ada
             const existingNotification = document.querySelector('.notification');
             if (existingNotification) {
                 existingNotification.remove();
             }
 
-            // Buat elemen notifikasi
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
             
-            // Icon berdasarkan tipe
             const icons = {
                 success: '✅',
                 error: '❌',
                 warning: '⚠️'
             };
 
-            // Judul berdasarkan tipe
             const titles = {
                 success: 'Berhasil!',
                 error: 'Gagal!',
@@ -588,10 +681,8 @@
                 </div>
             `;
 
-            // Tambahkan ke body
             document.body.appendChild(notification);
 
-            // Auto-remove setelah 4 detik
             setTimeout(() => {
                 notification.style.animation = 'slideOutRight 0.4s ease forwards';
                 setTimeout(() => {
@@ -599,56 +690,48 @@
                 }, 400);
             }, 4000);
         }
-    </script>
 
-    <!-- Include API & Auth Scripts -->
-    <script src="js/api.js"></script>
-    <script>
-    // ============================================
-    // 📁 LOGIN HANDLER dengan Notifikasi
-    // ============================================
-    document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        // Login Form Handler
+        document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const btn = document.querySelector('#loginForm .login-btn');
-        
-        const originalBtnText = btn?.textContent || 'Masuk';
-        if (btn) {
-            btn.textContent = 'Memproses...';
-            btn.disabled = true;
-        }
-
-        try {
-            const result = await api.login(email, password);
-            console.log('🔹 Login Response:', result);
-
-            if (result.success) {
-                const role = api.getUserRole();
-                const targetPage = role === 'admin' ? 'admin.html' : 'dashboard.html';
-                
-                // ✅ Tampilkan notifikasi sukses
-                showNotification(`Login berhasil! Mengarahkan ke ${role === 'admin' ? 'Admin Panel' : 'Dashboard'}...`, 'success');
-                
-                // ✅ Tunggu 1.5 detik lalu redirect
-                setTimeout(() => {
-                    window.location.href = targetPage;
-                }, 1500);
-            } else {
-                const errorMsg = result.data?.message || result.data?.errors?.email?.[0] || 'Email atau password salah.';
-                showNotification(errorMsg, 'error');
-            }
-        } catch (error) {
-            console.error('❌ Login Error:', error);
-            showNotification('Koneksi error. Pastikan server Laravel berjalan.', 'error');
-        } finally {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.querySelector('#loginForm .login-btn');
+            
+            const originalBtnText = btn?.textContent || 'Masuk';
             if (btn) {
-                btn.textContent = originalBtnText;
-                btn.disabled = false;
+                btn.textContent = 'Memproses...';
+                btn.disabled = true;
             }
-        }
-    });
+
+            try {
+                const result = await api.login(email, password);
+                console.log('🔹 Login Response:', result);
+
+                if (result.success) {
+                    const role = api.getUserRole();
+                    const targetPage = role === 'admin' ? 'admin.html' : 'dashboard.html';
+                    
+                    showNotification(`Login berhasil! Mengarahkan ke ${role === 'admin' ? 'Admin Panel' : 'Dashboard'}...`, 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = targetPage;
+                    }, 1500);
+                } else {
+                    const errorMsg = result.data?.message || result.data?.errors?.email?.[0] || 'Email atau password salah.';
+                    showNotification(errorMsg, 'error');
+                }
+            } catch (error) {
+                console.error('❌ Login Error:', error);
+                showNotification('Koneksi error. Pastikan server Laravel berjalan.', 'error');
+            } finally {
+                if (btn) {
+                    btn.textContent = originalBtnText;
+                    btn.disabled = false;
+                }
+            }
+        });
     </script>
 
 </body>
