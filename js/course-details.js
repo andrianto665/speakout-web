@@ -458,7 +458,19 @@ async function completeTextQuiz() {
         return;
     }
 
+    if (!currentQuizId) {
+        console.error('❌ currentQuizId tidak ditemukan');
+        if (typeof showNotification === 'function') showNotification('Quiz tidak valid. Silakan refresh halaman.', 'error');
+        return;
+    }
+
     const submitBtn = document.getElementById('text-quiz-submit-btn');
+    if (!submitBtn) {
+        console.error('❌ submitBtn tidak ditemukan di DOM');
+        if (typeof showNotification === 'function') showNotification('Terjadi kesalahan UI. Silakan refresh halaman.', 'error');
+        return;
+    }
+
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.textContent = '⏳ Menyimpan...';
@@ -467,9 +479,14 @@ async function completeTextQuiz() {
         const response = await fetch(`${API_BASE_URL}/quizzes/${currentQuizId}/submit`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json', 'Content-Type': 'application/json' },
-            body: JSON.stringify({ answers: window.textQuizAnswers })
+            body: JSON.stringify({ answers: window.textQuizAnswers || {} })
         });
-        if (!response.ok) throw new Error('Gagal submit quiz');
+
+        if (!response.ok) {
+            const errorBody = await response.json().catch(() => ({}));
+            throw new Error(errorBody.message || `Gagal submit quiz (HTTP ${response.status})`);
+        }
+
         const result = await response.json();
 
         if (!result.passed) {
@@ -490,11 +507,15 @@ async function completeTextQuiz() {
         submitBtn.style.background = 'linear-gradient(135deg, var(--success), #059669)';
         if (typeof showNotification === 'function') showNotification(`🎉 Lulus dengan skor ${result.score}%!`, 'success');
 
+        // ✅ FIX: Cek apakah course sudah 100% selesai setelah quiz passed
+        await checkCourseCompletion(currentCourseId);
+
     } catch (error) {
         console.error('❌ Error completing quiz:', error);
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
-        if (typeof showNotification === 'function') showNotification('Gagal menyimpan progress. Silakan coba lagi.', 'error');
+        if (typeof showNotification === 'function') showNotification(`Gagal menyimpan progress: ${error.message}`, 'error');
+        else alert(`Gagal menyimpan progress: ${error.message}`);
     }
 }
 
