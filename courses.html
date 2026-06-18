@@ -748,29 +748,18 @@
         /* ===== ENROLL ===== */
         function handleEnroll(courseId, btn, event) {
             event.stopPropagation();
-            if (typeof api === 'undefined' || !api.isLoggedIn()) {
-                alert('Silakan login terlebih dahulu untuk mendaftar course!');
-                window.location.href = 'login.html';
+
+            const course = allCourses.find(c => c.id === courseId);
+            const courseTitle = course?.title || '';
+            const encodedName = encodeURIComponent(courseTitle);
+
+            if (typeof api !== 'undefined' && api.isLoggedIn()) {
+                alert('Kamu sudah login. Hubungi admin untuk enrollment ke course baru.');
+                window.location.href = 'dashboard.html';
                 return;
             }
-            const orig = btn.textContent;
-            btn.textContent = 'Mendaftar...';
-            btn.disabled = true;
-            fetch(`http://127.0.0.1:8000/api/user/enroll/${courseId}`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' }
-            })
-            .then(r => r.json())
-            .then(data => {
-                alert(`✅ Berhasil daftar "${data.course.title}"!\n\nMengalihkan ke dashboard...`);
-                window.location.href = 'dashboard.html';
-            })
-            .catch(err => {
-                console.error(err);
-                alert('❌ Pendaftaran gagal. Coba lagi.');
-                btn.textContent = orig;
-                btn.disabled = false;
-            });
+
+            window.location.href = `register.html?course_id=${courseId}&course_name=${encodedName}`;
         }
 
         function esc(str) {

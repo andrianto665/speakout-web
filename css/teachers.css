@@ -223,7 +223,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    word-break: break-word;
+    overflow-wrap: anywhere;
     white-space: normal;
 }
 

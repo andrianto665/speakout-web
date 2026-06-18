@@ -511,6 +511,7 @@
             <!-- Decoy field, biar autofill Chrome nyasar ke sini, bukan ke field asli -->
             <input type="text" name="fakeusernameremembered" style="display:none">
             <input type="password" name="fakepasswordremembered" style="display:none">
+            <input type="hidden" id="courseId" name="course_id" value="">
 
             <div class="form-group">
                 <label for="name">Full Name</label>
@@ -534,6 +535,13 @@
                 <label for="confirmPassword">Confirm Password</label>
                 <input type="password" id="confirmPassword" name="confirmPassword"
                     placeholder="Ulangi password" required autocomplete="new-password">
+            </div>
+            <div id="selectedCourse" style="display:none;
+                background:rgba(139,44,152,0.1);border:1px solid rgba(139,44,152,0.3);
+                border-radius:10px;padding:12px 16px;margin-bottom:16px;
+                font-size:13px;color:#5a1a6e;">
+                🎓 Course terpilih: <strong id="selectedCourseName"></strong><br>
+                <span style="font-size:11px;color:#888;">Kamu akan langsung di-enroll setelah daftar.</span>
             </div>
 
             <button type="submit" class="register-btn">Daftar Sekarang</button>
@@ -666,6 +674,18 @@
             }, 4000);
         }
 
+        /* ===== BACA COURSE DARI URL ===== */
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const courseId   = params.get('course_id');
+            const courseName = params.get('course_name');
+            if (courseId) document.getElementById('courseId').value = courseId;
+            if (courseName) {
+                document.getElementById('selectedCourseName').textContent = decodeURIComponent(courseName);
+                document.getElementById('selectedCourse').style.display = 'block';
+            }
+        })();
+
         /* ===== REGISTER FORM ===== */
         document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -690,7 +710,8 @@
             if (btn) { btn.textContent = 'Mendaftar...'; btn.disabled = true; }
 
             try {
-                const result = await api.register(name, email, password);
+                const courseId = document.getElementById('courseId')?.value || null;
+                const result = await api.register(name, email, password, courseId);
                 if (result.success) {
                     showNotification('Registrasi berhasil! Silakan login.', 'success');
                     setTimeout(() => window.location.href = 'login.html', 2000);

@@ -142,35 +142,29 @@ const api = {
     // 🔐 AUTHENTICATION METHODS
     // =========================================================================
     
-    async register(name, email, password) {
-        try {
-            const response = await this._fetchWithTimeout(`${API_BASE}/auth/register`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password,
-                    password_confirmation: password
-                })
-            });
-            
-            const data = await response.json();
-            
-            return {
-                success: response.ok,
-                data,
-                status: response.status
-            };
-            
-        } catch (error) {
-            console.error('❌ Register API Error:', error);
-            return {
-                success: false,
-                data: { message: error.message || 'Network error.' },
-                status: 0
-            };
-        }
-    },
+    register: async function(name, email, password, courseId = null) {
+    try {
+        const body = {
+            name,
+            email,
+            password,
+            password_confirmation: password,
+        };
+        if (courseId) body.course_id = courseId;
+
+        const response = await this._fetchWithTimeout(`${API_BASE}/auth/register`, {
+            method: 'POST',
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+        return { success: response.ok, data, status: response.status };
+
+    } catch (error) {
+        console.error('❌ Register API Error:', error);
+        return { success: false, data: { message: error.message || 'Network error.' }, status: 0 };
+    }
+},
     
     /**
      * ✅ FIXED: Login dengan clearUserData untuk mencegah data user lama terbaca

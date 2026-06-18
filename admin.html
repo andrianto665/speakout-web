@@ -819,6 +819,9 @@
                         <span class="filter-label">Cari User</span>
                         <input type="text" id="userSearchInput" class="filter-input" placeholder="Nama atau email...">
                     </div>
+                    <div class="fb-item" style="justify-content:flex-end;">
+                        <button class="btn btn-primary" onclick="openAddUserModal()">+ Tambah User</button>
+                    </div>
                 </div>
                 <div class="panel">
                     <div class="table-wrap">
@@ -1259,6 +1262,50 @@
         </div>
     </div>
 
+    <div id="addUserModal" class="modal">
+        <div class="modal-box" style="max-width:480px;">
+            <div class="modal-head">
+                <h3 class="modal-title">➕ Tambah Admin / Instruktur</h3>
+                <button class="modal-close" onclick="closeAddUserModal()">&times;</button>
+            </div>
+            <div class="modal-content">
+                <p style="font-size:13px;color:var(--gray);margin-bottom:18px;">
+                    Akun baru ini akan dibuat dengan akses admin penuh, biasanya dipakai untuk instruktur baru dari LKP PalComTech.
+                </p>
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label class="form-label">Nama *</label>
+                        <input type="text" id="newUserName" class="form-input" placeholder="Contoh: Martina Wati" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" id="newUserEmail" class="form-input" placeholder="nama@speakout.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">No. Telepon</label>
+                        <input type="text" id="newUserPhone" class="form-input" placeholder="Opsional">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password *</label>
+                        <input type="password" id="newUserPassword" class="form-input" minlength="6" placeholder="Minimal 6 karakter" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Course yang Diajar</label>
+                        <select id="newUserCourse" class="form-input">
+                            <option value="">— Tidak di-assign ke course —</option>
+                        </select>
+                        <span class="form-note">💡 Kosongkan jika bukan instruktur, atau course sudah punya instruktur</span>
+                    </div>
+                </form>
+                <div id="addUserMessage" class="form-msg"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel-modal" onclick="closeAddUserModal()">Batal</button>
+                <button type="submit" form="addUserForm" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <script src="js/api.js?v=2.3.0"></script>
@@ -1266,6 +1313,7 @@
     const ADMIN_API_BASE = 'http://127.0.0.1:8000/api';
 
     let allCourses = [];
+    let isScopedInstructor = false;
     let selectedCourseId = null;
     let currentQuestions = [];
     let allUsers = [];
@@ -1322,12 +1370,14 @@
         document.getElementById('courseForm').addEventListener('submit', handleCourseSubmit);
         document.getElementById('contentForm').addEventListener('submit', handleContentSubmit);
         document.getElementById('addQuestionForm').addEventListener('submit', handleAddQuestionSubmit);
+        document.getElementById('addUserForm').addEventListener('submit', handleAddUserSubmit);
 
         setupModalClose('courseModal');
         setupModalClose('contentModal');
         setupModalClose('editQuestionModal');
         setupModalClose('rejectModal');
         setupModalClose('manualCertModal');
+        setupModalClose('addUserModal');
 
         document.getElementById('courseSearchInput').addEventListener('input', debounce(filterCourses, 300));
         document.getElementById('categoryFilter').addEventListener('change', filterCourses);
@@ -1386,12 +1436,23 @@
             const r = await fetch(`${ADMIN_API_BASE}/admin/stats`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
             if (r.ok) {
                 const d = await r.json();
+                isScopedInstructor = !!d.is_scoped;
                 document.getElementById('totalUsers').textContent       = d.total_users        ?? '—';
                 document.getElementById('totalCourses').textContent     = d.total_courses      ?? '—';
                 document.getElementById('totalEnrollments').textContent = d.total_enrollments  ?? '—';
                 document.getElementById('completedCourses').textContent = d.completed_courses  ?? '—';
+                applyInstructorScopeUI();
             }
         } catch(e) {}
+    }
+
+    function applyInstructorScopeUI() {
+        if (!isScopedInstructor) return;
+        document.querySelector('.sidebar-item[data-section="users"]')?.style.setProperty('display', 'none');
+        document.querySelector('.sidebar-item[data-section="certificates"]')?.style.setProperty('display', 'none');
+        document.querySelector('#coursesListView .filter-bar [onclick="openCourseModal()"]')?.style.setProperty('display', 'none');
+        const desc = document.querySelector('#dashboard .page-desc');
+        if (desc) desc.textContent = 'Dashboard instruktur — data hanya untuk course yang Anda ajar';
     }
 
     async function loadAllCourses() {
@@ -1444,7 +1505,7 @@
                 <div class="course-card-actions">
                     <button class="btn btn-success btn-sm" onclick="viewCourseContent(${c.id})">Konten</button>
                     <button class="btn btn-info btn-sm" data-course="${cd}" onclick="handleEditCourseClick(this)">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteCourse(${c.id})">Hapus</button>
+                    ${isScopedInstructor ? '' : `<button class="btn btn-danger btn-sm" onclick="deleteCourse(${c.id})">Hapus</button>`}
                 </div>
             </div>`;
         }).join('');
@@ -1648,6 +1709,64 @@
             const r = await fetch(`${ADMIN_API_BASE}/admin/users/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${api.getToken()}` } });
             if (r.ok) { showToast('✅ User dihapus', 'success'); loadUsers(); }
         } catch(e) { showToast('❌ Gagal', 'error'); }
+    }
+
+    function openAddUserModal() {
+        document.getElementById('addUserForm').reset();
+        document.getElementById('addUserMessage').style.display = 'none';
+        document.getElementById('addUserModal').classList.add('active');
+        loadUnassignedCoursesForDropdown();
+    }
+
+    async function loadUnassignedCoursesForDropdown() {
+        const sel = document.getElementById('newUserCourse');
+        sel.innerHTML = '<option value="">— Memuat courses... —</option>';
+        try {
+            const r = await fetch(`${ADMIN_API_BASE}/admin/courses`, {
+            headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' }
+            });
+            if (!r.ok) throw new Error();
+            const data = await r.json();
+            const courses = (data.data || []).filter(c => !c.instructor_id);
+            sel.innerHTML = '<option value="">— Tidak di-assign ke course —</option>'
+                + courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
+        } catch(e) {
+            sel.innerHTML = '<option value="">— Gagal memuat courses —</option>';
+        }
+    }
+
+    function closeAddUserModal() { document.getElementById('addUserModal').classList.remove('active'); }
+
+    async function handleAddUserSubmit(e) {
+        e.preventDefault();
+        const courseId = document.getElementById('newUserCourse').value;
+        const payload = {
+            name: document.getElementById('newUserName').value.trim(),
+            email: document.getElementById('newUserEmail').value.trim(),
+            phone: document.getElementById('newUserPhone').value.trim() || null,
+            password: document.getElementById('newUserPassword').value,
+            course_id: courseId ? parseInt(courseId) : null,
+        };
+        const btn = e.target.closest('.modal-box').querySelector('[type="submit"]');
+        btn.disabled = true; btn.textContent = 'Menyimpan...';
+        const msg = document.getElementById('addUserMessage'); msg.style.display = 'none';
+        try {
+            const r = await fetch(`${ADMIN_API_BASE}/admin/users`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const d = await r.json();
+            if (!r.ok) throw new Error(d.message || 'Gagal membuat user');
+            showToast('✅ User berhasil dibuat!', 'success');
+            closeAddUserModal();
+            loadUsers();
+        } catch (err) {
+            msg.className = 'form-msg error'; msg.textContent = `❌ ${err.message}`; msg.style.display = 'block';
+            showToast(`❌ ${err.message}`, 'error');
+        } finally {
+            btn.disabled = false; btn.textContent = 'Simpan';
+        }
     }
 
     async function loadQuizzesForQuestionForm() {
