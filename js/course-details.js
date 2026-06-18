@@ -454,47 +454,50 @@ function selectTextQuizOption(element, questionId, option) {
 async function completeTextQuiz() {
     const token = getAuthToken();
     if (!token) {
-        if (typeof showNotification === 'function') {
-            showNotification('Silakan login terlebih dahulu', 'error');
-        }
+        if (typeof showNotification === 'function') showNotification('Silakan login terlebih dahulu', 'error');
         return;
     }
-    
+
     const submitBtn = document.getElementById('text-quiz-submit-btn');
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.textContent = '⏳ Menyimpan...';
-    
+
     try {
-        // ✅ Mark as completed via progress API
-        await updateProgress(currentCourseId, currentQuizMeetingId, true);
-        
-        // ✅ Update local state
+        const response = await fetch(`${API_BASE_URL}/quizzes/${currentQuizId}/submit`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ answers: window.textQuizAnswers })
+        });
+        if (!response.ok) throw new Error('Gagal submit quiz');
+        const result = await response.json();
+
+        if (!result.passed) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            if (typeof showNotification === 'function') {
+                showNotification(`Skor ${result.score}% belum memenuhi batas kelulusan (${result.passing_score}%). Coba lagi!`, 'error');
+            }
+            return;
+        }
+
         completedMeetings.add(currentQuizMeetingId);
         saveCompletedMeetings(currentCourseId);
         updateCourseProgressBar();
         renderMeetings(courseData.meetings || []);
-        
-        // ✅ Show success message
+
         submitBtn.textContent = '✓ Selesai Dikerjakan';
         submitBtn.style.background = 'linear-gradient(135deg, var(--success), #059669)';
-        
-        if (typeof showNotification === 'function') {
-            showNotification('🎉 Quiz berhasil ditandai selesai!', 'success');
-        }
-        
-        // ✅ Check course completion
-        await checkCourseCompletion(currentCourseId);
-        
+        if (typeof showNotification === 'function') showNotification(`🎉 Lulus dengan skor ${result.score}%!`, 'success');
+
     } catch (error) {
         console.error('❌ Error completing quiz:', error);
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
-        if (typeof showNotification === 'function') {
-            showNotification('Gagal menyimpan progress. Silakan coba lagi.', 'error');
-        }
+        if (typeof showNotification === 'function') showNotification('Gagal menyimpan progress. Silakan coba lagi.', 'error');
     }
 }
+
 
 /*
 ========================================

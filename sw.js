@@ -1,5 +1,6 @@
 // Service Worker untuk SpeakOut PWA
-const CACHE_NAME = 'speakout-v2';
+const CACHE_NAME = 'speakout-v3';
+const API_ORIGINS = ['http://127.0.0.1:8000', 'http://10.0.2.2:8000']
 
 // File statis yang boleh di-cache (aset saja, BUKAN html)
 const STATIC_ASSETS = [
@@ -54,6 +55,11 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
+  // ✅ Request ke API: selalu langsung ke network, SW tidak ikut campur sama sekali
+  if (API_ORIGINS.includes(url.origin) || url.pathname.startsWith('/api/')) {
+    return; // tidak panggil respondWith() → browser lanjut fetch normal ke network
+  }
+
   // ✅ HTML pages: SELALU ambil dari network (fresh)
   // Splash screen butuh ini agar tidak di-cache dalam state hidden
   if (event.request.mode === 'navigate' || 
@@ -70,6 +76,9 @@ self.addEventListener('fetch', event => {
     );
     return;
   }
+
+  // Aset statis: cache-first, dan HANYA untuk GET
+  if (event.request.method !== 'GET') return;
 
   // ✅ Aset statis (CSS, JS, images): cache-first
   event.respondWith(

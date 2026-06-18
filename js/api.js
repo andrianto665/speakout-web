@@ -90,6 +90,12 @@ const api = {
             return null;
         }
     },
+
+    // ← TAMBAHKAN INI:
+    setUser(userData) {
+        if (!userData) return;
+        localStorage.setItem('speakout_user', JSON.stringify(userData));
+    },
     
     getUserRole() {
         const user = this.getUser();
@@ -112,6 +118,7 @@ const api = {
         try {
             const response = await fetch(url, {
                 ...options,
+                cache: 'no-store',
                 signal: controller.signal,
                 headers: {
                     'Accept': 'application/json',

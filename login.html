@@ -3,15 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SpeakOut</title>
+    <title>Login - SpeakOut English Course</title>
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="/css/main.css">
-
-    <!-- PWA Manifest -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#8B2C98">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,720 +13,743 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SpeakOut">
     <link rel="apple-touch-icon" href="/images/icon-192.png">
-</head>
-<body>
 
-    <!-- Splash Screen -->
-    <div id="splash-screen">
-        <div class="splash-content">
-            <img src="/images/logo-speakout.png" alt="SpeakOut" class="splash-logo">
-            <div class="splash-loader"></div>
-            <p class="splash-text">Memuat konten...</p>
-        </div>
-    </div>
-
-    <!-- HEADER -->
-    <header class="header">
-        <div class="header-container">
-            <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
-            
-            <!-- HAMBURGER MENU -->
-            <button class="hamburger-menu" onclick="toggleMenu()" aria-label="Toggle Menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.html">Beranda</a></li>
-                    <li><a href="courses.html">Course</a></li>
-                    <li><a href="teachers.html">Teachers</a></li>
-                    <li class="mobile-login-item">
-                        <a href="login.html" class="btn-login-mobile">Login</a>
-                    </li>
-                </ul>
-            </nav>
-            
-            <a href="login.html" class="btn-login desktop-only">Login</a>
-        </div>
-    </header>
-
-    <!-- LOGIN HERO -->
-    <section class="login-hero">
-        <div class="login-container">
-            <!-- Left Side: Text -->
-            <div class="login-text">
-                <h1>Masuk & Lanjutkan Belajar Bersama <em>SpeakOut</em></h1>
-                <p>
-                    Akses dashboard belajar, course premium, mentor profesional,
-                    dan pengalaman belajar bahasa Inggris yang lebih aktif.
-                </p>
-
-                <div class="login-benefits">
-                    <div class="benefit-item">👤 User Login → Dashboard Belajar</div>
-                    <div class="benefit-item">🛠 Admin Login → Admin Panel</div>
-                    <div class="benefit-item">🔐 Role otomatis terdeteksi setelah login</div>
-                </div>
-            </div>
-
-            <!-- Right Side: Login Form -->
-            <div class="login-card">
-                <div class="login-badge">Secure Login Access</div>
-                <h2>Login</h2>
-                <p class="login-subtitle">Masuk sesuai akun Anda</p>
-
-                <!-- Login Type Tabs -->
-                <div class="login-type">
-                    <div class="login-tab active" onclick="setLoginType('user', this)">User Login</div>
-                    <div class="login-tab" onclick="setLoginType('admin', this)">Admin Login</div>
-                </div>
-
-                <!-- Login Form -->
-                <form id="loginForm" autocomplete="off">
-                    <input type="hidden" id="loginType" value="user">
-
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            placeholder="Masukkan email" 
-                            required
-                            autocomplete="off"
-                            readonly
-                            onfocus="this.removeAttribute('readonly');"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <div class="password-wrapper">
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                placeholder="Masukkan password" 
-                                required
-                                autocomplete="off"
-                                readonly
-                                onfocus="this.removeAttribute('readonly');"
-                            >
-                            <span class="show-password" onclick="togglePassword()">Show</span>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="login-btn">Masuk</button>
-                </form>
-
-                <div class="register-link">
-                    Belum punya akun? <a href="register.html">Daftar</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Inline CSS untuk Login Page (SUDAH DIGABUNG & DIOPTIMASI) -->
     <style>
-        .login-hero {
-            width: 100%;
-            min-height: calc(100vh - 80px);
-            background: linear-gradient(135deg, var(--dark) 0%, #1a0a35 50%, #0a1a40 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            padding: 40px 20px;
-            position: relative;
-            overflow: hidden;
+        /* ===== RESET & ROOT ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --purple: #8B2C98;
+            --purple-light: #a83db8;
+            --purple-dark: #6a1f75;
+            --purple-deeper: #3a0d50;
+            --orange: #FF5500;
+            --orange-light: #ff7733;
+            --dark: #0d0d18;
+            --dark2: #12121f;
+            --dark3: #1a1a2e;
+            --white: #ffffff;
+            --gray: #a0a0b8;
+            --gray2: #6a6a80;
         }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
 
-        .login-hero::before {
-            content: "Login";
-            position: absolute;
-            left: 50%;
-            top: 50%;
+        /* ===== SPLASH SCREEN ===== */
+        #splash-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: var(--dark);
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 20px;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #splash-screen.hidden { opacity: 0; visibility: hidden; }
+        .splash-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px; font-weight: 900; letter-spacing: 2px;
+        }
+        .splash-logo .speak { color: var(--white); }
+        .splash-logo .out { color: var(--orange); }
+        .splash-loader {
+            width: 40px; height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px; overflow: hidden;
+        }
+        .splash-loader::after {
+            content: ''; display: block;
+            height: 100%; width: 40%;
+            background: var(--purple);
+            border-radius: 2px;
+            animation: loading 1.2s ease infinite;
+        }
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(350%); }
+        }
+        .splash-text { font-size: 13px; color: var(--gray); letter-spacing: 1px; }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 0 40px; height: 68px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(13, 13, 24, 0.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(139, 44, 152, 0.15);
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .header.scrolled {
+            background: rgba(13, 13, 24, 0.99);
+            border-bottom-color: rgba(139, 44, 152, 0.3);
+        }
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px; font-weight: 900; letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+        .logo .speak { color: var(--white); }
+        .logo .out { color: var(--orange); }
+
+        .nav { display: flex; align-items: center; gap: 36px; }
+        .nav a {
+            font-size: 14px; font-weight: 500; color: var(--gray);
+            transition: color 0.25s; position: relative; padding-bottom: 2px;
+        }
+        .nav a::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+            height: 2px; background: var(--orange);
+            transform: scaleX(0); transition: transform 0.25s;
+        }
+        .nav a:hover, .nav a.active { color: var(--white); }
+        .nav a:hover::after, .nav a.active::after { transform: scaleX(1); }
+
+        .btn-login {
+            padding: 9px 24px; border-radius: 50px;
+            border: 1.5px solid rgba(139, 44, 152, 0.6);
+            font-size: 14px; font-weight: 600; color: var(--white);
+            transition: all 0.25s; cursor: pointer; background: transparent;
+            white-space: nowrap;
+        }
+        .btn-login:hover { background: var(--purple); border-color: var(--purple); }
+
+        /* Hamburger */
+        .hamburger {
+            display: none; flex-direction: column; gap: 5px;
+            cursor: pointer; padding: 6px; border: none; background: none;
+        }
+        .hamburger span {
+            width: 24px; height: 2px;
+            background: var(--white); border-radius: 2px;
+            transition: all 0.3s;
+        }
+        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        /* Mobile Drawer */
+        .mobile-drawer {
+            position: fixed; top: 68px; left: 0; right: 0; z-index: 99;
+            background: rgba(13, 13, 24, 0.98);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(139, 44, 152, 0.2);
+            padding: 20px 24px 28px;
+            display: flex; flex-direction: column; gap: 4px;
+            transform: translateY(-110%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mobile-drawer.open { transform: translateY(0); }
+        .mobile-drawer a {
+            font-size: 16px; font-weight: 500; color: var(--gray);
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: color 0.2s;
+        }
+        .mobile-drawer a:hover, .mobile-drawer a.active { color: var(--white); }
+        .mobile-drawer .drawer-login {
+            margin-top: 12px; padding: 13px; text-align: center;
+            background: var(--purple); border-radius: 8px;
+            font-weight: 700; color: var(--white);
+            border-bottom: none;
+        }
+        .mobile-drawer .drawer-login:hover { background: var(--orange); }
+
+        /* ===== LOGIN SECTION ===== */
+        .login-section {
+            min-height: 100vh;
+            display: flex; align-items: center;
+            padding: 108px 40px 72px;
+            position: relative; overflow: hidden;
+            background: var(--dark);
+        }
+        /* Radial purple glow dari kiri */
+        .login-section::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 70% 80% at 0% 50%, rgba(139,44,152,0.14) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        /* Watermark teks */
+        .login-section::after {
+            content: 'Login';
+            position: absolute; left: 50%; top: 50%;
             transform: translate(-50%, -50%);
             font-family: 'Playfair Display', serif;
-            font-size: 200px;
+            font-size: clamp(120px, 20vw, 220px);
             font-weight: 900;
-            color: rgba(255,255,255,0.03);
-            white-space: nowrap;
-            pointer-events: none;
+            color: rgba(255,255,255,0.025);
+            white-space: nowrap; pointer-events: none; user-select: none;
         }
 
         .login-container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-            position: relative;
-            z-index: 2;
+            max-width: 1100px; margin: auto; width: 100%;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 72px; align-items: center;
+            position: relative; z-index: 2;
         }
 
+        /* ===== LEFT: TEXT SIDE ===== */
+        .login-text {
+            opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards;
+        }
+        .login-eyebrow {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 28px;
+        }
+        .login-eyebrow-line { width: 28px; height: 2px; background: var(--orange); }
+        .login-eyebrow span {
+            font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--orange); font-weight: 600;
+        }
         .login-text h1 {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(28px, 5vw, 48px);
-            line-height: 1.2;
+            font-size: clamp(28px, 3.6vw, 50px);
+            font-weight: 900; line-height: 1.15;
             margin-bottom: 20px;
-            font-weight: 900;
         }
-
-        .login-text h1 em {
-            font-style: italic;
-            color: var(--purple-accent);
-        }
-
+        .login-text h1 em { font-style: italic; color: var(--purple-light); }
         .login-text p {
-            font-size: clamp(14px, 1.5vw, 17px);
-            line-height: 1.8;
-            color: var(--gray);
-            margin-bottom: 30px;
-            font-weight: 300;
+            font-size: clamp(14px, 1.3vw, 16px);
+            color: var(--gray); line-height: 1.85;
+            font-weight: 300; margin-bottom: 36px;
+            max-width: 420px;
         }
-
-        .login-benefits {
-            display: grid;
-            gap: 15px;
-        }
-
+        .login-benefits { display: flex; flex-direction: column; gap: 12px; }
         .benefit-item {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 14px 18px;
-            border-radius: 12px;
-            font-size: 15px;
-            border: 1px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; gap: 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            padding: 14px 18px; border-radius: 12px;
+            font-size: 14px; color: var(--gray);
+            transition: border-color 0.25s, background 0.25s;
+        }
+        .benefit-item:hover {
+            border-color: rgba(139,44,152,0.3);
+            background: rgba(139,44,152,0.07);
+        }
+        .benefit-icon { font-size: 18px; flex-shrink: 0; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* ===== RIGHT: CARD SIDE ===== */
+        .login-card-wrap {
+            opacity: 0; animation: fadeUp 0.8s ease 0.5s forwards;
+        }
         .login-card {
-            background: white;
-            padding: 40px;
+            background: var(--white);
+            padding: 44px 40px;
             border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 24px 64px rgba(0,0,0,0.35);
             color: #1f1f3a;
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
         }
-
         .login-badge {
-            display: inline-block;
-            background: rgba(10, 77, 155, 0.1);
-            color: var(--blue);
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 18px;
-            letter-spacing: 0.5px;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(139,44,152,0.1);
+            color: var(--purple);
+            padding: 7px 14px; border-radius: 50px;
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase;
+            margin-bottom: 20px;
+            border: 1px solid rgba(139,44,152,0.2);
         }
-
         .login-card h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 32px;
-            color: var(--blue);
-            margin-bottom: 10px;
-            font-weight: 900;
+            font-size: 32px; font-weight: 900;
+            color: #1a0a35; margin-bottom: 6px;
         }
+        .login-subtitle { color: #777; font-size: 14px; margin-bottom: 28px; }
 
-        .login-subtitle {
-            color: #666;
-            font-size: 15px;
-            margin-bottom: 30px;
-        }
-
+        /* Tabs */
         .login-type {
             display: flex;
-            background: var(--surface2);
+            background: #f3f4f6;
             border-radius: 12px;
-            padding: 6px;
-            margin-bottom: 30px;
+            padding: 5px; margin-bottom: 28px; gap: 4px;
         }
-
         .login-tab {
-            flex: 1;
-            text-align: center;
-            padding: 14px 12px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            color: var(--gray);
+            flex: 1; text-align: center;
+            padding: 12px; border-radius: 9px;
+            font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.25s;
+            color: #888;
         }
-
         .login-tab.active {
-            background: var(--blue);
-            color: white;
-            box-shadow: 0 2px 8px rgba(10, 77, 155, 0.3);
+            background: var(--purple);
+            color: var(--white);
+            box-shadow: 0 2px 10px rgba(139,44,152,0.35);
         }
+        .login-tab:not(.active):hover { color: var(--purple); }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
+        /* Form */
+        .form-group { margin-bottom: 20px; }
         .login-card label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #333;
+            display: block; margin-bottom: 8px;
+            font-size: 13px; font-weight: 700;
+            color: #333; letter-spacing: 0.3px;
         }
-
         .login-card input {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            outline: none;
-            font-family: inherit;
-            transition: 0.3s;
-            font-size: 16px;
+            width: 100%; padding: 14px 16px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px; outline: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px; color: #1a0a35;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            background: #fafafa;
         }
-
         .login-card input:focus {
-            border-color: var(--blue);
-            box-shadow: 0 0 0 4px rgba(10, 77, 155, 0.1);
+            border-color: var(--purple);
+            box-shadow: 0 0 0 4px rgba(139,44,152,0.1);
+            background: var(--white);
         }
-
-        .password-wrapper {
-            position: relative;
-        }
-
+        .password-wrapper { position: relative; }
         .show-password {
-            position: absolute;
-            right: 16px;
-            top: 50%;
+            position: absolute; right: 14px; top: 50%;
             transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--blue);
-            font-weight: 600;
-            padding: 4px 8px;
+            cursor: pointer; font-size: 12px; font-weight: 700;
+            color: var(--purple); padding: 4px 6px;
+            border-radius: 4px; transition: background 0.2s;
+            letter-spacing: 0.5px; text-transform: uppercase;
         }
+        .show-password:hover { background: rgba(139,44,152,0.08); }
 
+        /* Submit */
         .login-btn {
-            width: 100%;
-            border: none;
-            background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
-            color: white;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(91, 45, 142, 0.3);
+            width: 100%; border: none;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%);
+            color: var(--white); padding: 16px;
+            border-radius: 10px; font-size: 16px; font-weight: 700;
+            cursor: pointer; margin-top: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 18px rgba(139,44,152,0.3);
+            font-family: 'DM Sans', sans-serif;
+            letter-spacing: 0.3px;
         }
-
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(91, 45, 142, 0.4);
+            box-shadow: 0 8px 28px rgba(139,44,152,0.45);
+            background: linear-gradient(135deg, var(--orange) 0%, #cc4400 100%);
         }
-
-        .login-btn:active {
-            transform: translateY(0);
-        }
+        .login-btn:active { transform: translateY(0); }
+        .login-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
         .register-link {
-            text-align: center;
-            margin-top: 25px;
-            font-size: 15px;
-            color: #666;
+            text-align: center; margin-top: 22px;
+            font-size: 14px; color: #777;
         }
-
         .register-link a {
-            color: var(--blue);
-            font-weight: 700;
-            text-decoration: underline;
+            color: var(--purple); font-weight: 700;
+            text-decoration: underline; text-underline-offset: 2px;
+            transition: color 0.2s;
         }
+        .register-link a:hover { color: var(--orange); }
 
+        /* ===== NOTIFICATION ===== */
         .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 24px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            z-index: 10000;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: slideInRight 0.4s ease;
-            max-width: 400px;
+            position: fixed; top: 20px; right: 20px;
+            padding: 14px 20px; border-radius: 12px;
+            color: var(--white); font-weight: 600; font-size: 14px;
+            z-index: 10000; box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+            display: flex; align-items: center; gap: 12px;
+            animation: slideInRight 0.4s ease; max-width: 380px;
         }
-
-        .notification.success {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-
-        .notification.error {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-        }
-
-        .notification.warning {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-
-        .notification-icon {
-            font-size: 20px;
-        }
-
-        .notification-content {
-            flex: 1;
-        }
-
-        .notification-title {
-            font-size: 15px;
-            margin-bottom: 2px;
-        }
-
-        .notification-message {
-            font-size: 13px;
-            opacity: 0.9;
-        }
-
+        .notification.success { background: linear-gradient(135deg, #10b981, #059669); }
+        .notification.error   { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .notification.warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .notification-icon { font-size: 20px; }
+        .notification-content { flex: 1; }
+        .notification-title { font-size: 14px; margin-bottom: 2px; }
+        .notification-message { font-size: 12px; opacity: 0.9; }
         @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(110%); opacity: 0; }
+            to   { transform: translateX(0); opacity: 1; }
         }
-
         @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
+            from { transform: translateX(0); opacity: 1; }
+            to   { transform: translateX(110%); opacity: 0; }
         }
 
-        /* =========================================
-   MOBILE OPTIMIZATION
-========================================= */
-@media (max-width: 992px) {
-    .login-hero {
-        padding: 80px 20px 40px;  /* ✅ Top padding lebih besar */
-        min-height: 100vh;
-    }
+        /* ===== FOOTER ===== */
+        .footer {
+            background: linear-gradient(160deg, #4a1060 0%, #3a0d50 60%, #2d0a40 100%);
+            border-top: 1px solid rgba(139,44,152,0.2);
+        }
+        .footer-inner {
+            max-width: 1200px; margin: auto;
+            padding: 56px 40px 44px;
+            display: grid; grid-template-columns: 1.6fr 2fr 1.5fr; gap: 52px;
+        }
+        .brand-name { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+        .brand-name .speak { color: var(--white); }
+        .brand-name .out { color: var(--orange); }
+        .brand-sub { font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 1px; margin-bottom: 4px; }
+        .brand-parent { font-size: 12px; color: var(--orange); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 18px; }
+        .brand-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.85; margin-bottom: 22px; max-width: 210px; }
+        .sosmed { display: flex; gap: 8px; }
+        .sosmed a {
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: rgba(255,255,255,0.5); transition: all 0.25s;
+        }
+        .sosmed a:hover { border-color: var(--orange); color: var(--orange); }
+        .footer-col-title {
+            font-size: 12px; font-weight: 700; color: var(--white);
+            letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 22px; padding-bottom: 10px;
+            border-bottom: 2px solid var(--orange); display: inline-block;
+        }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        .menu-grid a {
+            font-size: 13px; color: rgba(255,255,255,0.55);
+            padding: 8px 0; display: block;
+            border-bottom: 1px solid rgba(255,255,255,0.05); transition: color 0.2s;
+        }
+        .menu-grid a:hover { color: var(--white); }
+        .contact-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.8; margin-bottom: 18px; }
+        .btn-chat {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: var(--orange); color: var(--white);
+            padding: 13px 20px; border-radius: 8px;
+            font-size: 13px; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; cursor: pointer;
+            transition: background 0.25s; width: 100%; margin-bottom: 22px;
+        }
+        .btn-chat:hover { background: var(--orange-light); }
+        .contact-items { display: flex; flex-direction: column; gap: 14px; }
+        .contact-item { display: flex; align-items: flex-start; gap: 10px; }
+        .ci-icon { font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+        .ci-text { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+        .ci-label {
+            font-size: 10px; color: var(--orange); font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; display: block;
+        }
+        .footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); }
+        .footer-bottom {
+            max-width: 1200px; margin: auto; padding: 18px 40px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+        .footer-copy b { color: rgba(255,255,255,0.55); }
+        .footer-bottom-links { display: flex; gap: 18px; align-items: center; }
+        .footer-bottom-links a { font-size: 12px; color: rgba(255,255,255,0.3); transition: color 0.2s; }
+        .footer-bottom-links a:hover { color: var(--white); }
+        .footer-bottom-links span { color: rgba(255,255,255,0.12); }
 
-    .login-container {
-        grid-template-columns: 1fr;
-        gap: 30px;  /* ✅ Gap lebih kecil */
-    }
-
-    .login-text {
-        text-align: center;
-        padding: 0 15px;
-    }
-
-    .login-text h1 {
-        font-size: 26px;  /* ✅ Dari 32px jadi 26px */
-        line-height: 1.3;  /* ✅ Line height lebih besar */
-        margin-bottom: 12px;
-    }
-
-    .login-text p {
-        font-size: 14px;
-        margin-bottom: 15px;
-        line-height: 1.6;
-    }
-
-    /* ✅ TAMPILKAN benefits di mobile */
-    .login-benefits {
-        display: grid;
-        gap: 8px;
-        max-width: 400px;
-        margin: 0 auto;
-    }
-
-    .benefit-item {
-        padding: 8px 12px;
-        font-size: 12px;  /* ✅ Font lebih kecil */
-    }
-
-    .login-hero::before {
-        font-size: 80px;  /* ✅ Background text lebih kecil */
-    }
-
-    .login-card {
-        max-width: 100%;
-        margin: 0;
-    }
-
-    .notification {
-        left: 20px;
-        right: 20px;
-        max-width: none;
-    }
-}
-
-@media (max-width: 600px) {
-    .login-hero {
-        padding: 100px 16px 30px;  /* ✅ Top padding 100px untuk hindari notch */
-        min-height: 100vh;
-    }
-
-    .login-container {
-        padding: 0;
-        gap: 25px;
-    }
-
-    .login-text {
-        padding: 0 10px;
-    }
-
-    .login-text h1 {
-        font-size: 22px;  /* ✅ Dari 28px jadi 22px */
-        line-height: 1.35;  /* ✅ Line height lebih besar */
-        margin-bottom: 10px;
-    }
-
-    .login-text p {
-        font-size: 13px;
-        line-height: 1.6;
-        margin-bottom: 12px;
-    }
-
-    /* ✅ Benefits tetap tampil di mobile */
-    .login-benefits {
-        gap: 6px;
-    }
-
-    .benefit-item {
-        padding: 8px 10px;
-        font-size: 11px;  /* ✅ Font lebih kecil */
-        border-radius: 8px;
-    }
-
-    .login-card {
-        padding: 24px 18px;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    }
-
-    .login-card h2 {
-        font-size: 24px;
-    }
-
-    .login-subtitle {
-        font-size: 13px;
-    }
-
-    .login-type {
-        padding: 5px;
-    }
-
-    .login-tab {
-        padding: 10px 8px;
-        font-size: 13px;
-    }
-
-    .form-group {
-        margin-bottom: 14px;
-    }
-
-    .login-card label {
-        font-size: 13px;
-        margin-bottom: 6px;
-    }
-
-    .login-card input {
-        padding: 12px;
-        font-size: 14px;
-    }
-
-    .show-password {
-        font-size: 11px;
-        right: 10px;
-    }
-
-    .login-btn {
-        padding: 14px;
-        font-size: 15px;
-        margin-top: 10px;
-    }
-
-    .register-link {
-        font-size: 12px;
-        margin-top: 14px;
-    }
-
-    .notification {
-        top: 10px;
-        left: 10px;
-        right: 10px;
-        padding: 10px 14px;
-    }
-}
-
-@media (max-width: 380px) {
-    .login-hero {
-        padding: 90px 14px 25px;  /* ✅ Extra padding untuk HP kecil */
-    }
-
-    .login-text h1 {
-        font-size: 20px;  /* ✅ Lebih kecil lagi */
-        line-height: 1.4;
-    }
-
-    .login-text p {
-        font-size: 12px;
-    }
-
-    .benefit-item {
-        font-size: 10px;  /* ✅ Super compact */
-        padding: 6px 8px;
-    }
-
-    .login-card {
-        padding: 22px 16px;
-    }
-
-    .login-card h2 {
-        font-size: 22px;
-    }
-
-    .login-tab {
-        font-size: 12px;
-        padding: 9px 7px;
-    }
-
-    .login-btn {
-        padding: 13px;
-        font-size: 14px;
-    }
-}
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .login-container { gap: 48px; }
+            .footer-inner { grid-template-columns: 1fr 1fr; gap: 36px; }
+            .footer-inner .contact-col { grid-column: 1 / -1; }
+            .brand-desc { max-width: 100%; }
+        }
+        @media (max-width: 768px) {
+            .header { padding: 0 20px; }
+            .nav, .btn-login { display: none; }
+            .hamburger { display: flex; }
+            .login-section { padding: 90px 24px 56px; }
+            .login-container { grid-template-columns: 1fr; gap: 32px; }
+            .login-text p { max-width: 100%; }
+            .login-section::after { font-size: 80px; }
+            .footer-inner { grid-template-columns: 1fr; padding: 40px 24px 32px; }
+            .footer-inner .contact-col { grid-column: auto; }
+            .footer-bottom { padding: 16px 24px; flex-direction: column; align-items: flex-start; gap: 10px; }
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .login-section { padding: 84px 16px 48px; }
+            .login-card { padding: 30px 22px; }
+            .login-card h2 { font-size: 26px; }
+            .login-tab { font-size: 13px; padding: 10px 8px; }
+            .notification { left: 12px; right: 12px; max-width: none; }
+        }
     </style>
+</head>
+<body>
 
-    <!-- Scripts - URUTAN YANG BENAR -->
-    <script src="/js/app.js"></script>
-    <script src="/js/splash.js"></script>
-    <script src="js/api.js"></script>
+    <!-- SPLASH -->
+    <div id="splash-screen">
+        <div class="splash-logo"><span class="speak">Speak</span><span class="out">Out</span></div>
+        <div class="splash-loader"></div>
+        <p class="splash-text">Memuat konten...</p>
+    </div>
 
-    <!-- Login Page Scripts -->
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <a href="index.html" class="logo"><span class="speak">Speak</span><span class="out">Out</span></a>
+
+        <nav class="nav">
+            <a href="index.html">Beranda</a>
+            <a href="courses.html">Course</a>
+            <a href="teachers.html">Teachers</a>
+        </nav>
+
+        <a href="login.html" class="btn-login active">Login</a>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <!-- MOBILE DRAWER -->
+    <div class="mobile-drawer" id="drawer">
+        <a href="index.html">Beranda</a>
+        <a href="courses.html">Course</a>
+        <a href="teachers.html">Teachers</a>
+        <a href="login.html" class="drawer-login active">Login</a>
+    </div>
+
+    <!-- LOGIN SECTION -->
+    <section class="login-section">
+        <div class="login-container">
+
+            <!-- LEFT: Text -->
+            <div class="login-text">
+                <div class="login-eyebrow">
+                    <div class="login-eyebrow-line"></div>
+                    <span>E-Course Bahasa Inggris</span>
+                    <div class="login-eyebrow-line"></div>
+                </div>
+                <h1>Selamat Datang Kembali di <em>SpeakOut</em></h1>
+                <p>Progress belajar bahasa Inggrismu menunggu. Masuk dan lanjutkan perjalanan speaking-mu bersama mentor terbaik SpeakOut.</p>
+                <div class="login-benefits">
+                    <div class="benefit-item">
+                        <span class="benefit-icon">🎯</span>
+                        Lanjutkan progress belajarmu dari sesi terakhir
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">📊</span>
+                        Pantau perkembangan speaking & nilai kamu
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">🏅</span>
+                        Klaim sertifikat resmi yang sudah kamu raih
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Card -->
+            <div class="login-card-wrap">
+                <div class="login-card">
+                    <div class="login-badge">🔒 Secure Login Access</div>
+                    <h2>Login</h2>
+                    <p class="login-subtitle">Masuk sesuai akun Anda</p>
+
+                    <div class="login-type">
+                        <div class="login-tab active" onclick="setLoginType('user', this)">User Login</div>
+                        <div class="login-tab" onclick="setLoginType('admin', this)">Admin Login</div>
+                    </div>
+
+                    <form id="loginForm" autocomplete="off">
+                        <input type="hidden" id="loginType" value="user">
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input
+                                type="email" id="email" name="email"
+                                placeholder="Masukkan email" required
+                                autocomplete="off" readonly
+                                onfocus="this.removeAttribute('readonly');">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="password-wrapper">
+                                <input
+                                    type="password" id="password" name="password"
+                                    placeholder="Masukkan password" required
+                                    autocomplete="off" readonly
+                                    onfocus="this.removeAttribute('readonly');">
+                                <span class="show-password" onclick="togglePassword()">Show</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="login-btn">Masuk</button>
+                    </form>
+
+                    <div class="register-link">
+                        Belum punya akun? <a href="register.html">Daftar sekarang</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div>
+                <div class="brand-name"><span class="speak">Speak</span><span class="out">Out</span></div>
+                <div class="brand-sub">English Course</div>
+                <div class="brand-parent">Bagian dari LKP PalComTech Palembang</div>
+                <p class="brand-desc">Program kursus bahasa Inggris terpercaya dengan metode aktif, mentor profesional, dan sertifikat resmi.</p>
+                <div class="sosmed">
+                    <a href="#" title="Instagram">📷</a>
+                    <a href="#" title="TikTok">🎵</a>
+                    <a href="#" title="YouTube">▶️</a>
+                    <a href="#" title="WhatsApp">💬</a>
+                </div>
+            </div>
+            <div>
+                <div class="footer-col-title">Menu</div>
+                <div class="menu-grid">
+                    <a href="index.html">Beranda</a>
+                    <a href="courses.html">Profesional</a>
+                    <a href="teachers.html">Teachers</a>
+                    <a href="courses.html">Public Speaking</a>
+                    <a href="#">Tentang Kami</a>
+                    <a href="courses.html">Business English</a>
+                    <a href="register.html">Form Pendaftaran</a>
+                    <a href="courses.html">Speak Out</a>
+                    <a href="#">Blog</a>
+                    <a href="courses.html">TOEFL Prep</a>
+                </div>
+            </div>
+            <div class="contact-col">
+                <div class="footer-col-title">Hubungi Admin</div>
+                <p class="contact-desc">Ingin informasi lebih lengkap tentang kursus dan cara pendaftaran? Hubungi admin kami sekarang.</p>
+                <a href="https://wa.me/6281234567890" class="btn-chat">💬 Chat Sekarang</a>
+                <div class="contact-items">
+                    <div class="contact-item">
+                        <span class="ci-icon">📍</span>
+                        <div class="ci-text">
+                            <span class="ci-label">Alamat</span>
+                            Jl. Jend. Sudirman No.3007, 20 Ilir D. III, Kec. Ilir Tim. I, Kota Palembang, Sumatera Selatan 30121
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="ci-icon">✉️</span>
+                        <div class="ci-text">
+                            <span class="ci-label">Email</span>
+                            hello@speakout.id
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="ci-icon">🕐</span>
+                        <div class="ci-text">
+                            <span class="ci-label">Jam Operasional</span>
+                            Senin – Sabtu, 08.00 – 17.00 WIB
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="footer-divider">
+
+        <div class="footer-bottom">
+            <div class="footer-copy">Copyright © 2025 <b>SpeakOut English Course</b> — LKP PalComTech Palembang. All rights reserved.</div>
+            <div class="footer-bottom-links">
+                <a href="#">Support</a>
+                <span>|</span>
+                <a href="#">Kebijakan Privasi</a>
+                <span>|</span>
+                <a href="#">Syarat & Ketentuan</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/api.js?v=2.3.0"></script>
     <script>
-        // Toggle Show/Hide Password
-        function togglePassword() {
-            const password = document.getElementById('password');
-            const toggle = document.querySelector('.show-password');
+        /* ===== SPLASH ===== */
+        window.addEventListener('load', () => {
+            setTimeout(() => document.getElementById('splash-screen').classList.add('hidden'), 1200);
+        });
 
-            if (password.type === 'password') {
-                password.type = 'text';
+        /* ===== HEADER SCROLL ===== */
+        window.addEventListener('scroll', () => {
+            document.getElementById('header').classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        /* ===== HAMBURGER ===== */
+        const hamburger = document.getElementById('hamburger');
+        const drawer = document.getElementById('drawer');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            drawer.classList.toggle('open');
+        });
+        drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            drawer.classList.remove('open');
+        }));
+
+        /* ===== TOGGLE PASSWORD ===== */
+        function togglePassword() {
+            const pw = document.getElementById('password');
+            const toggle = document.querySelector('.show-password');
+            if (pw.type === 'password') {
+                pw.type = 'text';
                 toggle.textContent = 'Hide';
             } else {
-                password.type = 'password';
+                pw.type = 'password';
                 toggle.textContent = 'Show';
             }
         }
 
-        // Switch between User/Admin login tabs
-        function setLoginType(type, element) {
+        /* ===== LOGIN TABS ===== */
+        function setLoginType(type, el) {
             document.getElementById('loginType').value = type;
-
-            document.querySelectorAll('.login-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            element.classList.add('active');
+            document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
         }
 
-        // Show notification toast
+        /* ===== NOTIFICATION ===== */
         function showNotification(message, type = 'success') {
-            const existingNotification = document.querySelector('.notification');
-            if (existingNotification) {
-                existingNotification.remove();
-            }
-
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            
-            const icons = {
-                success: '✅',
-                error: '❌',
-                warning: '⚠️'
-            };
-
-            const titles = {
-                success: 'Berhasil!',
-                error: 'Gagal!',
-                warning: 'Perhatian!'
-            };
-
-            notification.innerHTML = `
+            document.querySelector('.notification')?.remove();
+            const icons  = { success: '✅', error: '❌', warning: '⚠️' };
+            const titles = { success: 'Berhasil!', error: 'Gagal!', warning: 'Perhatian!' };
+            const n = document.createElement('div');
+            n.className = `notification ${type}`;
+            n.innerHTML = `
                 <span class="notification-icon">${icons[type]}</span>
                 <div class="notification-content">
                     <div class="notification-title">${titles[type]}</div>
                     <div class="notification-message">${message}</div>
-                </div>
-            `;
-
-            document.body.appendChild(notification);
-
+                </div>`;
+            document.body.appendChild(n);
             setTimeout(() => {
-                notification.style.animation = 'slideOutRight 0.4s ease forwards';
-                setTimeout(() => {
-                    notification.remove();
-                }, 400);
+                n.style.animation = 'slideOutRight 0.4s ease forwards';
+                setTimeout(() => n.remove(), 400);
             }, 4000);
         }
 
-        // Login Form Handler
+        /* ===== LOGIN FORM ===== */
         document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            const email = document.getElementById('email').value.trim();
+            const email    = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            const btn = document.querySelector('#loginForm .login-btn');
-            
-            const originalBtnText = btn?.textContent || 'Masuk';
-            if (btn) {
-                btn.textContent = 'Memproses...';
-                btn.disabled = true;
-            }
+            const btn      = document.querySelector('#loginForm .login-btn');
+            const orig     = btn?.textContent || 'Masuk';
+            if (btn) { btn.textContent = 'Memproses...'; btn.disabled = true; }
 
             try {
                 const result = await api.login(email, password);
-                console.log('🔹 Login Response:', result);
-
                 if (result.success) {
                     const role = api.getUserRole();
-                    const targetPage = role === 'admin' ? 'admin.html' : 'dashboard.html';
-                    
+                    const target = role === 'admin' ? 'admin.html' : 'dashboard.html';
                     showNotification(`Login berhasil! Mengarahkan ke ${role === 'admin' ? 'Admin Panel' : 'Dashboard'}...`, 'success');
-                    
-                    setTimeout(() => {
-                        window.location.href = targetPage;
-                    }, 1500);
+                    setTimeout(() => window.location.href = target, 1500);
                 } else {
-                    const errorMsg = result.data?.message || result.data?.errors?.email?.[0] || 'Email atau password salah.';
-                    showNotification(errorMsg, 'error');
+                    const msg = result.data?.message || result.data?.errors?.email?.[0] || 'Email atau password salah.';
+                    showNotification(msg, 'error');
                 }
-            } catch (error) {
-                console.error('❌ Login Error:', error);
+            } catch (err) {
+                console.error(err);
                 showNotification('Koneksi error. Pastikan server Laravel berjalan.', 'error');
             } finally {
-                if (btn) {
-                    btn.textContent = originalBtnText;
-                    btn.disabled = false;
-                }
+                if (btn) { btn.textContent = orig; btn.disabled = false; }
             }
         });
     </script>
-
+        <!-- Favorites & Notifications -->
+    <script src="/js/favorites.js"></script>
+    <script src="/js/notification.js"></script>
 </body>
 </html>

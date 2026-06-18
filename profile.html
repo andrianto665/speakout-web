@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya — SpeakOut E-Course</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --purple:        #8B2C98;
+            --purple-light:  #a83db8;
+            --purple-dark:   #6a1f75;
+            --purple-deeper: #3a0d50;
+            --orange:        #FF5500;
+            --orange-light:  #ff7733;
+            --dark:          #0d0d18;
+            --dark2:         #12121f;
+            --dark3:         #1a1a2e;
+            --white:         #ffffff;
+            --gray:          #a0a0b8;
+            --gray2:         #6a6a80;
+            --success:       #10b981;
+            --warning:       #f59e0b;
+            --error:         #ef4444;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark); color: var(--white);
+            overflow-x: hidden; line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 0 40px; height: 68px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 16px;
+            background: rgba(13, 13, 24, 0.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(139, 44, 152, 0.15);
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .header.scrolled { border-bottom-color: rgba(139,44,152,0.3); }
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px; font-weight: 900; letter-spacing: 1px;
+            flex-shrink: 0;
+            margin-right: auto;
+        }
+        .logo .speak { color: var(--white); }
+        .logo .out   { color: var(--orange); }
+        .nav { display: flex; align-items: center; gap: 36px; }
+        .nav a {
+            font-size: 14px; font-weight: 500; color: var(--gray);
+            position: relative; padding-bottom: 2px; transition: color 0.25s;
+        }
+        .nav a::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+            height: 2px; background: var(--orange);
+            transform: scaleX(0); transition: transform 0.25s;
+        }
+        .nav a:hover, .nav a.active { color: var(--white); }
+        .nav a:hover::after, .nav a.active::after { transform: scaleX(1); }
+
+        /* User chip + dropdown */
+        .user-chip { position: relative; display: flex; align-items: center; gap: 12px; margin-left: auto; }
+        .user-avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--orange));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700; color: white;
+            cursor: pointer; user-select: none; flex-shrink: 0;
+        }
+        .user-name-text { font-size: 14px; font-weight: 500; color: var(--gray); cursor: pointer; }
+        .avatar-caret { font-size: 10px; color: var(--gray); transition: transform 0.25s; cursor: pointer; }
+        .user-chip.open .avatar-caret { transform: rotate(180deg); }
+        .user-dropdown {
+            position: absolute; top: calc(100% + 12px); right: 0;
+            background: var(--dark3); border: 1px solid rgba(139,44,152,0.3);
+            border-radius: 14px; padding: 8px; min-width: 210px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+            opacity: 0; visibility: hidden; transform: translateY(-8px);
+            transition: all 0.25s cubic-bezier(0.4,0,0.2,1); z-index: 200;
+        }
+        .user-chip.open .user-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-header { padding: 10px 12px 12px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 6px; }
+        .dropdown-name  { font-size: 14px; font-weight: 700; color: var(--white); }
+        .dropdown-email { font-size: 12px; color: var(--gray); margin-top: 2px; }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px; border-radius: 8px;
+            font-size: 13px; font-weight: 500; color: var(--gray);
+            cursor: pointer; transition: all 0.2s;
+            border: none; background: none; width: 100%;
+            text-align: left; font-family: 'DM Sans', sans-serif; text-decoration: none;
+        }
+        .dropdown-item:hover { background: rgba(139,44,152,0.15); color: var(--white); }
+        .dropdown-item .di-icon { font-size: 15px; width: 20px; text-align: center; }
+        .dropdown-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 6px 0; }
+        .dropdown-item.logout { color: var(--error); }
+        .dropdown-item.logout:hover { background: rgba(239,68,68,0.1); }
+
+        /* Hamburger */
+        .hamburger {
+            display: none; flex-direction: column; gap: 5px;
+            cursor: pointer; padding: 6px; border: none; background: none;
+        }
+        .hamburger span { width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+        .mobile-drawer {
+            position: fixed; top: 68px; left: 0; right: 0; z-index: 99;
+            background: rgba(13,13,24,0.98); backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(139,44,152,0.2);
+            padding: 20px 24px 28px; display: flex; flex-direction: column; gap: 4px;
+            transform: translateY(-110%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .mobile-drawer.open { transform: translateY(0); }
+        .mobile-drawer a { font-size: 16px; font-weight: 500; color: var(--gray); padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); transition: color 0.2s; }
+        .mobile-drawer a:hover { color: var(--white); }
+        .mobile-drawer .drawer-logout { margin-top: 12px; padding: 13px; text-align: center; background: rgba(239,68,68,0.15); border-radius: 8px; font-weight: 700; color: var(--error); border-bottom: none; cursor: pointer; }
+
+        /* ===== PAGE LAYOUT ===== */
+        .page-wrap { padding-top: 68px; }
+        .profile-layout {
+            max-width: 1000px; margin: auto;
+            padding: 48px 40px 80px;
+            display: grid; grid-template-columns: 260px 1fr; gap: 32px;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .profile-sidebar { position: sticky; top: 88px; height: fit-content; }
+        .profile-card {
+            background: var(--dark2);
+            border: 1px solid rgba(139,44,152,0.2);
+            border-radius: 20px; padding: 28px 24px;
+            text-align: center; margin-bottom: 16px;
+        }
+        .profile-avatar-wrap { position: relative; display: inline-block; margin-bottom: 16px; }
+        .profile-avatar-big {
+            width: 88px; height: 88px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--orange));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; font-weight: 900; color: white;
+            margin: 0 auto;
+            border: 3px solid rgba(139,44,152,0.4);
+        }
+        .avatar-edit-btn {
+            position: absolute; bottom: 0; right: 0;
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--orange); color: white; font-size: 12px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: 2px solid var(--dark2);
+            transition: background 0.2s;
+        }
+        .avatar-edit-btn:hover { background: var(--purple); }
+        .profile-name-big {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px; font-weight: 700; margin-bottom: 4px;
+        }
+        .profile-email-small { font-size: 13px; color: var(--gray); margin-bottom: 16px; }
+        .profile-badge {
+            display: inline-block; padding: 4px 14px;
+            background: rgba(139,44,152,0.15);
+            border: 1px solid rgba(139,44,152,0.3);
+            border-radius: 20px; font-size: 11px; font-weight: 700;
+            color: var(--purple-light); letter-spacing: 1px; text-transform: uppercase;
+        }
+
+        /* Sidebar nav */
+        .sidebar-nav { background: var(--dark2); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; overflow: hidden; }
+        .sidebar-nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 18px; font-size: 14px; font-weight: 500; color: var(--gray);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer; transition: all 0.2s; text-decoration: none;
+        }
+        .sidebar-nav-item:last-child { border-bottom: none; }
+        .sidebar-nav-item:hover { background: rgba(139,44,152,0.1); color: var(--white); }
+        .sidebar-nav-item.active { background: rgba(139,44,152,0.15); color: var(--white); border-left: 3px solid var(--orange); }
+        .sidebar-nav-item .sni-icon { font-size: 16px; width: 22px; text-align: center; }
+
+        /* ===== MAIN CONTENT ===== */
+        .profile-main { display: flex; flex-direction: column; gap: 28px; }
+
+        /* Section card */
+        .pcard {
+            background: var(--dark2);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px; overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .pcard:hover { border-color: rgba(139,44,152,0.25); }
+        .pcard-head {
+            padding: 22px 28px; border-bottom: 1px solid rgba(255,255,255,0.07);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .pcard-head-left { display: flex; flex-direction: column; gap: 2px; }
+        .pcard-tag {
+            font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--orange); font-weight: 700;
+        }
+        .pcard-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px; font-weight: 900;
+        }
+        .pcard-body { padding: 28px; }
+
+        /* Form fields */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 7px; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-label {
+            font-size: 12px; font-weight: 700; color: var(--gray);
+            text-transform: uppercase; letter-spacing: 0.8px;
+        }
+        .form-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; padding: 12px 16px;
+            font-size: 14px; color: var(--white); font-family: 'DM Sans', sans-serif;
+            transition: all 0.25s; outline: none;
+        }
+        .form-input:focus {
+            border-color: var(--purple-light);
+            background: rgba(139,44,152,0.08);
+            box-shadow: 0 0 0 3px rgba(139,44,152,0.15);
+        }
+        .form-input:disabled {
+            opacity: 0.5; cursor: not-allowed;
+        }
+        .form-input.error { border-color: var(--error); }
+        .form-hint { font-size: 12px; color: var(--gray2); }
+        .form-error { font-size: 12px; color: var(--error); display: none; }
+        .form-error.show { display: block; }
+
+        /* Password strength */
+        .strength-bar {
+            height: 4px; background: rgba(255,255,255,0.08);
+            border-radius: 4px; overflow: hidden; margin-top: 6px;
+        }
+        .strength-fill {
+            height: 100%; border-radius: 4px;
+            transition: width 0.4s, background 0.4s;
+            width: 0%;
+        }
+        .strength-label { font-size: 11px; margin-top: 4px; }
+
+        /* Buttons */
+        .btn-save {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px; border-radius: 50px;
+            background: var(--purple); color: white;
+            font-size: 14px; font-weight: 700; border: none;
+            cursor: pointer; transition: all 0.25s; font-family: 'DM Sans', sans-serif;
+        }
+        .btn-save:hover { background: var(--orange); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(139,44,152,0.35); }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-cancel {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 24px; border-radius: 50px;
+            background: transparent; color: var(--gray);
+            font-size: 14px; font-weight: 600; border: 1.5px solid rgba(255,255,255,0.12);
+            cursor: pointer; transition: all 0.25s; font-family: 'DM Sans', sans-serif;
+        }
+        .btn-cancel:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+        .btn-row { display: flex; gap: 12px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+
+        /* Alert toast */
+        .alert-toast {
+            position: fixed; bottom: 28px; right: 28px; z-index: 999;
+            padding: 14px 22px; border-radius: 12px;
+            font-size: 14px; font-weight: 600; color: white;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            transform: translateY(80px); opacity: 0;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            pointer-events: none;
+        }
+        .alert-toast.show { transform: translateY(0); opacity: 1; }
+        .alert-toast.success { background: var(--success); }
+        .alert-toast.error   { background: var(--error); }
+
+        /* Stats row di profile */
+        .stats-row { display: flex; gap: 16px; flex-wrap: wrap; }
+        .stat-pill {
+            flex: 1; min-width: 100px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(139,44,152,0.15);
+            border-radius: 12px; padding: 16px 18px; text-align: center;
+        }
+        .stat-pill-val {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px; font-weight: 900; color: var(--white); line-height: 1;
+        }
+        .stat-pill-val .acc { color: var(--orange); }
+        .stat-pill-lbl { font-size: 11px; color: var(--gray); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Danger zone */
+        .danger-zone {
+            background: rgba(239,68,68,0.05);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 16px; padding: 22px 24px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+        }
+        .danger-info h4 { font-size: 15px; font-weight: 700; color: var(--error); margin-bottom: 4px; }
+        .danger-info p  { font-size: 13px; color: var(--gray); }
+        .btn-danger {
+            padding: 11px 22px; border-radius: 50px;
+            background: transparent; color: var(--error);
+            border: 1.5px solid rgba(239,68,68,0.4);
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            transition: all 0.25s; font-family: 'DM Sans', sans-serif;
+        }
+        .btn-danger:hover { background: var(--error); color: white; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: linear-gradient(160deg, #4a1060 0%, #3a0d50 60%, #2d0a40 100%);
+            border-top: 1px solid rgba(139,44,152,0.2);
+        }
+        .footer-bottom {
+            max-width: 1200px; margin: auto; padding: 18px 40px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+        .footer-copy b { color: rgba(255,255,255,0.55); }
+        .footer-bottom-links { display: flex; gap: 18px; align-items: center; }
+        .footer-bottom-links a { font-size: 12px; color: rgba(255,255,255,0.3); transition: color 0.2s; }
+        .footer-bottom-links a:hover { color: var(--white); }
+        .footer-bottom-links span { color: rgba(255,255,255,0.12); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header { padding: 0 20px; }
+            .nav, .user-name-text { display: none; }
+            .user-chip { margin-left: auto; }
+            .hamburger { display: flex; }
+            .profile-layout { grid-template-columns: 1fr; padding: 28px 20px 60px; }
+            .profile-sidebar { position: static; }
+            .form-grid { grid-template-columns: 1fr; }
+            .footer-bottom { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <a href="index.html" class="logo"><span class="speak">Speak</span><span class="out">Out</span></a>
+        <nav class="nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="profile.html" class="active">Profil</a>
+        </nav>
+        <div class="user-chip" id="userChip">
+            <div class="user-avatar" id="userAvatar" onclick="toggleDropdown()">?</div>
+            <span class="user-name-text" id="userName" onclick="toggleDropdown()">Loading...</span>
+            <span class="avatar-caret" onclick="toggleDropdown()">▼</span>
+            <div class="user-dropdown" id="userDropdown">
+                <div class="dropdown-header">
+                    <div class="dropdown-name" id="dropdownName">—</div>
+                    <div class="dropdown-email" id="dropdownEmail">—</div>
+                </div>
+                <a href="profile.html" class="dropdown-item"><span class="di-icon">👤</span> Lihat Profil</a>
+                <a href="profile.html#edit" class="dropdown-item"><span class="di-icon">✏️</span> Edit Profil</a>
+                <a href="profile.html#password" class="dropdown-item"><span class="di-icon">🔒</span> Ganti Password</a>
+                <hr class="dropdown-divider">
+                <button class="dropdown-item logout" id="logoutBtn"><span class="di-icon">🚪</span> Logout</button>
+            </div>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <!-- MOBILE DRAWER -->
+    <div class="mobile-drawer" id="drawer">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="profile.html" class="active">Profil Saya</a>
+        <a id="drawerLogout" class="drawer-logout">Logout</a>
+    </div>
+
+    <div class="page-wrap">
+        <div class="profile-layout">
+
+            <!-- SIDEBAR -->
+            <aside class="profile-sidebar">
+                <div class="profile-card">
+                    <div class="profile-avatar-wrap">
+                        <div class="profile-avatar-big" id="profileAvatarBig">?</div>
+                        <div class="avatar-edit-btn" onclick="document.getElementById('editSection').scrollIntoView({behavior:'smooth'})">✏️</div>
+                    </div>
+                    <div class="profile-name-big" id="profileNameBig">—</div>
+                    <div class="profile-email-small" id="profileEmailSmall">—</div>
+                    <span class="profile-badge" id="profileBadge">Student</span>
+                </div>
+
+                <nav class="sidebar-nav" id="sidebarNav">
+                    <a href="#infoSection" class="sidebar-nav-item active" onclick="setActiveNav(this)">
+                        <span class="sni-icon">👤</span> Informasi Profil
+                    </a>
+                    <a href="#editSection" class="sidebar-nav-item" onclick="setActiveNav(this)" id="edit">
+                        <span class="sni-icon">✏️</span> Edit Profil
+                    </a>
+                    <a href="#passwordSection" class="sidebar-nav-item" onclick="setActiveNav(this)" id="password">
+                        <span class="sni-icon">🔒</span> Ganti Password
+                    </a>
+                    <a href="#statsSection" class="sidebar-nav-item" onclick="setActiveNav(this)">
+                        <span class="sni-icon">📊</span> <span id="statsLabel">Statistik Belajar</span>
+                    </a>
+                    <a href="dashboard.html" class="sidebar-nav-item">
+                        <span class="sni-icon">🏠</span> Kembali ke Dashboard
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- MAIN -->
+            <main class="profile-main">
+
+                <!-- INFO SECTION -->
+                <div class="pcard" id="infoSection">
+                    <div class="pcard-head">
+                        <div class="pcard-head-left">
+                            <span class="pcard-tag">Akun Saya</span>
+                            <h2 class="pcard-title">Informasi Profil</h2>
+                        </div>
+                    </div>
+                    <div class="pcard-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Nama Lengkap</label>
+                                <div class="form-input" style="opacity:0.7;" id="infoName">—</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <div class="form-input" style="opacity:0.7;" id="infoEmail">—</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">No. Telepon</label>
+                                <div class="form-input" style="opacity:0.7;" id="infoPhone">—</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bergabung Sejak</label>
+                                <div class="form-input" style="opacity:0.7;" id="infoJoined">—</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EDIT SECTION -->
+                <div class="pcard" id="editSection">
+                    <div class="pcard-head">
+                        <div class="pcard-head-left">
+                            <span class="pcard-tag">Perbarui Data</span>
+                            <h2 class="pcard-title">Edit Profil</h2>
+                        </div>
+                    </div>
+                    <div class="pcard-body">
+                        <form id="editForm" onsubmit="saveProfile(event)">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="editName">Nama Lengkap</label>
+                                    <input type="text" id="editName" class="form-input" placeholder="Nama lengkap kamu" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="editEmail">Email</label>
+                                    <input type="email" id="editEmail" class="form-input" placeholder="email@kamu.com" required>
+                                </div>
+                                <div class="form-group full">
+                                    <label class="form-label" for="editPhone">No. Telepon</label>
+                                    <input type="tel" id="editPhone" class="form-input" placeholder="08xx-xxxx-xxxx">
+                                    <span class="form-hint">Opsional. Digunakan untuk keperluan notifikasi.</span>
+                                </div>
+                            </div>
+                            <div class="btn-row" style="margin-top:24px;">
+                                <button type="submit" class="btn-save" id="saveProfileBtn">💾 Simpan Perubahan</button>
+                                <button type="button" class="btn-cancel" onclick="resetEditForm()">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- PASSWORD SECTION -->
+                <div class="pcard" id="passwordSection">
+                    <div class="pcard-head">
+                        <div class="pcard-head-left">
+                            <span class="pcard-tag">Keamanan Akun</span>
+                            <h2 class="pcard-title">Ganti Password</h2>
+                        </div>
+                    </div>
+                    <div class="pcard-body">
+                        <form id="passwordForm" onsubmit="changePassword(event)">
+                            <div class="form-grid">
+                                <div class="form-group full">
+                                    <label class="form-label" for="currentPassword">Password Saat Ini</label>
+                                    <input type="password" id="currentPassword" class="form-input" placeholder="••••••••" required>
+                                    <span class="form-error" id="currentPassError">Password saat ini salah.</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="newPassword">Password Baru</label>
+                                    <input type="password" id="newPassword" class="form-input" placeholder="Min. 8 karakter"
+                                        required oninput="checkStrength(this.value)">
+                                    <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                                    <span class="strength-label" id="strengthLabel" style="color:var(--gray2);"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="confirmPassword">Konfirmasi Password Baru</label>
+                                    <input type="password" id="confirmPassword" class="form-input" placeholder="Ulangi password baru" required>
+                                    <span class="form-error" id="confirmPassError">Password tidak cocok.</span>
+                                </div>
+                            </div>
+                            <div class="btn-row" style="margin-top:24px;">
+                                <button type="submit" class="btn-save" id="savePasswordBtn">🔒 Perbarui Password</button>
+                                <button type="button" class="btn-cancel" onclick="document.getElementById('passwordForm').reset(); clearStrength();">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- STATS SECTION -->
+                <div class="pcard" id="statsSection">
+                    <div class="pcard-head">
+                        <div class="pcard-head-left">
+                            <span class="pcard-tag">Ringkasan</span>
+                            <h2 class="pcard-title" id="statsTitle">Statistik Belajar</h2>
+                        </div>
+                    </div>
+                    <div class="pcard-body">
+                        <div class="stats-row">
+                            <div class="stat-pill">
+                                <div class="stat-pill-val"><span id="stat1">0</span></div>
+                                <div class="stat-pill-lbl" id="stat1Label">Enrolled</div>
+                            </div>
+                            <div class="stat-pill">
+                                <div class="stat-pill-val" style="color:var(--warning);"><span id="stat2">0</span></div>
+                                <div class="stat-pill-lbl" id="stat2Label">In Progress</div>
+                            </div>
+                            <div class="stat-pill">
+                                <div class="stat-pill-val" style="color:var(--success);"><span id="stat3">0</span></div>
+                                <div class="stat-pill-lbl" id="stat3Label">Completed</div>
+                            </div>
+                            <div class="stat-pill">
+                                <div class="stat-pill-val"><span class="acc" id="stat4">0</span></div>
+                                <div class="stat-pill-lbl" id="stat4Label">Sertifikat</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DANGER ZONE -->
+                <div class="pcard" id="dangerSection">
+                    <div class="pcard-head">
+                        <div class="pcard-head-left">
+                            <span class="pcard-tag" style="color:var(--error);">Zona Berbahaya</span>
+                            <h2 class="pcard-title">Hapus Akun</h2>
+                        </div>
+                    </div>
+                    <div class="pcard-body">
+                        <div class="danger-zone">
+                            <div class="danger-info">
+                                <h4>⚠️ Hapus Akun Secara Permanen</h4>
+                                <p>Semua data, progress, dan sertifikat akan hilang dan tidak bisa dipulihkan.</p>
+                            </div>
+                            <button class="btn-danger" onclick="confirmDeleteAccount()">Hapus Akun</button>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-bottom">
+                <div class="footer-copy">Copyright © 2025 <b>SpeakOut English Course</b> — LKP PalComTech Palembang. All rights reserved.</div>
+                <div class="footer-bottom-links">
+                    <a href="#">Support</a><span>|</span>
+                    <a href="#">Kebijakan Privasi</a><span>|</span>
+                    <a href="#">Syarat & Ketentuan</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- TOAST -->
+    <div class="alert-toast" id="toast"></div>
+
+    <script src="js/api.js"></script>
+    <script>
+    // Global variable untuk track role
+    let currentUserRole = 'user';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+
+        // Deteksi role dari local storage
+        const user = api.getUser();
+        currentUserRole = user?.role || 'user';
+        const isAdmin = currentUserRole === 'admin';
+
+        // Setup UI berdasarkan role
+        setupRoleUI(isAdmin);
+
+        // Header scroll
+        window.addEventListener('scroll', () => {
+            document.getElementById('header').classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // Hamburger
+        const hamburger = document.getElementById('hamburger');
+        const drawer    = document.getElementById('drawer');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            drawer.classList.toggle('open');
+        });
+
+        // Dropdown close on outside click
+        document.addEventListener('click', (e) => {
+            const chip = document.getElementById('userChip');
+            if (!chip.contains(e.target)) chip.classList.remove('open');
+        });
+
+        // Logout
+        const doLogout = () => { if (confirm('Yakin ingin logout?')) api.logout(); };
+        document.getElementById('logoutBtn')?.addEventListener('click', doLogout);
+        document.getElementById('drawerLogout')?.addEventListener('click', doLogout);
+
+        // Hash routing
+        const hash = window.location.hash.replace('#', '');
+        if (hash) {
+            const target = document.getElementById(hash + 'Section') || document.getElementById(hash);
+            if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+        }
+
+        loadProfile();
+    });
+
+    // =====================================================================
+    // SETUP ROLE UI
+    // =====================================================================
+    function setupRoleUI(isAdmin) {
+        const badge = document.getElementById('profileBadge');
+        const statsLabel = document.getElementById('statsLabel');
+        const statsTitle = document.getElementById('statsTitle');
+        const sidebarNav = document.getElementById('sidebarNav');
+
+        if (isAdmin) {
+            // Update badge
+            if (badge) {
+                badge.textContent = 'ADMIN';
+                badge.style.background = 'rgba(255,85,0,0.15)';
+                badge.style.borderColor = 'rgba(255,85,0,0.3)';
+                badge.style.color = 'var(--orange)';
+            }
+
+            // Update stats labels
+            if (statsLabel) statsLabel.textContent = 'Statistik Platform';
+            if (statsTitle) statsTitle.textContent = 'Statistik Platform';
+
+            // Update stat pill labels
+            document.getElementById('stat1Label').textContent = 'Total Users';
+            document.getElementById('stat2Label').textContent = 'Total Courses';
+            document.getElementById('stat3Label').textContent = 'Total Enrollments';
+            document.getElementById('stat4Label').textContent = 'Completed';
+
+            // Tambahkan link Admin Panel di sidebar
+            const adminLink = document.createElement('a');
+            adminLink.href = 'admin.html';
+            adminLink.className = 'sidebar-nav-item';
+            adminLink.innerHTML = '<span class="sni-icon">⚙️</span> Admin Panel';
+            adminLink.style.borderLeft = '3px solid var(--orange)';
+            adminLink.style.marginTop = '12px';
+            sidebarNav.appendChild(adminLink);
+        } else {
+            // Student defaults
+            if (badge) {
+                badge.textContent = 'STUDENT';
+            }
+            if (statsLabel) statsLabel.textContent = 'Statistik Belajar';
+            if (statsTitle) statsTitle.textContent = 'Statistik Belajar';
+
+            document.getElementById('stat1Label').textContent = 'Enrolled';
+            document.getElementById('stat2Label').textContent = 'In Progress';
+            document.getElementById('stat3Label').textContent = 'Completed';
+            document.getElementById('stat4Label').textContent = 'Sertifikat';
+        }
+    }
+
+    function toggleDropdown() {
+        document.getElementById('userChip').classList.toggle('open');
+    }
+
+    function setActiveNav(el) {
+        document.querySelectorAll('.sidebar-nav-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    // =====================================================================
+    // LOAD PROFILE
+    // =====================================================================
+    async function loadProfile() {
+        try {
+            const token = api.getToken();
+            const user  = api.getUser();
+            const isAdmin = user?.role === 'admin';
+
+            // Isi dari local storage dulu (instant)
+            if (user) fillUserUI(user, null, isAdmin);
+
+            // Fetch fresh dari API
+            const res = await fetch('http://127.0.0.1:8000/api/user/profile', {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            if (!res.ok) throw new Error('Gagal memuat profil');
+
+            const data = await res.json();
+            const u = data.user || data;
+            
+            // Update role dari API response
+            if (u.role) {
+                currentUserRole = u.role;
+            }
+
+            fillUserUI(u, data.stats, currentUserRole === 'admin');
+            
+        } catch(err) {
+            console.error('Profile load error:', err);
+            showToast('❌ Gagal memuat profil', 'error');
+        }
+    }
+
+    function fillUserUI(u, stats = null, isAdmin = false) {
+        const name    = u.name  || '—';
+        const email   = u.email || '—';
+        const phone   = u.phone || u.no_hp || '—';
+        const joined  = u.created_at ? new Date(u.created_at).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }) : '—';
+        const initial = name[0]?.toUpperCase() || '?';
+
+        // Header
+        document.getElementById('userName').textContent    = name.split(' ')[0];
+        document.getElementById('userAvatar').textContent  = initial;
+        document.getElementById('dropdownName').textContent  = name;
+        document.getElementById('dropdownEmail').textContent = email;
+
+        // Sidebar card
+        document.getElementById('profileAvatarBig').textContent = initial;
+        document.getElementById('profileNameBig').textContent   = name;
+        document.getElementById('profileEmailSmall').textContent = email;
+
+        // Info section
+        document.getElementById('infoName').textContent   = name;
+        document.getElementById('infoEmail').textContent  = email;
+        document.getElementById('infoPhone').textContent  = phone;
+        document.getElementById('infoJoined').textContent = joined;
+
+        // Prefill edit form
+        document.getElementById('editName').value  = name !== '—' ? name  : '';
+        document.getElementById('editEmail').value = email !== '—' ? email : '';
+        document.getElementById('editPhone').value = phone !== '—' ? phone : '';
+
+        // Stats - berbeda untuk admin vs student
+        if (stats) {
+            if (isAdmin) {
+                // Admin stats
+                document.getElementById('stat1').textContent = stats.total_users || 0;
+                document.getElementById('stat2').textContent = stats.total_courses || 0;
+                document.getElementById('stat3').textContent = stats.total_enrollments || 0;
+                document.getElementById('stat4').textContent = stats.completed_courses || 0;
+            } else {
+                // Student stats
+                document.getElementById('stat1').textContent = stats.total_enrolled  || 0;
+                document.getElementById('stat2').textContent = stats.in_progress     || 0;
+                document.getElementById('stat3').textContent = stats.total_completed || 0;
+                document.getElementById('stat4').textContent = stats.certificates    || 0;
+            }
+        }
+    }
+
+    function resetEditForm() {
+        const user = api.getUser();
+        if (user) {
+            document.getElementById('editName').value  = user.name  || '';
+            document.getElementById('editEmail').value = user.email || '';
+            document.getElementById('editPhone').value = user.phone || '';
+        }
+    }
+
+    // =====================================================================
+    // SAVE PROFILE
+    // =====================================================================
+    async function saveProfile(e) {
+        e.preventDefault();
+        const btn = document.getElementById('saveProfileBtn');
+        btn.textContent = '⏳ Menyimpan...'; btn.disabled = true;
+
+        try {
+            const token = api.getToken();
+            const body  = {
+                name:  document.getElementById('editName').value.trim(),
+                email: document.getElementById('editEmail').value.trim(),
+                phone: document.getElementById('editPhone').value.trim(),
+            };
+
+            const res = await fetch('http://127.0.0.1:8000/api/user/profile', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Gagal menyimpan');
+
+            // Update local user
+            const current = api.getUser() || {};
+            const updated = { ...current, ...body };
+            localStorage.setItem('speakout_user', JSON.stringify(updated));
+
+            fillUserUI(updated, null, currentUserRole === 'admin');
+            showToast('✅ Profil berhasil diperbarui!', 'success');
+        } catch(err) {
+            showToast('❌ ' + err.message, 'error');
+        } finally {
+            btn.textContent = '💾 Simpan Perubahan'; btn.disabled = false;
+        }
+    }
+
+    // =====================================================================
+    // CHANGE PASSWORD
+    // =====================================================================
+    async function changePassword(e) {
+        e.preventDefault();
+
+        const current  = document.getElementById('currentPassword').value;
+        const newPass  = document.getElementById('newPassword').value;
+        const confirm  = document.getElementById('confirmPassword').value;
+        const errConf  = document.getElementById('confirmPassError');
+        const errCurr  = document.getElementById('currentPassError');
+
+        errConf.classList.remove('show');
+        errCurr.classList.remove('show');
+
+        if (newPass !== confirm) {
+            errConf.classList.add('show');
+            document.getElementById('confirmPassword').classList.add('error');
+            return;
+        }
+        document.getElementById('confirmPassword').classList.remove('error');
+
+        const btn = document.getElementById('savePasswordBtn');
+        btn.textContent = '⏳ Memperbarui...'; btn.disabled = true;
+
+        try {
+            const token = api.getToken();
+            const res = await fetch('http://127.0.0.1:8000/api/user/change-password', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    current_password: current, 
+                    password: newPass, 
+                    password_confirmation: confirm 
+                })
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                if (res.status === 422) { 
+                    errCurr.classList.add('show'); 
+                    return; 
+                }
+                throw new Error(data.message || 'Gagal memperbarui password');
+            }
+
+            document.getElementById('passwordForm').reset();
+            clearStrength();
+            showToast('🔒 Password berhasil diperbarui!', 'success');
+        } catch(err) {
+            showToast('❌ ' + err.message, 'error');
+        } finally {
+            btn.textContent = '🔒 Perbarui Password'; btn.disabled = false;
+        }
+    }
+
+    // =====================================================================
+    // PASSWORD STRENGTH
+    // =====================================================================
+    function checkStrength(val) {
+        const fill  = document.getElementById('strengthFill');
+        const label = document.getElementById('strengthLabel');
+        let score = 0;
+        if (val.length >= 8)  score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        const levels = [
+            { w: '0%',   color: 'transparent', text: '' },
+            { w: '25%',  color: '#ef4444',      text: 'Lemah' },
+            { w: '50%',  color: '#f59e0b',      text: 'Cukup' },
+            { w: '75%',  color: '#3b82f6',      text: 'Kuat' },
+            { w: '100%', color: '#10b981',      text: 'Sangat Kuat' },
+        ];
+        const l = levels[score];
+        fill.style.width = l.w; fill.style.background = l.color;
+        label.textContent = l.text; label.style.color = l.color;
+    }
+
+    function clearStrength() {
+        document.getElementById('strengthFill').style.width = '0%';
+        document.getElementById('strengthLabel').textContent = '';
+    }
+
+    // =====================================================================
+    // DELETE ACCOUNT
+    // =====================================================================
+    function confirmDeleteAccount() {
+        if (confirm('⚠️ Yakin ingin menghapus akun? Semua data akan hilang permanen dan tidak bisa dipulihkan.')) {
+            if (confirm('Konfirmasi sekali lagi — tindakan ini tidak bisa dibatalkan.')) {
+                deleteAccount();
+            }
+        }
+    }
+
+    async function deleteAccount() {
+        try {
+            const token = api.getToken();
+            const res = await fetch('http://127.0.0.1:8000/api/user/account', {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Gagal menghapus akun');
+            
+            showToast('✅ Akun berhasil dihapus', 'success');
+            setTimeout(() => {
+                localStorage.removeItem('speakout_token');
+                localStorage.removeItem('speakout_user');
+                window.location.href = 'login.html';
+            }, 1500);
+        } catch(err) {
+            showToast('❌ ' + err.message, 'error');
+        }
+    }
+
+    // =====================================================================
+    // TOAST
+    // =====================================================================
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.className = `alert-toast ${type} show`;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+    }
+    </script>
+</body>
+</html>

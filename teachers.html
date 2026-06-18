@@ -3,226 +3,602 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teachers - SpeakOut E-Course</title>
+    <title>Teachers - SpeakOut English Course</title>
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#8B2C98">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SpeakOut">
+    <link rel="apple-touch-icon" href="/images/icon-192.png">
 
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="/css/main.css">
-    
-    <!-- Teachers Page CSS -->
-    <link rel="stylesheet" href="/css/teachers.css">
+    <style>
+        /* ===== RESET & ROOT ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --purple: #8B2C98;
+            --purple-light: #a83db8;
+            --purple-dark: #6a1f75;
+            --purple-deeper: #3a0d50;
+            --orange: #FF5500;
+            --orange-light: #ff7733;
+            --dark: #0d0d18;
+            --dark2: #12121f;
+            --dark3: #1a1a2e;
+            --white: #ffffff;
+            --gray: #a0a0b8;
+            --gray2: #6a6a80;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== SPLASH ===== */
+        #splash-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: var(--dark);
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 20px;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #splash-screen.hidden { opacity: 0; visibility: hidden; }
+        .splash-logo { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; }
+        .splash-logo .speak { color: var(--white); }
+        .splash-logo .out { color: var(--orange); }
+        .splash-loader { width: 40px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+        .splash-loader::after {
+            content: ''; display: block; height: 100%; width: 40%;
+            background: var(--purple); border-radius: 2px;
+            animation: loading 1.2s ease infinite;
+        }
+        @keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+        .splash-text { font-size: 13px; color: var(--gray); letter-spacing: 1px; }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 0 40px; height: 68px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(13,13,24,0.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(139,44,152,0.15);
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .header.scrolled {
+            background: rgba(13,13,24,0.99);
+            border-bottom-color: rgba(139,44,152,0.3);
+        }
+        .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; letter-spacing: 1px; flex-shrink: 0; }
+        .logo .speak { color: var(--white); }
+        .logo .out { color: var(--orange); }
+        .nav { display: flex; align-items: center; gap: 36px; }
+        .nav a {
+            font-size: 14px; font-weight: 500; color: var(--gray);
+            transition: color 0.25s; position: relative; padding-bottom: 2px;
+        }
+        .nav a::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+            height: 2px; background: var(--orange);
+            transform: scaleX(0); transition: transform 0.25s;
+        }
+        .nav a:hover, .nav a.active { color: var(--white); }
+        .nav a:hover::after, .nav a.active::after { transform: scaleX(1); }
+        .btn-login {
+            padding: 9px 24px; border-radius: 50px;
+            border: 1.5px solid rgba(139,44,152,0.6);
+            font-size: 14px; font-weight: 600; color: var(--white);
+            transition: all 0.25s; background: transparent; white-space: nowrap; cursor: pointer;
+        }
+        .btn-login:hover, .btn-login.logged-in { background: var(--purple); border-color: var(--purple); }
+        .hamburger {
+            display: none; flex-direction: column; gap: 5px;
+            cursor: pointer; padding: 6px; border: none; background: none;
+        }
+        .hamburger span { width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+        .mobile-drawer {
+            position: fixed; top: 68px; left: 0; right: 0; z-index: 99;
+            background: rgba(13,13,24,0.98); backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(139,44,152,0.2);
+            padding: 20px 24px 28px; display: flex; flex-direction: column; gap: 4px;
+            transform: translateY(-110%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .mobile-drawer.open { transform: translateY(0); }
+        .mobile-drawer a { font-size: 16px; font-weight: 500; color: var(--gray); padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); transition: color 0.2s; }
+        .mobile-drawer a:hover, .mobile-drawer a.active { color: var(--white); }
+        .mobile-drawer .drawer-login { margin-top: 12px; padding: 13px; text-align: center; background: var(--purple); border-radius: 8px; font-weight: 700; color: var(--white); border-bottom: none; }
+        .mobile-drawer .drawer-login:hover { background: var(--orange); }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 140px 40px 80px;
+            text-align: center;
+            background: var(--dark);
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139,44,152,0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139,44,152,0.4), transparent);
+        }
+        .hero-eyebrow {
+            display: flex; align-items: center; justify-content: center; gap: 14px;
+            margin-bottom: 24px;
+            opacity: 0; animation: fadeUp 0.7s ease 0.2s forwards;
+        }
+        .hero-eyebrow-line { width: 28px; height: 2px; background: var(--orange); }
+        .hero-eyebrow span { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); font-weight: 600; }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(30px, 5vw, 60px); font-weight: 900; line-height: 1.1;
+            margin-bottom: 20px; max-width: 700px; margin-left: auto; margin-right: auto;
+            opacity: 0; animation: fadeUp 0.7s ease 0.35s forwards;
+        }
+        .hero h1 em { font-style: italic; color: var(--purple-light); }
+        .hero p {
+            font-size: clamp(14px, 1.4vw, 17px); color: var(--gray); line-height: 1.85;
+            max-width: 560px; margin: 0 auto; font-weight: 300;
+            opacity: 0; animation: fadeUp 0.7s ease 0.5s forwards;
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== TEACHERS SECTION ===== */
+        .teachers-section { padding: 72px 40px 88px; }
+        .teachers-container { max-width: 1200px; margin: auto; }
+
+        /* Loading / Error */
+        .loading-state {
+            text-align: center; padding: 80px 20px;
+        }
+        .spinner {
+            width: 40px; height: 40px; margin: 0 auto 20px;
+            border: 3px solid rgba(139,44,152,0.2);
+            border-top-color: var(--purple);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-state p { font-size: 14px; color: var(--gray); }
+        .error-state {
+            text-align: center; padding: 80px 20px;
+            font-size: 14px; color: #ff6b6b;
+        }
+
+        /* Teachers Grid */
+        .teachers-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 28px;
+        }
+
+        /* Teacher Card */
+        .teacher-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px; overflow: hidden;
+            transition: all 0.3s;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 36px 24px 28px;
+            text-align: center; position: relative;
+        }
+        .teacher-card::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--purple), var(--orange));
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .teacher-card:hover {
+            background: rgba(139,44,152,0.08);
+            border-color: rgba(139,44,152,0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .teacher-card:hover::before { opacity: 1; }
+
+        /* Photo */
+        .teacher-photo-container {
+            width: 110px; height: 110px;
+            border-radius: 50%; overflow: hidden;
+            border: 3px solid rgba(139,44,152,0.3);
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+            flex-shrink: 0;
+        }
+        .teacher-card:hover .teacher-photo-container { border-color: var(--orange); }
+        .teacher-photo {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .teacher-photo-fallback {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--purple-dark), var(--purple));
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 36px; font-weight: 900; color: rgba(255,255,255,0.8);
+        }
+
+        /* Info */
+        .teacher-info { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }
+        .teacher-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px; font-weight: 700; color: var(--white);
+            line-height: 1.3;
+        }
+        .teacher-role {
+            font-size: 12px; color: var(--orange);
+            font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+        }
+        .teacher-expertise {
+            display: flex; gap: 6px; flex-wrap: wrap;
+            justify-content: center; margin-top: 10px;
+        }
+        .expertise-tag {
+            font-size: 11px; color: var(--gray);
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 4px 10px; border-radius: 50px;
+        }
+
+        /* ===== CTA BANNER ===== */
+        .cta-banner {
+            background: var(--white); padding: 36px 40px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 24px; flex-wrap: wrap;
+            border-top: 4px solid var(--orange); border-bottom: 4px solid var(--orange);
+        }
+        .cta-text h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(18px,2.2vw,26px); font-weight: 900;
+            color: var(--purple); line-height: 1.3;
+        }
+        .cta-text h2 span { color: var(--orange); }
+        .cta-text p { font-size: 13px; color: #666; margin-top: 5px; }
+        .btn-formulir {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--purple); color: var(--white);
+            padding: 14px 28px; border-radius: 8px;
+            font-size: 14px; font-weight: 700; white-space: nowrap;
+            transition: all 0.25s; cursor: pointer; flex-shrink: 0;
+        }
+        .btn-formulir:hover { background: var(--orange); transform: translateY(-1px); }
+
+        /* ===== FOOTER ===== */
+        .footer { background: linear-gradient(160deg,#4a1060 0%,#3a0d50 60%,#2d0a40 100%); border-top: 1px solid rgba(139,44,152,0.2); }
+        .footer-inner { max-width: 1200px; margin: auto; padding: 56px 40px 44px; display: grid; grid-template-columns: 1.6fr 2fr 1.5fr; gap: 52px; }
+        .brand-name { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+        .brand-name .speak { color: var(--white); }
+        .brand-name .out { color: var(--orange); }
+        .brand-sub { font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 1px; margin-bottom: 4px; }
+        .brand-parent { font-size: 12px; color: var(--orange); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 18px; }
+        .brand-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.85; margin-bottom: 22px; max-width: 210px; }
+        .sosmed { display: flex; gap: 8px; }
+        .sosmed a { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 14px; color: rgba(255,255,255,0.5); transition: all 0.25s; }
+        .sosmed a:hover { border-color: var(--orange); color: var(--orange); }
+        .footer-col-title { font-size: 12px; font-weight: 700; color: var(--white); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 22px; padding-bottom: 10px; border-bottom: 2px solid var(--orange); display: inline-block; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        .menu-grid a { font-size: 13px; color: rgba(255,255,255,0.55); padding: 8px 0; display: block; border-bottom: 1px solid rgba(255,255,255,0.05); transition: color 0.2s; }
+        .menu-grid a:hover { color: var(--white); }
+        .contact-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.8; margin-bottom: 18px; }
+        .btn-chat { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--orange); color: var(--white); padding: 13px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: background 0.25s; width: 100%; margin-bottom: 22px; }
+        .btn-chat:hover { background: var(--orange-light); }
+        .contact-items { display: flex; flex-direction: column; gap: 14px; }
+        .contact-item { display: flex; align-items: flex-start; gap: 10px; }
+        .ci-icon { font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+        .ci-text { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+        .ci-label { font-size: 10px; color: var(--orange); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; display: block; }
+        .footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); }
+        .footer-bottom { max-width: 1200px; margin: auto; padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+        .footer-copy b { color: rgba(255,255,255,0.55); }
+        .footer-bottom-links { display: flex; gap: 18px; align-items: center; }
+        .footer-bottom-links a { font-size: 12px; color: rgba(255,255,255,0.3); transition: color 0.2s; }
+        .footer-bottom-links a:hover { color: var(--white); }
+        .footer-bottom-links span { color: rgba(255,255,255,0.12); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .teachers-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-inner { grid-template-columns: 1fr 1fr; gap: 36px; }
+            .footer-inner .contact-col { grid-column: 1 / -1; }
+            .brand-desc { max-width: 100%; }
+        }
+        @media (max-width: 768px) {
+            .header { padding: 0 20px; }
+            .nav, .btn-login { display: none; }
+            .hamburger { display: flex; }
+            .hero { padding: 110px 24px 60px; }
+            .teachers-section { padding: 48px 20px 60px; }
+            .teachers-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .cta-banner { padding: 28px 24px; flex-direction: column; align-items: flex-start; }
+            .btn-formulir { width: 100%; justify-content: center; }
+            .footer-inner { grid-template-columns: 1fr; padding: 40px 24px 32px; }
+            .footer-inner .contact-col { grid-column: auto; }
+            .footer-bottom { padding: 16px 24px; flex-direction: column; align-items: flex-start; gap: 10px; }
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .teachers-grid { grid-template-columns: 1fr; }
+            .teacher-photo-container { width: 90px; height: 90px; }
+        }
+    </style>
 </head>
-<body class="page-fade-in">
+<body>
 
-<!-- HEADER -->
-<header class="header">
-    <div class="header-container">
-        <a href="index.html" class="logo">SPEAK<span>OUT</span></a>
-        
-        <!-- HAMBURGER MENU -->
-        <button class="hamburger-menu" onclick="toggleMenu()" aria-label="Toggle Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        
-        <nav>
-            <ul class="nav-menu">
-                <li><a href="index.html">Beranda</a></li>
-                <li><a href="courses.html">Course</a></li>
-                <li><a href="teachers.html">Teachers</a></li>
-                <li class="mobile-login-item">
-                    <a href="login.html" class="btn-login-mobile">Login</a>
-                </li>
-            </ul>
+    <!-- SPLASH -->
+    <div id="splash-screen">
+        <div class="splash-logo"><span class="speak">Speak</span><span class="out">Out</span></div>
+        <div class="splash-loader"></div>
+        <p class="splash-text">Memuat konten...</p>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <a href="index.html" class="logo"><span class="speak">Speak</span><span class="out">Out</span></a>
+        <nav class="nav">
+            <a href="index.html">Beranda</a>
+            <a href="courses.html">Course</a>
+            <a href="teachers.html" class="active">Teachers</a>
         </nav>
-        
-        <a href="login.html" class="btn-login desktop-only">Login</a>
+        <a href="login.html" class="btn-login" id="authBtn">Login</a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <!-- MOBILE DRAWER -->
+    <div class="mobile-drawer" id="drawer">
+        <a href="index.html">Beranda</a>
+        <a href="courses.html">Course</a>
+        <a href="teachers.html" class="active">Teachers</a>
+        <a href="login.html" class="drawer-login" id="drawerAuthBtn">Login</a>
     </div>
-</header>
 
-<!-- HERO -->
-<section class="hero">
-    <div class="hero-eyebrow">
-        <div class="hero-eyebrow-line"></div>
-        <span>Tim Pengajar</span>
-        <div class="hero-eyebrow-line"></div>
-    </div>
-    <h1>Expert <em>Instructors</em></h1>
-    <p>
-        Belajar bersama mentor profesional SpeakOut untuk meningkatkan
-        skill public speaking dan bahasa Inggris secara aktif dan modern.
-    </p>
-</section>
-
-<!-- TEACHERS -->
-<section class="teachers-section">
-    <div class="container">
-
-        <div id="loadingState" class="loading">
-            <div class="spinner"></div>
-            <p>Loading teachers...</p>
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-eyebrow">
+            <div class="hero-eyebrow-line"></div>
+            <span>Tim Pengajar</span>
+            <div class="hero-eyebrow-line"></div>
         </div>
+        <h1>Expert <em>Instructors</em></h1>
+        <p>Belajar bersama mentor profesional SpeakOut untuk meningkatkan skill public speaking dan bahasa Inggris secara aktif dan modern.</p>
+    </section>
 
-        <div id="teachersList" class="teachers-grid" style="display:none;"></div>
+    <!-- TEACHERS -->
+    <section class="teachers-section">
+        <div class="teachers-container">
 
-        <div id="errorState" class="error-state" style="display:none;">
-            Gagal memuat data teachers.
+            <div id="loadingState" class="loading-state">
+                <div class="spinner"></div>
+                <p>Memuat teachers...</p>
+            </div>
+
+            <div id="teachersList" class="teachers-grid" style="display:none;"></div>
+
+            <div id="errorState" class="error-state" style="display:none;">
+                Gagal memuat data teachers.
+            </div>
+
         </div>
+    </section>
 
+    <!-- CTA BANNER -->
+    <div class="cta-banner">
+        <div class="cta-text">
+            <h2>Mau Daftar <span>SpeakOut</span> Sekarang?!</h2>
+            <p>Isi formulir pendaftaran dan tim kami akan segera menghubungi kamu.</p>
+        </div>
+        <a href="register.html" class="btn-formulir">📝 Isi Formulir Di Sini</a>
     </div>
-</section>
 
-<!-- Scripts - URUTAN YANG BENAR -->
-<script src="/js/app.js"></script>
-<script src="/js/splash.js"></script>
-<script src="js/api.js"></script>
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div>
+                <div class="brand-name"><span class="speak">Speak</span><span class="out">Out</span></div>
+                <div class="brand-sub">English Course</div>
+                <div class="brand-parent">Bagian dari LKP PalComTech Palembang</div>
+                <p class="brand-desc">Program kursus bahasa Inggris terpercaya dengan metode aktif, mentor profesional, dan sertifikat resmi.</p>
+                <div class="sosmed">
+                    <a href="#" title="Instagram">📷</a>
+                    <a href="#" title="TikTok">🎵</a>
+                    <a href="#" title="YouTube">▶️</a>
+                    <a href="#" title="WhatsApp">💬</a>
+                </div>
+            </div>
+            <div>
+                <div class="footer-col-title">Menu</div>
+                <div class="menu-grid">
+                    <a href="index.html">Beranda</a>
+                    <a href="courses.html">Profesional</a>
+                    <a href="teachers.html">Teachers</a>
+                    <a href="courses.html">Public Speaking</a>
+                    <a href="#">Tentang Kami</a>
+                    <a href="courses.html">Business English</a>
+                    <a href="register.html">Form Pendaftaran</a>
+                    <a href="courses.html">Speak Out</a>
+                    <a href="#">Blog</a>
+                    <a href="courses.html">TOEFL Prep</a>
+                </div>
+            </div>
+            <div class="contact-col">
+                <div class="footer-col-title">Hubungi Admin</div>
+                <p class="contact-desc">Ingin informasi lebih lengkap tentang kursus dan cara pendaftaran? Hubungi admin kami sekarang.</p>
+                <a href="https://wa.me/6281234567890" class="btn-chat">💬 Chat Sekarang</a>
+                <div class="contact-items">
+                    <div class="contact-item">
+                        <span class="ci-icon">📍</span>
+                        <div class="ci-text">
+                            <span class="ci-label">Alamat</span>
+                            Jl. Jend. Sudirman No.3007, 20 Ilir D. III, Kec. Ilir Tim. I, Kota Palembang, Sumatera Selatan 30121
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="ci-icon">✉️</span>
+                        <div class="ci-text"><span class="ci-label">Email</span>hello@speakout.id</div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="ci-icon">🕐</span>
+                        <div class="ci-text"><span class="ci-label">Jam Operasional</span>Senin – Sabtu, 08.00 – 17.00 WIB</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="footer-bottom">
+            <div class="footer-copy">Copyright © 2025 <b>SpeakOut English Course</b> — LKP PalComTech Palembang. All rights reserved.</div>
+            <div class="footer-bottom-links">
+                <a href="#">Support</a><span>|</span>
+                <a href="#">Kebijakan Privasi</a><span>|</span>
+                <a href="#">Syarat & Ketentuan</a>
+            </div>
+        </div>
+    </footer>
 
-<!-- Teachers Logic -->
-<script>
-/**
- * 📁 teachers.html - Load Teachers dengan Foto
- * 🎯 Menampilkan daftar tutor dengan foto dari public/assets/teachers/
- */
-
-const TEACHERS_API = 'http://127.0.0.1:8000/api/teachers';
-
-// Default teachers data (fallback jika API belum tersedia)
-const defaultTeachers = [
-    {
-        id: 1,
-        name: 'Martina Wati',
-        role: 'Tutor SpeakOut',
-        photo: 'assets/teachers/martinawati.png',
-        expertise: ['Speaking', 'Grammar', 'TOEFL']
-    },
-    {
-        id: 2,
-        name: 'Hafiz Varintio RA',
-        role: 'Tutor SpeakOut',
-        photo: 'assets/teachers/hafishvarintiora.png',
-        expertise: ['Conversation', 'Writing', 'Business']
-    },
-    {
-        id: 3,
-        name: 'Visa Ranico',
-        role: 'Tutor SpeakOut',
-        photo: 'assets/teachers/visaranico.png',
-        expertise: ['Pronunciation', 'Listening', 'IELTS']
-    },
-    {
-        id: 4,
-        name: 'Krisna Islami',
-        role: 'Tutor SpeakOut',
-        photo: 'assets/teachers/krisnaislami.png',
-        expertise: ['Vocabulary', 'Reading', 'TOEFL']
-    }
-];
-
-// ========================================================================
-// INIT
-// ========================================================================
-document.addEventListener('DOMContentLoaded', () => {
-    loadTeachers();
-});
-
-// ========================================================================
-// LOAD TEACHERS
-// ========================================================================
-async function loadTeachers() {
-    const loading = document.getElementById('loadingState');
-    const grid = document.getElementById('teachersList');
-    const error = document.getElementById('errorState');
-
-    try {
-        const response = await fetch(TEACHERS_API, {
-            headers: { 'Accept': 'application/json' }
+    <script src="/js/api.js"></script>
+    <script>
+        /* ===== SPLASH ===== */
+        window.addEventListener('load', () => {
+            setTimeout(() => document.getElementById('splash-screen').classList.add('hidden'), 1200);
         });
 
-        let teachers = [];
-        
-        if (response.ok) {
-            teachers = await response.json();
-            console.log('✅ Loaded teachers from API:', teachers.length);
-        } else {
-            console.log('⚠️ API not available, using default teachers');
-            teachers = defaultTeachers;
+        /* ===== HEADER SCROLL ===== */
+        window.addEventListener('scroll', () => {
+            document.getElementById('header').classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        /* ===== HAMBURGER ===== */
+        const hamburger = document.getElementById('hamburger');
+        const drawer = document.getElementById('drawer');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            drawer.classList.toggle('open');
+        });
+        drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            drawer.classList.remove('open');
+        }));
+
+        /* ===== AUTH BUTTON ===== */
+        const authBtn = document.getElementById('authBtn');
+        const drawerAuthBtn = document.getElementById('drawerAuthBtn');
+
+        function updateAuthUI() {
+            if (typeof api !== 'undefined' && api.isLoggedIn()) {
+                const user = api.getUser();
+                const name = user?.name?.split(' ')[0] || 'User';
+                [authBtn, drawerAuthBtn].forEach(btn => {
+                    if (!btn) return;
+                    btn.textContent = `Dashboard ${name}`;
+                    btn.href = 'dashboard.html';
+                    btn.classList.add('logged-in');
+                });
+            }
+        }
+        updateAuthUI();
+
+        authBtn?.addEventListener('click', (e) => {
+            if (typeof api !== 'undefined' && api.isLoggedIn()) {
+                e.preventDefault();
+                if (confirm('Apakah Anda ingin logout?')) { api.logout(); window.location.reload(); }
+            }
+        });
+
+        /* ===== TEACHERS DATA ===== */
+        const TEACHERS_API = 'http://127.0.0.1:8000/api/teachers';
+
+        const defaultTeachers = [
+            { id: 1, name: 'Martina Wati', role: 'Tutor SpeakOut', photo: 'assets/teachers/martinawati.png', expertise: ['Speaking', 'Grammar', 'TOEFL'] },
+            { id: 2, name: 'Hafiz Varintio RA', role: 'Tutor SpeakOut', photo: 'assets/teachers/hafishvarintiora.png', expertise: ['Conversation', 'Writing', 'Business'] },
+            { id: 3, name: 'Visa Ranico', role: 'Tutor SpeakOut', photo: 'assets/teachers/visaranico.png', expertise: ['Pronunciation', 'Listening', 'IELTS'] },
+            { id: 4, name: 'Krisna Islami', role: 'Tutor SpeakOut', photo: 'assets/teachers/krisnaislami.png', expertise: ['Vocabulary', 'Reading', 'TOEFL'] }
+        ];
+
+        /* ===== LOAD ===== */
+        async function loadTeachers() {
+            const loading = document.getElementById('loadingState');
+            const grid = document.getElementById('teachersList');
+            const error = document.getElementById('errorState');
+
+            try {
+                const response = await fetch(TEACHERS_API, { headers: { 'Accept': 'application/json' } });
+                let teachers = response.ok ? await response.json() : defaultTeachers;
+                if (!teachers.length) teachers = defaultTeachers;
+
+                loading.style.display = 'none';
+                grid.style.display = 'grid';
+                renderTeachers(teachers);
+            } catch (err) {
+                console.error(err);
+                loading.style.display = 'none';
+                grid.style.display = 'grid';
+                renderTeachers(defaultTeachers);
+            }
         }
 
-        loading.style.display = 'none';
+        /* ===== RENDER ===== */
+        function renderTeachers(teachers) {
+            const grid = document.getElementById('teachersList');
+            grid.innerHTML = '';
 
-        if (teachers.length === 0) {
-            teachers = defaultTeachers;
+            teachers.forEach(teacher => {
+                const fullName = teacher.name || teacher.full_name || 'Teacher';
+                const role = teacher.role || teacher.title || 'Tutor Bahasa Inggris';
+                const photoPath = teacher.photo || `assets/teachers/teacher-${teacher.id}.jpg`;
+                const initial = fullName.charAt(0).toUpperCase();
+                const expertise = teacher.expertise || [];
+
+                const card = document.createElement('div');
+                card.className = 'teacher-card';
+                card.innerHTML = `
+                    <div class="teacher-photo-container">
+                        <img src="http://127.0.0.1:8000/${photoPath}"
+                             alt="${esc(fullName)}"
+                             class="teacher-photo"
+                             onerror="this.outerHTML='<div class=\\'teacher-photo-fallback\\'>${initial}</div>'">
+                    </div>
+                    <div class="teacher-info">
+                        <div class="teacher-name">${esc(fullName)}</div>
+                        <div class="teacher-role">${esc(role)}</div>
+                        ${expertise.length ? `
+                        <div class="teacher-expertise">
+                            ${expertise.map(e => `<span class="expertise-tag">${esc(e)}</span>`).join('')}
+                        </div>` : ''}
+                    </div>`;
+
+                grid.appendChild(card);
+            });
         }
 
-        grid.style.display = 'grid';
-        renderTeachers(teachers);
-
-    } catch (err) {
-        console.error('❌ Error loading teachers:', err);
-        loading.style.display = 'none';
-        
-        grid.style.display = 'grid';
-        renderTeachers(defaultTeachers);
-    }
-}
-
-// ========================================================================
-// RENDER TEACHERS
-// ========================================================================
-function renderTeachers(teachers) {
-    const grid = document.getElementById('teachersList');
-    grid.innerHTML = '';
-
-    teachers.forEach(teacher => {
-        const card = document.createElement('div');
-        card.className = 'teacher-card';
-        
-        const photoPath = teacher.photo || `assets/teachers/teacher-${teacher.id}.jpg`;
-        const fullName = teacher.name || teacher.full_name || 'Teacher';
-        const role = teacher.role || teacher.title || 'Tutor Bahasa Inggris';
-        
-        const displayName = fullName;
-        
-        const nameLength = fullName.length;
-        let nameClass = 'short-name';
-        if (nameLength > 20) {
-            nameClass = 'long-name';
-        } else if (nameLength > 12) {
-            nameClass = 'medium-name';
+        function esc(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
         }
-        
-        const initial = fullName.charAt(0).toUpperCase();
 
-        card.innerHTML = `
-            <div class="teacher-photo-container">
-                <img src="http://127.0.0.1:8000/${photoPath}" 
-                     alt="${escapeHtml(fullName)}" 
-                     class="teacher-photo"
-                     onerror="this.outerHTML='<div class=\\'teacher-photo-fallback\\'>${initial}</div>'">
-            </div>
-            <div class="teacher-info">
-                <button class="teacher-name-btn ${nameClass}">${escapeHtml(displayName)}</button>
-                <div class="teacher-role">${escapeHtml(role)}</div>
-            </div>
-        `;
-
-        grid.appendChild(card);
-    });
-}
-
-// ========================================================================
-// HELPER
-// ========================================================================
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-</script>
-
+        /* ===== INIT ===== */
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthUI();
+            loadTeachers();
+        });
+    </script>
+    <!-- ✅ TAMBAHKAN INI: Favorites & Notifications -->
+    <script src="/js/favorites.js"></script>
+    <script src="/js/notification.js"></script>
 </body>
 </html>
