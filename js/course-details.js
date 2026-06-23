@@ -6,7 +6,8 @@
 ========================================
 */
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+// ✅ Gunakan API_BASE dari api.js (sudah include Ngrok URL)
+const API_BASE_URL = typeof API_BASE !== 'undefined' ? API_BASE : 'http://127.0.0.1:8000/api';
 const API_URL = `${API_BASE_URL}/courses`;
 
 // DOM Elements
@@ -117,8 +118,12 @@ async function loadCourseDetails(courseId) {
     const token = getAuthToken();
     try {
         const response = await fetch(`${API_URL}/${courseId}`, {
-            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-        });
+            headers: { 
+                'Authorization': `Bearer ${token}`, 
+                'Accept': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
+        }
+    });
         if (!response.ok) throw new Error(`HTTP ERROR ${response.status}`);
         const data = await response.json();
         courseData = data;
@@ -276,8 +281,12 @@ async function renderQuizUI(quizItem) {
     try {
         const token = getAuthToken();
         const response = await fetch(`${API_BASE_URL}/quizzes/${quizId}`, {
-            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-        });
+            headers: { 
+                'Authorization': `Bearer ${token}`, 
+                'Accept': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
+        }
+    });
         
         if (!response.ok) throw new Error(`Failed to load quiz: HTTP ${response.status}`);
         
@@ -478,9 +487,14 @@ async function completeTextQuiz() {
     try {
         const response = await fetch(`${API_BASE_URL}/quizzes/${currentQuizId}/submit`, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json', 'Content-Type': 'application/json' },
-            body: JSON.stringify({ answers: window.textQuizAnswers || {} })
-        });
+            headers: { 
+                'Authorization': `Bearer ${token}`, 
+                'Accept': 'application/json', 
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify({ answers: window.textQuizAnswers || {} })
+    });
 
         if (!response.ok) {
             const errorBody = await response.json().catch(() => ({}));
@@ -938,10 +952,11 @@ async function submitDuoQuiz() {
             headers: { 
                 'Authorization': `Bearer ${token}`, 
                 'Accept': 'application/json', 
-                'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify({ answers: formattedAnswers })
-        });
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify({ answers: formattedAnswers })
+    });
         
         const result = await response.json();
         
@@ -1074,7 +1089,8 @@ async function updateProgress(courseId, meetingId, isCompleted) {
         headers: { 
             'Authorization': `Bearer ${token}`, 
             'Accept': 'application/json', 
-            'Content-Type': 'application/json' 
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({ meeting_id: meetingId, is_completed: isCompleted })
     });
