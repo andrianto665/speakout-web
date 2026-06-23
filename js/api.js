@@ -12,7 +12,7 @@
 // ============================================================================
 
 const getApiBaseUrl = () => {
-    return 'http://192.168.1.5:8000/api';
+    return 'https://sliding-famished-scoreless.ngrok-free.dev/api';
 };
 
 const API_BASE = getApiBaseUrl();
