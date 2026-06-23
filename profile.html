@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya — SpeakOut E-Course</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -589,7 +592,7 @@
     <!-- TOAST -->
     <div class="alert-toast" id="toast"></div>
 
-    <script src="js/api.js"></script>
+    <script src="js/api.js?v=2.3.0"></script>
     <script>
     // Global variable untuk track role
     let currentUserRole = 'user';
@@ -712,8 +715,12 @@
             if (user) fillUserUI(user, null, isAdmin);
 
             // Fetch fresh dari API
-            const res = await fetch('http://127.0.0.1:8000/api/user/profile', {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            const res = await fetch(`${API_BASE}/user/profile`, {
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                }
             });
             if (!res.ok) throw new Error('Gagal memuat profil');
 
@@ -805,12 +812,13 @@
                 phone: document.getElementById('editPhone').value.trim(),
             };
 
-            const res = await fetch('http://127.0.0.1:8000/api/user/profile', {
+            const res = await fetch(`${API_BASE}/user/profile`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
                 },
                 body: JSON.stringify(body)
             });
@@ -859,12 +867,13 @@
 
         try {
             const token = api.getToken();
-            const res = await fetch('http://127.0.0.1:8000/api/user/change-password', {
+            const res = await fetch(`${API_BASE}/user/change-password`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
                 },
                 body: JSON.stringify({ 
                     current_password: current, 
@@ -935,9 +944,13 @@
     async function deleteAccount() {
         try {
             const token = api.getToken();
-            const res = await fetch('http://127.0.0.1:8000/api/user/account', {
+            const res = await fetch(`${API_BASE}/user/account`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                }
             });
             
             const data = await res.json();

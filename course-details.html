@@ -763,8 +763,11 @@
         if (!token) { showNotification('Silakan login terlebih dahulu', 'error'); window.location.href = 'login.html'; return; }
         try {
             showNotification('Mempersiapkan certificate...', 'warning');
-            const res = await fetch(`http://127.0.0.1:8000/api/user/certificates/${courseId}/download`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+            const res = await fetch(`${API_BASE}/user/certificates/${courseId}/download`, {
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'ngrok-skip-browser-warning': 'true'
+                }
             });
             if (!res.ok) {
                 if (res.status === 404) { showNotification('Certificate belum tersedia. Selesaikan semua lesson terlebih dahulu!', 'error'); return; }
