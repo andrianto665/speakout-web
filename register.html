@@ -675,13 +675,15 @@
         }
 
         /* ===== BACA COURSE DARI URL ===== */
+        let selectedCourseDisplayName = '';
         (function() {
             const params = new URLSearchParams(window.location.search);
             const courseId   = params.get('course_id');
             const courseName = params.get('course_name');
             if (courseId) document.getElementById('courseId').value = courseId;
             if (courseName) {
-                document.getElementById('selectedCourseName').textContent = decodeURIComponent(courseName);
+                selectedCourseDisplayName = decodeURIComponent(courseName);
+                document.getElementById('selectedCourseName').textContent = selectedCourseDisplayName;
                 document.getElementById('selectedCourse').style.display = 'block';
             }
         })();
@@ -707,11 +709,23 @@
                 showNotification('Password minimal 6 karakter!', 'error'); return;
             }
 
+            // Cek course terpilih SEBELUM tombol di-disable, supaya popup
+            // konfirmasi muncul dalam kondisi form masih normal/belum loading.
+            const courseId = document.getElementById('courseId')?.value || null;
+            const confirmMsg = courseId
+                ? `Konfirmasi: kamu akan daftar untuk course "${selectedCourseDisplayName || courseId}".\n\nPastikan ini course yang benar sebelum lanjut.`
+                : `Kamu akan mendaftar TANPA course terpilih (belum di-enroll ke course manapun).\n\nLanjutkan?`;
+
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+
             if (btn) { btn.textContent = 'Mendaftar...'; btn.disabled = true; }
 
             try {
-                const courseId = document.getElementById('courseId')?.value || null;
+                console.log('🔍 DEBUG courseId yang mau dikirim:', courseId);
                 const result = await api.register(name, email, password, courseId);
+                console.log('🔍 DEBUG hasil dari server:', result);
                 if (result.success) {
                     showNotification('Registrasi berhasil! Silakan login.', 'success');
                     setTimeout(() => window.location.href = 'login.html', 2000);

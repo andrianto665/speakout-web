@@ -1349,6 +1349,7 @@
         mobileBtn?.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('active'); });
         overlay?.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); });
 
+        document.querySelectorAll('.sidebar-item[data-section]').forEach(item => item.style.pointerEvents = 'none');
         document.querySelectorAll('.sidebar-item[data-section]').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
@@ -1394,7 +1395,9 @@
             } catch(e) {}
         }, 60000);
 
-        loadDashboardStats();
+        loadDashboardStats().then(() => {
+            document.querySelectorAll('.sidebar-item[data-section]').forEach(item => item.style.pointerEvents = '');
+        });
     });
 
     function toggleUserDropdown() {

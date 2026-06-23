@@ -12,14 +12,7 @@
 // ============================================================================
 
 const getApiBaseUrl = () => {
-    const isAndroidEmulator = typeof navigator !== 'undefined' && 
-                              navigator.userAgent?.includes('Android');
-    
-    if (isAndroidEmulator) {
-        return 'http://10.0.2.2:8000/api';
-    }
-    
-    return 'http://127.0.0.1:8000/api';
+    return 'http://192.168.1.5:8000/api';
 };
 
 const API_BASE = getApiBaseUrl();

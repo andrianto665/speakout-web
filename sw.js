@@ -1,5 +1,5 @@
 // Service Worker untuk SpeakOut PWA
-const CACHE_NAME = 'speakout-v3';
+const CACHE_NAME = 'speakout-v4';
 const API_ORIGINS = ['http://127.0.0.1:8000', 'http://10.0.2.2:8000']
 
 // File statis yang boleh di-cache (aset saja, BUKAN html)
@@ -76,6 +76,10 @@ self.addEventListener('fetch', event => {
     );
     return;
   }
+  if (url.pathname === '/js/api.js') {
+    event.respondWith(fetch(event.request));
+    return;
+}
 
   // Aset statis: cache-first, dan HANYA untuk GET
   if (event.request.method !== 'GET') return;
