@@ -1310,7 +1310,22 @@
 
     <script src="js/api.js?v=2.3.0"></script>
     <script>
-    const ADMIN_API_BASE = 'http://127.0.0.1:8000/api';
+    const ADMIN_API_BASE = typeof API_BASE !== 'undefined' ? API_BASE : 'http://127.0.0.1:8000/api';
+    // ✅ Helper untuk headers standar (termasuk ngrok bypass)
+    const getStandardHeaders = (includeAuth = true, includeContentType = false) => {
+        const headers = {
+            'Accept': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+        };
+        if (includeAuth) {
+            const token = api.getToken();
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+        }
+        if (includeContentType) {
+            headers['Content-Type'] = 'application/json';
+        }
+        return headers;
+    };
 
     let allCourses = [];
     let isScopedInstructor = false;
@@ -1390,8 +1405,16 @@
             const token = localStorage.getItem('speakout_token');
             if (!token) return;
             try {
-                const r = await fetch(`${ADMIN_API_BASE}/user`, { headers: { 'Authorization': `Bearer ${token}` } });
-                if (!r.ok) { showToast('⚠️ Sesi telah berakhir', 'error'); setTimeout(() => { localStorage.removeItem('speakout_token'); window.location.href = 'login.html'; }, 2000); }
+                const r = await fetch(`${ADMIN_API_BASE}/user`, { 
+                    headers: getStandardHeaders(true, false)
+                });
+                if (!r.ok) { 
+                    showToast('⚠️ Sesi telah berakhir', 'error'); 
+                    setTimeout(() => { 
+                        localStorage.removeItem('speakout_token'); 
+                        window.location.href = 'login.html'; 
+                    }, 2000); 
+                }
             } catch(e) {}
         }, 60000);
 
@@ -1420,11 +1443,15 @@
     }
 
     function handleLogout() {
-        if (!confirm('Yakin ingin logout?')) return;
-        fetch(`${ADMIN_API_BASE}/auth/logout`, { method: 'POST', headers: { 'Authorization': `Bearer ${api.getToken()}` } }).catch(() => {});
-        localStorage.removeItem('speakout_token'); localStorage.removeItem('speakout_user');
-        showToast('Logout berhasil', 'success');
-        setTimeout(() => window.location.href = 'login.html', 1000);
+    if (!confirm('Yakin ingin logout?')) return;
+    fetch(`${ADMIN_API_BASE}/auth/logout`, { 
+        method: 'POST', 
+        headers: getStandardHeaders(true, false)
+    }).catch(() => {});
+    localStorage.removeItem('speakout_token'); 
+    localStorage.removeItem('speakout_user');
+    showToast('Logout berhasil', 'success');
+    setTimeout(() => window.location.href = 'login.html', 1000);
     }
 
     function showToast(msg, type = 'success') {
@@ -1434,9 +1461,12 @@
     }
 
     async function loadDashboardStats() {
-        const token = api.getToken(); if (!token) return;
+        const token = api.getToken(); 
+        if (!token) return;
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/stats`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+            const r = await fetch(`${ADMIN_API_BASE}/admin/stats`, { 
+                headers: getStandardHeaders(true, false)
+            });
             if (r.ok) {
                 const d = await r.json();
                 isScopedInstructor = !!d.is_scoped;
@@ -1446,7 +1476,7 @@
                 document.getElementById('completedCourses').textContent = d.completed_courses  ?? '—';
                 applyInstructorScopeUI();
             }
-        } catch(e) {}
+        } catch(e) { console.error('Dashboard stats error:', e); }
     }
 
     function applyInstructorScopeUI() {
@@ -1460,16 +1490,21 @@
 
     async function loadAllCourses() {
         const grid = document.getElementById('coursesGrid');
-        const token = api.getToken(); if (!token) return;
+        const token = api.getToken(); 
+        if (!token) return;
         grid.innerHTML = '<div class="state-loading"><div class="spinner"></div>Memuat courses...</div>';
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/courses`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+            const r = await fetch(`${ADMIN_API_BASE}/admin/courses`, { 
+                headers: getStandardHeaders(true, false)
+            });
             if (r.ok) {
                 allCourses = (await r.json()).data || [];
                 renderCoursesGrid(allCourses);
                 updateCourseStats();
             }
-        } catch(e) { grid.innerHTML = `<div style="color:var(--error);text-align:center;padding:20px;">Gagal memuat courses</div>`; }
+        } catch(e) { 
+            grid.innerHTML = `<div style="color:var(--error);text-align:center;padding:20px;">Gagal memuat courses</div>`; 
+        }
     }
 
     function filterCourses() {
@@ -1526,11 +1561,17 @@
         document.getElementById('statTotalCourses').textContent = allCourses.length;
         const instructors = new Set(allCourses.map(c => c.instructor).filter(Boolean));
         document.getElementById('statInstructors').textContent = instructors.size;
-        let total = 0; allCourses.forEach(c => total += (c.total_lessons || 0));
+        let total = 0; 
+        allCourses.forEach(c => total += (c.total_lessons || 0));
         document.getElementById('statTotalContent').textContent = total;
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/stats`, { headers: { 'Authorization': `Bearer ${token}` } });
-            if (r.ok) { const d = await r.json(); document.getElementById('statActiveStudents').textContent = d.total_users || 0; }
+            const r = await fetch(`${ADMIN_API_BASE}/admin/stats`, { 
+                headers: getStandardHeaders(true, false)
+            });
+            if (r.ok) { 
+                const d = await r.json(); 
+                document.getElementById('statActiveStudents').textContent = d.total_users || 0; 
+            }
         } catch(e) {}
     }
 
@@ -1554,15 +1595,22 @@
         const container = document.getElementById('contentItemsList');
         container.innerHTML = '<div class="state-loading"><div class="spinner"></div>Memuat konten...</div>';
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/courses/${courseId}`, { headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
+            const r = await fetch(`${ADMIN_API_BASE}/courses/${courseId}`, { 
+                headers: getStandardHeaders(true, false)
+            });
             if (r.ok) {
                 const items = ((await r.json()).meetings || []).sort((a,b) => (a.order_number||0) - (b.order_number||0));
-                if (!items.length) { container.innerHTML = '<div class="state-empty">Belum ada konten. Klik "+ Tambah Item".</div>'; return; }
+                if (!items.length) { 
+                    container.innerHTML = '<div class="state-empty">Belum ada konten. Klik "+ Tambah Item".</div>'; 
+                    return; 
+                }
                 container.innerHTML = items.map((item, i) => {
                     let typeLabel = '📄 Lesson', typeCls = 'badge-info';
                     if (item.type === 'test')   { typeLabel = '✍️ Quiz';       typeCls = 'badge-warning'; }
                     if (item.type === 'final')  { typeLabel = '🏆 Final Test'; typeCls = 'badge-success'; }
-                    if (item.type === 'normal' && (!item.content || item.content === null)) { typeLabel = '📁 Header'; typeCls = 'badge-gray'; }
+                    if (item.type === 'normal' && (!item.content || item.content === null)) { 
+                        typeLabel = '📁 Header'; typeCls = 'badge-gray'; 
+                    }
                     const linkHtml = item.content ? `<a href="${item.content}" target="_blank" style="color:var(--purple-light);">🔗 Link</a>` : '';
                     return `<div class="content-item">
                         <div class="content-item-info">
@@ -1580,7 +1628,9 @@
                     </div>`;
                 }).join('');
             }
-        } catch(e) { container.innerHTML = `<div style="color:var(--error);text-align:center;padding:20px;">Gagal memuat konten</div>`; }
+        } catch(e) { 
+            container.innerHTML = `<div style="color:var(--error);text-align:center;padding:20px;">Gagal memuat konten</div>`; 
+        }
     }
 
     function openCourseModal(c = null) {
@@ -1600,22 +1650,54 @@
     async function handleCourseSubmit(e) {
         e.preventDefault();
         const id = document.getElementById('courseId').value;
-        const data = { title: document.getElementById('courseTitle').value.trim(), description: document.getElementById('courseDescription').value.trim(), instructor: document.getElementById('courseInstructor').value.trim(), category: document.getElementById('courseCategory').value, level: document.getElementById('courseLevel').value, price: parseInt(document.getElementById('coursePrice').value) || 0, duration: document.getElementById('courseDuration').value.trim() };
-        const btn = e.target.querySelector('.btn-primary'); btn.disabled = true; btn.textContent = 'Menyimpan...';
+        const data = { 
+            title: document.getElementById('courseTitle').value.trim(), 
+            description: document.getElementById('courseDescription').value.trim(), 
+            instructor: document.getElementById('courseInstructor').value.trim(), 
+            category: document.getElementById('courseCategory').value, 
+            level: document.getElementById('courseLevel').value, 
+            price: parseInt(document.getElementById('coursePrice').value) || 0, 
+            duration: document.getElementById('courseDuration').value.trim() 
+        };
+        const btn = e.target.querySelector('.btn-primary'); 
+        btn.disabled = true; 
+        btn.textContent = 'Menyimpan...';
         try {
-            const r = await fetch(id ? `${ADMIN_API_BASE}/admin/courses/${id}` : `${ADMIN_API_BASE}/admin/courses`, { method: id ? 'PUT' : 'POST', headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(data) });
-            if (r.ok) { showToast('✅ Course berhasil disimpan!', 'success'); closeCourseModal(); loadAllCourses(); }
-            else throw new Error('Gagal');
-        } catch(err) { showToast('❌ Gagal menyimpan course', 'error'); }
-        finally { btn.disabled = false; btn.textContent = 'Simpan'; }
+            const r = await fetch(
+                id ? `${ADMIN_API_BASE}/admin/courses/${id}` : `${ADMIN_API_BASE}/admin/courses`, 
+                { 
+                    method: id ? 'PUT' : 'POST', 
+                    headers: getStandardHeaders(true, true),
+                    body: JSON.stringify(data) 
+                }
+            );
+            if (r.ok) { 
+                showToast('✅ Course berhasil disimpan!', 'success'); 
+                closeCourseModal(); 
+                loadAllCourses(); 
+            } else throw new Error('Gagal');
+        } catch(err) { 
+            showToast('❌ Gagal menyimpan course', 'error'); 
+        } finally { 
+            btn.disabled = false; 
+            btn.textContent = 'Simpan'; 
+        }
     }
 
     async function deleteCourse(id) {
         if (!confirm('Hapus course ini?')) return;
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/courses/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${api.getToken()}` } });
-            if (r.ok) { showToast('✅ Course dihapus', 'success'); loadAllCourses(); }
-        } catch(e) { showToast('❌ Gagal menghapus', 'error'); }
+            const r = await fetch(`${ADMIN_API_BASE}/admin/courses/${id}`, { 
+                method: 'DELETE', 
+                headers: getStandardHeaders(true, false)
+            });
+            if (r.ok) { 
+                showToast('✅ Course dihapus', 'success'); 
+                loadAllCourses(); 
+            }
+        } catch(e) { 
+            showToast('❌ Gagal menghapus', 'error'); 
+        }
     }
 
     function toggleContentFields() {
@@ -1648,7 +1730,7 @@
 
     async function handleContentSubmit(e) {
         e.preventDefault();
-        const id = document.getElementById('contentId').value;
+            const id = document.getElementById('contentId').value;
         const courseId = document.getElementById('contentCourseId').value;
         const type = document.getElementById('contentItemType').value;
         const orderNumber = parseInt(document.getElementById('contentOrder').value) || 1;
@@ -1656,35 +1738,73 @@
         if (type === 'test') dbType = 'test';
         if (type === 'final') dbType = 'final';
         let link = document.getElementById('contentDriveLink').value.trim();
-        if (link?.includes('/view')) { const m = link.match(/\/d\/([^\/\?]+)/); if (m) link = `https://drive.google.com/file/d/${m[1]}/preview`; }
-        const payload = { title: document.getElementById('contentTitle').value.trim(), type: dbType, content: (dbType === 'normal' && type === 'meeting') ? null : link, order_number: orderNumber };
-        const btn = e.target.querySelector('.btn-primary'); btn.disabled = true; btn.textContent = 'Menyimpan...';
+        if (link?.includes('/view')) { 
+            const m = link.match(/\/d\/([^\/\?]+)/); 
+            if (m) link = `https://drive.google.com/file/d/${m[1]}/preview`; 
+        }
+        const payload = { 
+            title: document.getElementById('contentTitle').value.trim(), 
+            type: dbType, 
+            content: (dbType === 'normal' && type === 'meeting') ? null : link, 
+            order_number: orderNumber 
+        };
+        const btn = e.target.querySelector('.btn-primary'); 
+        btn.disabled = true; 
+        btn.textContent = 'Menyimpan...';
         try {
             const url = id ? `${ADMIN_API_BASE}/admin/content/${id}` : `${ADMIN_API_BASE}/admin/courses/${courseId}/content`;
-            const r = await fetch(url, { method: id ? 'PUT' : 'POST', headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
-            if (!r.ok) { const d = await r.json(); throw new Error(d.message || 'Gagal'); }
+            const r = await fetch(url, { 
+                method: id ? 'PUT' : 'POST', 
+                headers: getStandardHeaders(true, true),
+                body: JSON.stringify(payload) 
+            });
+            if (!r.ok) { 
+                const d = await r.json(); 
+                throw new Error(d.message || 'Gagal'); 
+            }
             showToast('✅ Konten berhasil disimpan!', 'success');
-            closeContentModal(); loadCourseContent(courseId);
-        } catch(err) { showToast(`❌ ${err.message}`, 'error'); }
-        finally { btn.disabled = false; btn.textContent = 'Simpan'; }
+            closeContentModal(); 
+            loadCourseContent(courseId);
+        } catch(err) { 
+            showToast(`❌ ${err.message}`, 'error'); 
+        } finally { 
+            btn.disabled = false; 
+            btn.textContent = 'Simpan'; 
+        }
     }
 
     async function deleteContentItem(id) {
         if (!confirm('Hapus item ini?')) return;
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/content/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${api.getToken()}` } });
-            if (r.ok) { showToast('✅ Dihapus', 'success'); loadCourseContent(selectedCourseId); }
-        } catch(e) { showToast('❌ Gagal', 'error'); }
+            const r = await fetch(`${ADMIN_API_BASE}/admin/content/${id}`, { 
+                method: 'DELETE', 
+                headers: getStandardHeaders(true, false)
+            });
+            if (r.ok) { 
+                showToast('✅ Dihapus', 'success'); 
+                loadCourseContent(selectedCourseId); 
+            }
+        } catch(e) { 
+        showToast('❌ Gagal', 'error'); 
+        }
     }
 
     async function loadUsers() {
         const tbody = document.getElementById('usersTableBody');
-        const token = api.getToken(); if (!token) return;
-        tbody.innerHTML = '<tr><td colspan="6"><div class="state-loading"><div class="spinner"></div></div></td></tr>';
+        const token = api.getToken(); 
+        if (!token) return;
+            tbody.innerHTML = '<tr><td colspan="6"><div class="state-loading"><div class="spinner"></div></div></td></tr>';
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/users`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
-            if (r.ok) { allUsers = (await r.json()).data || []; renderUsersTable(allUsers); }
-        } catch(e) { tbody.innerHTML = `<tr><td colspan="6" style="color:var(--error);text-align:center;padding:20px;">Gagal memuat data</td></tr>`; }
+            const r = await fetch(`${ADMIN_API_BASE}/admin/users`, { 
+                headers: getStandardHeaders(true, false)
+            });
+            if (r.ok) { 
+                allUsers = (await r.json()).data || []; 
+                renderUsersTable(allUsers); 
+            }
+        } catch(e) { 
+            tbody.innerHTML = `<tr><td colspan="6" style="color:var(--error);text-align:center;padding:20px;">Gagal memuat data</td></tr>`; 
+        }
     }
 
     function filterUsers() {
@@ -1709,9 +1829,17 @@
     async function deleteUser(id) {
         if (!confirm('Hapus user ini?')) return;
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/users/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${api.getToken()}` } });
-            if (r.ok) { showToast('✅ User dihapus', 'success'); loadUsers(); }
-        } catch(e) { showToast('❌ Gagal', 'error'); }
+            const r = await fetch(`${ADMIN_API_BASE}/admin/users/${id}`, { 
+                method: 'DELETE', 
+                headers: getStandardHeaders(true, false)
+            });
+            if (r.ok) { 
+                showToast('✅ User dihapus', 'success'); 
+                loadUsers(); 
+            }
+        } catch(e) { 
+            showToast('❌ Gagal', 'error'); 
+        }
     }
 
     function openAddUserModal() {
@@ -1726,7 +1854,7 @@
         sel.innerHTML = '<option value="">— Memuat courses... —</option>';
         try {
             const r = await fetch(`${ADMIN_API_BASE}/admin/courses`, {
-            headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' }
+                headers: getStandardHeaders(true, false)
             });
             if (!r.ok) throw new Error();
             const data = await r.json();
@@ -1742,21 +1870,23 @@
 
     async function handleAddUserSubmit(e) {
         e.preventDefault();
-        const courseId = document.getElementById('newUserCourse').value;
-        const payload = {
-            name: document.getElementById('newUserName').value.trim(),
-            email: document.getElementById('newUserEmail').value.trim(),
-            phone: document.getElementById('newUserPhone').value.trim() || null,
-            password: document.getElementById('newUserPassword').value,
-            course_id: courseId ? parseInt(courseId) : null,
-        };
+            const courseId = document.getElementById('newUserCourse').value;
+            const payload = {
+                name: document.getElementById('newUserName').value.trim(),
+                email: document.getElementById('newUserEmail').value.trim(),
+                phone: document.getElementById('newUserPhone').value.trim() || null,
+                password: document.getElementById('newUserPassword').value,
+                course_id: courseId ? parseInt(courseId) : null,
+            };
         const btn = e.target.closest('.modal-box').querySelector('[type="submit"]');
-        btn.disabled = true; btn.textContent = 'Menyimpan...';
-        const msg = document.getElementById('addUserMessage'); msg.style.display = 'none';
+        btn.disabled = true; 
+        btn.textContent = 'Menyimpan...';
+        const msg = document.getElementById('addUserMessage'); 
+        msg.style.display = 'none';
         try {
             const r = await fetch(`${ADMIN_API_BASE}/admin/users`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                headers: getStandardHeaders(true, true),
                 body: JSON.stringify(payload)
             });
             const d = await r.json();
@@ -1765,25 +1895,35 @@
             closeAddUserModal();
             loadUsers();
         } catch (err) {
-            msg.className = 'form-msg error'; msg.textContent = `❌ ${err.message}`; msg.style.display = 'block';
+            msg.className = 'form-msg error'; 
+            msg.textContent = `❌ ${err.message}`; 
+            msg.style.display = 'block';
             showToast(`❌ ${err.message}`, 'error');
         } finally {
-            btn.disabled = false; btn.textContent = 'Simpan';
+            btn.disabled = false; 
+            btn.textContent = 'Simpan';
         }
     }
 
     async function loadQuizzesForQuestionForm() {
         const sel = document.getElementById('quizSelect');
-        const token = api.getToken(); if (!token) return;
-        sel.innerHTML = '<option value="">— Memuat quiz... —</option>'; sel.disabled = true;
+        const token = api.getToken(); 
+        if (!token) return;
+        sel.innerHTML = '<option value="">— Memuat quiz... —</option>'; 
+        sel.disabled = true;
         try {
-            const cr = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${token}` } });
+            const cr = await fetch(`${ADMIN_API_BASE}/courses`, { 
+                headers: getStandardHeaders(true, false)
+            });
             if (!cr.ok) throw new Error('Gagal');
             const courses = await cr.json();
-            let opts = '<option value="">— Pilih Quiz —</option>'; let count = 0;
+            let opts = '<option value="">— Pilih Quiz —</option>'; 
+            let count = 0;
             for (const c of courses) {
                 try {
-                    const dr = await fetch(`${ADMIN_API_BASE}/courses/${c.id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                    const dr = await fetch(`${ADMIN_API_BASE}/courses/${c.id}`, { 
+                        headers: getStandardHeaders(true, false)
+                    });
                     if (!dr.ok) continue;
                     const data = await dr.json();
                     (data.meetings || []).forEach(m => {
@@ -1794,10 +1934,19 @@
                     });
                 } catch(e) {}
             }
-            if (!count) { opts = '<option value="">— Belum ada quiz —</option>'; document.getElementById('manualQuizIdGroup').style.display = 'block'; }
-            else { document.getElementById('manualQuizIdGroup').style.display = 'none'; }
-            sel.innerHTML = opts; sel.disabled = false;
-        } catch(e) { sel.innerHTML = '<option value="">— Error —</option>'; sel.disabled = false; document.getElementById('manualQuizIdGroup').style.display = 'block'; }
+            if (!count) { 
+                opts = '<option value="">— Belum ada quiz —</option>'; 
+                document.getElementById('manualQuizIdGroup').style.display = 'block'; 
+            } else { 
+                document.getElementById('manualQuizIdGroup').style.display = 'none'; 
+            }
+            sel.innerHTML = opts; 
+            sel.disabled = false;
+        } catch(e) { 
+            sel.innerHTML = '<option value="">— Error —</option>'; 
+            sel.disabled = false; 
+            document.getElementById('manualQuizIdGroup').style.display = 'block'; 
+        }
     }
 
     function toggleQuizInputMode() {
@@ -1816,45 +1965,86 @@
     async function handleAddQuestionSubmit(e) {
         e.preventDefault();
         let quizId = document.getElementById('quizSelect').value || document.getElementById('manualQuizId').value;
-        if (!quizId) { showToast('⚠️ Pilih atau masukkan Quiz ID', 'error'); return; }
+        if (!quizId) { 
+            showToast('⚠️ Pilih atau masukkan Quiz ID', 'error'); 
+            return; 
+        }
         const type = document.getElementById('questionType').value;
         let options = [], correct = '';
         if (type === 'multiple_choice') {
             options = ['optA','optB','optC','optD'].map(id => document.getElementById(id).value.trim()).filter(Boolean);
             correct = document.getElementById('correctAnswer').value;
-        } else { options = ['Benar','Salah']; correct = document.getElementById('correctAnswerTF').value === 'true' ? 'Benar' : 'Salah'; }
-        const payload = { question: document.getElementById('questionInput').value.trim(), type, options, correct_answer: correct, points: parseInt(document.getElementById('pointsInput').value) || 10, order: parseInt(document.getElementById('orderInput').value) || 0 };
-        const btn = e.target.querySelector('[type="submit"]'); btn.disabled = true; btn.textContent = '⏳ Menyimpan...';
-        const msg = document.getElementById('questionFormMessage'); msg.style.display = 'none';
+        } else { 
+            options = ['Benar','Salah']; 
+            correct = document.getElementById('correctAnswerTF').value === 'true' ? 'Benar' : 'Salah'; 
+        }
+        const payload = { 
+            question: document.getElementById('questionInput').value.trim(), 
+            type, 
+            options, 
+            correct_answer: correct, 
+            points: parseInt(document.getElementById('pointsInput').value) || 10, 
+            order: parseInt(document.getElementById('orderInput').value) || 0 
+        };
+        const btn = e.target.querySelector('[type="submit"]'); 
+        btn.disabled = true; 
+        btn.textContent = '⏳ Menyimpan...';
+        const msg = document.getElementById('questionFormMessage'); 
+        msg.style.display = 'none';
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/quizzes/${quizId}/questions`, { method: 'POST', headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
-            const d = await r.json(); if (!r.ok) throw new Error(d.message || 'Gagal');
-            msg.className = 'form-msg success'; msg.textContent = '✅ Soal berhasil ditambahkan!'; msg.style.display = 'block';
+            const r = await fetch(`${ADMIN_API_BASE}/admin/quizzes/${quizId}/questions`, { 
+                method: 'POST', 
+                headers: getStandardHeaders(true, true),
+                body: JSON.stringify(payload) 
+            });
+            const d = await r.json(); 
+            if (!r.ok) throw new Error(d.message || 'Gagal');
+            msg.className = 'form-msg success'; 
+            msg.textContent = '✅ Soal berhasil ditambahkan!'; 
+            msg.style.display = 'block';
             showToast('✅ Soal disimpan!', 'success');
             document.getElementById('questionInput').value = '';
             ['optA','optB','optC','optD'].forEach(id => document.getElementById(id).value = '');
             setTimeout(() => { msg.style.display = 'none'; }, 3000);
-        } catch(err) { msg.className = 'form-msg error'; msg.textContent = `❌ ${err.message}`; msg.style.display = 'block'; showToast(`❌ ${err.message}`, 'error'); }
-        finally { btn.disabled = false; btn.textContent = '💾 Simpan Soal'; }
+        } catch(err) { 
+            msg.className = 'form-msg error'; 
+            msg.textContent = `❌ ${err.message}`; 
+            msg.style.display = 'block'; 
+            showToast(`❌ ${err.message}`, 'error'); 
+        } finally { 
+            btn.disabled = false; 
+            btn.textContent = '💾 Simpan Soal'; 
+        }
     }
 
     async function loadQuestionsToDelete() {
         const quizId = document.getElementById('deleteQuizIdInput').value;
-        if (!quizId) { showToast('⚠️ Masukkan Quiz ID', 'error'); return; }
+        if (!quizId) { 
+            showToast('⚠️ Masukkan Quiz ID', 'error'); 
+            return; 
+        }
         const list = document.getElementById('questionsToDeleteList');
         const msg  = document.getElementById('deleteMessage');
         const srch = document.getElementById('questionsSearchBox');
         msg.style.display = 'none';
         list.innerHTML = '<div class="state-loading"><div class="spinner"></div>Memuat soal...</div>';
-        list.style.display = 'block'; srch.style.display = 'block';
+        list.style.display = 'block'; 
+        srch.style.display = 'block';
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/quizzes/${quizId}`, { headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
+            const r = await fetch(`${ADMIN_API_BASE}/quizzes/${quizId}`, { 
+                headers: getStandardHeaders(true, false)
+            });
             if (!r.ok) throw new Error('Quiz tidak ditemukan');
             const quiz = await r.json();
-            if (!quiz.questions?.length) { list.innerHTML = '<p style="text-align:center;color:var(--gray);padding:20px;">Tidak ada soal di quiz ini.</p>'; return; }
+            if (!quiz.questions?.length) { 
+                list.innerHTML = '<p style="text-align:center;color:var(--gray);padding:20px;">Tidak ada soal di quiz ini.</p>'; 
+                return; 
+            }
             currentQuestions = [...quiz.questions].sort((a,b) => (a.order||0)-(b.order||0));
             renderQuestionsList(currentQuestions, quizId);
-        } catch(err) { list.innerHTML = `<p style="color:var(--error);text-align:center;padding:20px;">❌ ${err.message}</p>`; }
+        } catch(err) { 
+            list.innerHTML = `<p style="color:var(--error);text-align:center;padding:20px;">❌ ${err.message}</p>`; 
+        }
     }
 
     function renderQuestionsList(questions, quizId) {
@@ -1930,31 +2120,69 @@
         if (type === 'multiple_choice') {
             options = ['editOptA','editOptB','editOptC','editOptD'].map(id => document.getElementById(id).value.trim()).filter(Boolean);
             correct = document.getElementById('editCorrectAnswer').value;
-        } else { options = ['Benar','Salah']; correct = document.getElementById('editCorrectAnswerTF').value === 'true' ? 'Benar' : 'Salah'; }
-        const payload = { question: document.getElementById('editQuestionText').value.trim(), type, options, correct_answer: correct, points: parseInt(document.getElementById('editPointsInput').value) || 10, order: parseInt(document.getElementById('editOrderInput').value) || 0 };
-        const btn = e.target.querySelector('[type="submit"]'); btn.disabled = true; btn.textContent = '⏳ Memperbarui...';
-        const msg = document.getElementById('editMessage'); msg.style.display = 'none';
+        } else { 
+            options = ['Benar','Salah']; 
+            correct = document.getElementById('editCorrectAnswerTF').value === 'true' ? 'Benar' : 'Salah'; 
+        }
+        const payload = { 
+            question: document.getElementById('editQuestionText').value.trim(), 
+            type, 
+            options, 
+            correct_answer: correct, 
+            points: parseInt(document.getElementById('editPointsInput').value) || 10, 
+            order: parseInt(document.getElementById('editOrderInput').value) || 0 
+        };
+        const btn = e.target.querySelector('[type="submit"]'); 
+        btn.disabled = true; 
+        btn.textContent = '⏳ Memperbarui...';
+        const msg = document.getElementById('editMessage'); 
+        msg.style.display = 'none';
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/quizzes/questions/${questionId}`, { method: 'PUT', headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
-            const d = await r.json(); if (!r.ok) throw new Error(d.message || 'Gagal');
-            msg.className = 'form-msg success'; msg.textContent = '✅ ' + d.message; msg.style.display = 'block';
+            const r = await fetch(`${ADMIN_API_BASE}/admin/quizzes/questions/${questionId}`, { 
+                method: 'PUT', 
+                headers: getStandardHeaders(true, true),
+                body: JSON.stringify(payload) 
+            });
+            const d = await r.json(); 
+            if (!r.ok) throw new Error(d.message || 'Gagal');
+            msg.className = 'form-msg success'; 
+            msg.textContent = '✅ ' + d.message; 
+            msg.style.display = 'block';
             showToast('✅ Soal diperbarui!', 'success');
             setTimeout(() => { closeEditModal(); loadQuestionsToDelete(); }, 1500);
-        } catch(err) { msg.className = 'form-msg error'; msg.textContent = '❌ ' + err.message; msg.style.display = 'block'; showToast('❌ ' + err.message, 'error'); }
-        finally { btn.disabled = false; btn.textContent = '💾 Simpan Perubahan'; }
+        } catch(err) { 
+            msg.className = 'form-msg error'; 
+            msg.textContent = '❌ ' + err.message; 
+            msg.style.display = 'block'; 
+            showToast('❌ ' + err.message, 'error'); 
+        } finally { 
+            btn.disabled = false; 
+            btn.textContent = '💾 Simpan Perubahan'; 
+        }
     }
 
-    async function confirmDeleteQuestion(questionId, quizId) {
+        async function confirmDeleteQuestion(questionId, quizId) {
         if (!confirm(`Hapus soal ID ${questionId} secara permanen?`)) return;
         const msg = document.getElementById('deleteMessage');
-        msg.className = 'form-msg warning'; msg.textContent = '⏳ Menghapus...'; msg.style.display = 'block';
+        msg.className = 'form-msg warning'; 
+        msg.textContent = '⏳ Menghapus...'; 
+        msg.style.display = 'block';
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/quizzes/questions/${questionId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${api.getToken()}` } });
-            const d = await r.json(); if (!r.ok) throw new Error(d.message || 'Gagal');
-            msg.className = 'form-msg success'; msg.textContent = '✅ ' + d.message;
+            const r = await fetch(`${ADMIN_API_BASE}/admin/quizzes/questions/${questionId}`, { 
+                method: 'DELETE', 
+                headers: getStandardHeaders(true, false)
+            });
+            const d = await r.json(); 
+            if (!r.ok) throw new Error(d.message || 'Gagal');
+            msg.className = 'form-msg success'; 
+            msg.textContent = '✅ ' + d.message;
             showToast('✅ Soal dihapus!', 'success');
             setTimeout(() => loadQuestionsToDelete(), 1000);
-        } catch(err) { msg.className = 'form-msg error'; msg.textContent = '❌ ' + err.message; showToast('❌ ' + err.message, 'error'); }
+        } catch(err) { 
+            msg.className = 'form-msg error'; 
+            msg.textContent = '❌ ' + err.message; 
+            showToast('❌ ' + err.message, 'error'); 
+        }
     }
 
     async function loadQuizAttempts() {
@@ -1966,9 +2194,12 @@
             const fs = document.getElementById('filterStatus')?.value;
             if (fc) params.append('course_id', fc);
             if (fs) params.append('status', fs);
-            const r = await fetch(`${ADMIN_API_BASE}/admin/quiz-attempts?${params}`, { headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' } });
+            const r = await fetch(`${ADMIN_API_BASE}/admin/quiz-attempts?${params}`, { 
+                headers: getStandardHeaders(true, false)
+            });
             if (!r.ok) throw new Error(`HTTP ${r.status}`);
-            allQuizAttempts = await r.json(); if (!Array.isArray(allQuizAttempts)) allQuizAttempts = [];
+            allQuizAttempts = await r.json(); 
+            if (!Array.isArray(allQuizAttempts)) allQuizAttempts = [];
             const total = allQuizAttempts.length;
             const passed = allQuizAttempts.filter(a => a.passed).length;
             const avg = total > 0 ? Math.round(allQuizAttempts.reduce((s,a) => s + (a.score||0), 0) / total) : 0;
@@ -1976,7 +2207,10 @@
             document.getElementById('passedAttempts').textContent = passed;
             document.getElementById('failedAttempts').textContent = total - passed;
             document.getElementById('avgScore').textContent       = avg + '%';
-            if (!total) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--gray);">Tidak ada data</td></tr>'; return; }
+            if (!total) { 
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--gray);">Tidak ada data</td></tr>'; 
+                return; 
+            }
             tbody.innerHTML = allQuizAttempts.map((a,i) => {
                 const score = a.score || 0;
                 const ok = !!a.passed;
@@ -1991,12 +2225,16 @@
                     <td style="color:var(--gray2);">${a.created_at ? new Date(a.created_at).toLocaleDateString('id-ID') : '—'}</td>
                 </tr>`;
             }).join('');
-        } catch(err) { tbody.innerHTML = `<tr><td colspan="8" style="color:var(--error);text-align:center;padding:20px;">❌ Gagal: ${err.message}</td></tr>`; }
+        } catch(err) { 
+            tbody.innerHTML = `<tr><td colspan="8" style="color:var(--error);text-align:center;padding:20px;">❌ Gagal: ${err.message}</td></tr>`; 
+        }
     }
 
     async function loadCoursesForQuizFilter() {
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/courses`, { headers: { 'Authorization': `Bearer ${api.getToken()}` } });
+            const r = await fetch(`${ADMIN_API_BASE}/courses`, { 
+                headers: getStandardHeaders(true, false)
+            });
             if (r.ok) {
                 const courses = await r.json();
                 document.getElementById('filterCourse').innerHTML = '<option value="">Semua Course</option>' + courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
@@ -2025,11 +2263,19 @@
             let url = `${ADMIN_API_BASE}/admin/certificates?page=${page}`;
             if (status) url += `&status=${status}`;
             if (search) url += `&search=${encodeURIComponent(search)}`;
-            const r = await fetch(url, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
+            const r = await fetch(url, { 
+                headers: getStandardHeaders(true, false)
+            });
             if (!r.ok) throw new Error('Gagal memuat data');
             const data = await r.json();
-            if (data.success) { renderCertTable(data.data || []); updateCertStats(data.summary || {}); renderCertPagination(data.pagination || {}); }
-        } catch(err) { tbody.innerHTML = `<tr><td colspan="7" style="color:var(--error);text-align:center;padding:20px;">${err.message}</td></tr>`; }
+            if (data.success) { 
+                renderCertTable(data.data || []); 
+                updateCertStats(data.summary || {}); 
+                renderCertPagination(data.pagination || {}); 
+            }
+        } catch(err) { 
+            tbody.innerHTML = `<tr><td colspan="7" style="color:var(--error);text-align:center;padding:20px;">${err.message}</td></tr>`; 
+        }
     }
 
     function renderCertTable(certs) {
@@ -2080,11 +2326,18 @@
     async function approveCert(id) {
         if (!confirm('Approve sertifikat ini?')) return;
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/certificates/${id}/approve`, { method: 'POST', headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json', 'Content-Type': 'application/json' } });
+            const r = await fetch(`${ADMIN_API_BASE}/admin/certificates/${id}/approve`, { 
+                method: 'POST', 
+                headers: getStandardHeaders(true, true)
+            });
             const d = await r.json();
-            if (d.success) { showToast('✅ Sertifikat di-approve!', 'success'); loadCertificates(certCurrentPage); }
-            else showToast('❌ ' + (d.message || 'Gagal'), 'error');
-        } catch(e) { showToast('❌ Error: ' + e.message, 'error'); }
+            if (d.success) { 
+                showToast('✅ Sertifikat di-approve!', 'success'); 
+                loadCertificates(certCurrentPage); 
+            } else showToast('❌ ' + (d.message || 'Gagal'), 'error');
+        } catch(e) { 
+            showToast('❌ Error: ' + e.message, 'error'); 
+        }
     }
 
     function openRejectModal(id) {
@@ -2099,13 +2352,25 @@
 
     async function confirmReject() {
         const reason = document.getElementById('rejectReason').value.trim();
-        if (!reason) { showToast('⚠️ Alasan wajib diisi', 'error'); return; }
+        if (!reason) { 
+            showToast('⚠️ Alasan wajib diisi', 'error'); 
+            return; 
+        }
         try {
-            const r = await fetch(`${ADMIN_API_BASE}/admin/certificates/${currentRejectId}/reject`, { method: 'POST', headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify({ reason }) });
+            const r = await fetch(`${ADMIN_API_BASE}/admin/certificates/${currentRejectId}/reject`, { 
+                method: 'POST', 
+                headers: getStandardHeaders(true, true),
+                body: JSON.stringify({ reason }) 
+            });
             const d = await r.json();
-            if (d.success) { showToast('✅ Sertifikat di-reject', 'success'); closeRejectModal(); loadCertificates(certCurrentPage); }
-            else showToast('❌ ' + (d.message || 'Gagal'), 'error');
-        } catch(e) { showToast('❌ Error: ' + e.message, 'error'); }
+            if (d.success) { 
+                showToast('✅ Sertifikat di-reject', 'success'); 
+                closeRejectModal(); 
+                loadCertificates(certCurrentPage); 
+            } else showToast('❌ ' + (d.message || 'Gagal'), 'error');
+        } catch(e) { 
+            showToast('❌ Error: ' + e.message, 'error'); 
+        }
     }
 
     async function openManualCertModal() {
@@ -2123,13 +2388,17 @@
     async function loadUsersForCertModal() {
         const courseId = document.getElementById('manualCertCourse').value;
         const select = document.getElementById('manualCertUser');
-        if (!courseId) { select.innerHTML = '<option value="">— Pilih course dulu —</option>'; select.disabled = true; return; }
+        if (!courseId) { 
+            select.innerHTML = '<option value="">— Pilih course dulu —</option>'; 
+            select.disabled = true; 
+            return; 
+        }
         select.innerHTML = '<option value="">— Memuat students... —</option>';
         select.disabled = true;
         try {
             const r = await fetch(`${ADMIN_API_BASE}/admin/courses/${courseId}/enrolled-students`, {
                 cache: 'no-store',
-                headers: { 'Authorization': `Bearer ${api.getToken()}`, 'Accept': 'application/json' }
+                headers: getStandardHeaders(true, false)
             });
             const data = await r.json();
             const students = data.data || [];
@@ -2137,7 +2406,9 @@
                 ? '<option value="">— Pilih User —</option>' + students.map(u => `<option value="${u.id}">${escapeHtml(u.name)} (${escapeHtml(u.email)})</option>`).join('')
                 : '<option value="">— Semua student di course ini sudah punya sertifikat —</option>';
             select.disabled = false;
-        } catch(e) { select.innerHTML = '<option value="">— Error —</option>'; }
+        } catch(e) { 
+            select.innerHTML = '<option value="">— Error —</option>'; 
+        }
     }
 
     async function loadCoursesForCertModal() {
@@ -2150,7 +2421,7 @@
         
         try {
             const r = await fetch(`${ADMIN_API_BASE}/courses`, { 
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } 
+                headers: getStandardHeaders(true, false)
             });
             if (r.ok) {
                 const courses = await r.json();
@@ -2198,11 +2469,7 @@
             
             const r = await fetch(`${ADMIN_API_BASE}/admin/certificates`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${api.getToken()}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
+                headers: getStandardHeaders(true, true),
                 body: JSON.stringify(payload)
             });
             
