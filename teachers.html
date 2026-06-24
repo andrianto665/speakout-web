@@ -6,13 +6,13 @@
     <title>Teachers - SpeakOut English Course</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#8B2C98">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SpeakOut">
-    <link rel="apple-touch-icon" href="/images/icon-192.png">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
 
     <style>
         /* ===== RESET & ROOT ===== */
@@ -469,7 +469,7 @@
         </div>
     </footer>
 
-    <script src="/js/api.js"></script>
+    <script src="js/api.js"></script>
     <script>
         /* ===== SPLASH ===== */
         window.addEventListener('load', () => {
@@ -519,7 +519,8 @@
         });
 
         /* ===== TEACHERS DATA ===== */
-        const TEACHERS_API = 'http://127.0.0.1:8000/api/teachers';
+        // ✅ FIX: Gunakan API_BASE dari api.js
+        const TEACHERS_API = `${API_BASE}/teachers`;
 
         const defaultTeachers = [
             { id: 1, name: 'Martina Wati', role: 'Tutor SpeakOut', photo: 'assets/teachers/martinawati.png', expertise: ['Speaking', 'Grammar', 'TOEFL'] },
@@ -535,7 +536,12 @@
             const error = document.getElementById('errorState');
 
             try {
-                const response = await fetch(TEACHERS_API, { headers: { 'Accept': 'application/json' } });
+                const response = await fetch(TEACHERS_API, { 
+                    headers: { 
+                        'Accept': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    } 
+                });
                 let teachers = response.ok ? await response.json() : defaultTeachers;
                 if (!teachers.length) teachers = defaultTeachers;
 
@@ -562,11 +568,14 @@
                 const initial = fullName.charAt(0).toUpperCase();
                 const expertise = teacher.expertise || [];
 
+                // ✅ FIX: Gunakan api.getAssetUrl() untuk gambar
+                const photoUrl = api.getAssetUrl(photoPath);
+
                 const card = document.createElement('div');
                 card.className = 'teacher-card';
                 card.innerHTML = `
                     <div class="teacher-photo-container">
-                        <img src="http://127.0.0.1:8000/${photoPath}"
+                        <img src="${photoUrl}"
                              alt="${esc(fullName)}"
                              class="teacher-photo"
                              onerror="this.outerHTML='<div class=\\'teacher-photo-fallback\\'>${initial}</div>'">
@@ -598,7 +607,7 @@
         });
     </script>
     <!-- ✅ TAMBAHKAN INI: Favorites & Notifications -->
-    <script src="/js/favorites.js"></script>
-    <script src="/js/notification.js"></script>
+    <script src="js/favorites.js"></script>
+    <script src="js/notification.js"></script>
 </body>
 </html>

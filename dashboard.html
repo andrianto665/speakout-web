@@ -694,7 +694,7 @@
         </div>
     </footer>
 
-    <script src="js/api.js?v=2.3.0"></script>
+    <script src="js/api.js?v=2.4.0"></script>
     <script>
     /* ===== HEADER ===== */
     function toggleDropdown() {
@@ -766,10 +766,6 @@
                 enrolled.style.display = 'block';
                 renderEnrolledCourses(data.in_progress_courses);
             } else {
-                // Belum ada course yang di-enroll-kan admin untuk siswa ini.
-                // Self-enroll / "Unlock More Courses" sengaja dinonaktifkan:
-                // siswa hanya dapat akses course setelah pembayaran
-                // dikonfirmasi dan admin yang melakukan enrollment manual.
                 empty.style.display = 'block';
             }
 
@@ -809,11 +805,14 @@
                     </div>
                 </div>` : '';
 
+            // ✅ FIX: Gunakan api.getAssetUrl() untuk thumbnail
+            const thumbnailUrl = course.thumbnail ? api.getAssetUrl(course.thumbnail) : '';
+
             const card = document.createElement('div');
             card.className = `course-card ${statusClass}`;
             card.innerHTML = `
                 <div class="course-thumb">
-                    ${course.thumbnail ? `<img src="http://127.0.0.1:8000/${course.thumbnail}" alt="${esc(course.title)}" onerror="this.style.display='none'">` : '📚'}
+                    ${thumbnailUrl ? `<img src="${thumbnailUrl}" alt="${esc(course.title)}" onerror="this.style.display='none'">` : '📚'}
                     <span class="course-badge ${statusClass}">${badgeText}</span>
                 </div>
                 <div class="course-body">
@@ -845,8 +844,14 @@
         try {
             const token = api.getToken();
             if (!token) return;
-            const res = await fetch('http://127.0.0.1:8000/api/user/enrolled-courses', {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            
+            // ✅ FIX: Gunakan API_BASE dari api.js
+            const res = await fetch(`${API_BASE}/user/enrolled-courses`, {
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                }
             });
             if (!res.ok) return;
             const courses   = await res.json();
@@ -855,8 +860,12 @@
             const certificates = [];
             for (const course of completed) {
                 try {
-                    const r = await fetch(`http://127.0.0.1:8000/api/user/certificates/${course.id}/status`, {
-                        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                    const r = await fetch(`${API_BASE}/user/certificates/${course.id}/status`, {
+                        headers: { 
+                            'Authorization': `Bearer ${token}`, 
+                            'Accept': 'application/json',
+                            'ngrok-skip-browser-warning': 'true'
+                        }
                     });
                     if (r.ok) {
                         const d = await r.json();
@@ -928,8 +937,14 @@
         try {
             const token = api.getToken();
             if (!token) return;
-            const res = await fetch('http://127.0.0.1:8000/api/user/gradebook', {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            
+            // ✅ FIX: Gunakan API_BASE dari api.js
+            const res = await fetch(`${API_BASE}/user/gradebook`, {
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                }
             });
             if (!res.ok) return;
             const data = await res.json();
@@ -1010,20 +1025,19 @@
                 btn.disabled = true;
             }
 
-            // Try to download
-            const response = await fetch(`http://127.0.0.1:8000/api/user/certificates/${courseId}/download`, {
+            // ✅ FIX: Gunakan API_BASE dan header yang benar untuk PDF
+            const response = await fetch(`${API_BASE}/user/certificates/${courseId}/download`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/pdf'
+                    'Accept': 'application/pdf',
+                    'ngrok-skip-browser-warning': 'true'
                 }
             });
 
-            // Check if response is PDF
             const contentType = response.headers.get('content-type');
 
             if (!response.ok) {
-                // Try to get error message
                 const errorData = await response.json().catch(() => ({}));
                 throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
             }
@@ -1032,22 +1046,16 @@
                 throw new Error('Response bukan PDF. Kemungkinan error dari server.');
             }
 
-            // Get blob
             const blob = await response.blob();
-
-            // Create download link
-            const url = window.URL.createObjectURL(blob);
+            const url  = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = `Certificate-${courseId}.pdf`;
             document.body.appendChild(link);
             link.click();
-
-            // Cleanup
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
 
-            // Success message
             if (btn) {
                 btn.textContent = '✅ Downloaded!';
                 setTimeout(() => {
