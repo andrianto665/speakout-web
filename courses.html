@@ -6,13 +6,13 @@
     <title>Courses - SpeakOut English Course</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#8B2C98">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SpeakOut">
-    <link rel="apple-touch-icon" href="/images/icon-192.png">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
 
     <style>
         /* ===== RESET & ROOT ===== */
@@ -565,7 +565,7 @@
         </div>
     </footer>
 
-    <script src="/js/api.js"></script>
+    <script src="js/api.js"></script>
     <script>
         /* ===== SPLASH ===== */
         window.addEventListener('load', () => {
@@ -622,7 +622,15 @@
             "English For Society": "englishforsociety.png",
             "English For Professional": "englishforprofessional.png"
         };
-        const BASE_IMAGE_URL = 'http://127.0.0.1:8000/assets/courses/';
+        
+        // ✅ PERBAIKAN: Gunakan API_BASE dari api.js (otomatis detect localhost/production)
+        const getBaseUrl = () => {
+            if (typeof API_BASE !== 'undefined') {
+                return API_BASE.replace('/api', '');
+            }
+            return 'http://127.0.0.1:8000';
+        };
+        
         let allCourses = [];
 
         const coursesList = document.getElementById('coursesList');
@@ -631,8 +639,12 @@
         /* ===== LOAD ===== */
         async function loadCourses() {
             try {
-                const res = await fetch('http://127.0.0.1:8000/api/courses', {
-                    headers: { 'Accept': 'application/json' }
+                // ✅ PERBAIKAN: Gunakan API_BASE dari api.js
+                const res = await fetch(`${API_BASE}/courses`, {
+                    headers: { 
+                        'Accept': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    }
                 });
                 if (!res.ok) throw new Error('Failed');
                 allCourses = await res.json();
@@ -691,10 +703,13 @@
         /* ===== RENDER ===== */
         function renderCourses(courses) {
             coursesList.innerHTML = '';
+            const baseUrl = getBaseUrl();
+            
             courses.forEach(course => {
+                // ✅ PERBAIKAN: Gunakan baseUrl dinamis untuk gambar
                 const imgUrl = course.thumbnail?.trim()
-                    ? `http://127.0.0.1:8000/${course.thumbnail}`
-                    : BASE_IMAGE_URL + (courseImages[course.title] || 'default.png');
+                    ? `${baseUrl}/${course.thumbnail}`
+                    : `${baseUrl}/assets/courses/` + (courseImages[course.title] || 'default.png');
                 const hasThumbnail = !!course.thumbnail?.trim();
 
                 const isEnrolled = typeof api !== 'undefined' && api.isLoggedIn() && course.is_enrolled;
@@ -776,7 +791,7 @@
         });
     </script>
     <!-- ✅ TAMBAHKAN INI: Favorites & Notifications -->
-    <script src="/js/favorites.js"></script>
-    <script src="/js/notification.js"></script>
+    <script src="js/favorites.js"></script>
+    <script src="js/notification.js"></script>
 </body>
 </html>
