@@ -4,19 +4,36 @@
  * ✅ Compatible dengan auth.js, dashboard.js, course-details.js, courses.js
  * 
  * @module api
- * @version 2.3.0 - Fixed duplicate login, added clearUserData
+ * @version 2.4.0 - Fixed downloadCertificate, added 401 handler, added getAssetUrl helper
  */
 
 // ============================================================================
 // ⚙️ CONFIGURATION
 // ============================================================================
 
+/**
+ * 🎯 Auto-detect API Base URL berdasarkan environment
+ * - Localhost development: http://127.0.0.1:8000/api
+ * - GitHub Pages production: https://xxx.ngrok-free.dev/api
+ */
 const getApiBaseUrl = () => {
-    return 'https://sliding-famished-scoreless.ngrok-free.dev/api';
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.protocol === 'file:';
+    
+    if (isLocalhost) {
+        console.log('🔧 Development mode: Using localhost backend');
+        return 'http://127.0.0.1:8000/api';
+    } else {
+        console.log('🚀 Production mode: Using Ngrok backend');
+        return 'https://sliding-famished-scoreless.ngrok-free.dev/api';
+    }
 };
 
 const API_BASE = getApiBaseUrl();
 const API_TIMEOUT = 15000;
+
+console.log(`📡 API Base URL: ${API_BASE}`);
 
 // ============================================================================
 // 🔐 API SERVICE OBJECT
@@ -37,24 +54,18 @@ const api = {
         localStorage.setItem('speakout_token', token);
     },
     
-    /**
-     * ✅ Clear token & user data (basic logout)
-     */
     clearToken() {
         localStorage.removeItem('speakout_token');
         localStorage.removeItem('speakout_user');
     },
     
     /**
-     * ✅ NEW: Clear SEMUA data user termasuk course progress
-     * Dipanggil saat login user baru atau logout
+     * ✅ Clear SEMUA data user termasuk course progress
      */
     clearUserData() {
-        // 1. Hapus token & user info
         localStorage.removeItem('speakout_token');
         localStorage.removeItem('speakout_user');
         
-        // 2. Hapus semua course progress (key mengandung '_completed')
         const keysToRemove = [];
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -84,7 +95,6 @@ const api = {
         }
     },
 
-    // ← TAMBAHKAN INI:
     setUser(userData) {
         if (!userData) return;
         localStorage.setItem('speakout_user', JSON.stringify(userData));
@@ -101,26 +111,74 @@ const api = {
     },
     
     // =========================================================================
+    // 🆕 HELPER: Get Asset URL (untuk gambar, thumbnail, dll)
+    // =========================================================================
+    
+    /**
+     * 🆕 Helper untuk mendapatkan URL asset (gambar, thumbnail, dll)
+     * Contoh: api.getAssetUrl('assets/courses/english.png')
+     * Hasil: 'http://127.0.0.1:8000/assets/courses/english.png' (localhost)
+     *        'https://xxx.ngrok-free.dev/assets/courses/english.png' (production)
+     */
+    getAssetUrl(path) {
+        if (!path) return '';
+        // Hapus /api dari API_BASE untuk mendapatkan base URL backend
+        const baseUrl = API_BASE.replace('/api', '');
+        // Hapus leading slash jika ada
+        const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+        return `${baseUrl}/${cleanPath}`;
+    },
+    
+    // =========================================================================
     // HTTP HELPER
     // =========================================================================
     
+    /**
+     * ✅ IMPROVED: HTTP helper dengan auto-redirect 401
+     */
     async _fetchWithTimeout(url, options = {}) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
         
         try {
+            // ✅ FIX: Hanya tambahkan Content-Type jika ada body
+            const defaultHeaders = {
+                'Accept': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
+            };
+            
+            // Hanya tambahkan Content-Type jika ada body (POST/PUT/PATCH)
+            if (options.body) {
+                defaultHeaders['Content-Type'] = 'application/json';
+            }
+            
             const response = await fetch(url, {
                 ...options,
                 cache: 'no-store',
                 signal: controller.signal,
                 headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'ngrok-skip-browser-warning': 'true', // ← TAMBAHKAN INI!
+                    ...defaultHeaders,
                     ...options.headers,
                 },
             });
             clearTimeout(timeoutId);
+            
+            // ✅ NEW: Auto-redirect ke login jika 401 Unauthorized
+            if (response.status === 401) {
+                console.warn('⚠️ Token expired or invalid. Redirecting to login...');
+                this.clearUserData();
+                
+                const currentPage = window.location.pathname.split('/').pop();
+                const publicPages = ['index.html', 'login.html', 'register.html', 'courses.html', 'teachers.html', ''];
+                
+                if (!publicPages.includes(currentPage)) {
+                    alert('Sesi Anda telah berakhir. Silakan login kembali.');
+                    window.location.href = 'login.html';
+                }
+                
+                throw new Error('Unauthorized. Please login again.');
+            }
+            
             return response;
             
         } catch (error) {
@@ -137,32 +195,29 @@ const api = {
     // =========================================================================
     
     register: async function(name, email, password, courseId = null) {
-    try {
-        const body = {
-            name,
-            email,
-            password,
-            password_confirmation: password,
-        };
-        if (courseId) body.course_id = courseId;
+        try {
+            const body = {
+                name,
+                email,
+                password,
+                password_confirmation: password,
+            };
+            if (courseId) body.course_id = courseId;
 
-        const response = await this._fetchWithTimeout(`${API_BASE}/auth/register`, {
-            method: 'POST',
-            body: JSON.stringify(body)
-        });
+            const response = await this._fetchWithTimeout(`${API_BASE}/auth/register`, {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
 
-        const data = await response.json();
-        return { success: response.ok, data, status: response.status };
+            const data = await response.json();
+            return { success: response.ok, data, status: response.status };
 
-    } catch (error) {
-        console.error('❌ Register API Error:', error);
-        return { success: false, data: { message: error.message || 'Network error.' }, status: 0 };
-    }
-},
+        } catch (error) {
+            console.error('❌ Register API Error:', error);
+            return { success: false, data: { message: error.message || 'Network error.' }, status: 0 };
+        }
+    },
     
-    /**
-     * ✅ FIXED: Login dengan clearUserData untuk mencegah data user lama terbaca
-     */
     async login(email, password) {
         try {
             const response = await this._fetchWithTimeout(`${API_BASE}/auth/login`, {
@@ -173,13 +228,9 @@ const api = {
             const data = await response.json();
             
             if (response.ok && data.token) {
-                // ✅ PENTING: Clear SEMUA data user lama sebelum simpan user baru
                 this.clearUserData();
-                
-                // Simpan data user baru
                 localStorage.setItem('speakout_token', data.token);
                 localStorage.setItem('speakout_user', JSON.stringify(data.user));
-                
                 return { success: true, data };
             }
             
@@ -213,7 +264,6 @@ const api = {
             }
         }
         
-        // ✅ Clear semua data termasuk progress
         this.clearUserData();
         window.location.href = 'login.html';
     },
@@ -489,6 +539,9 @@ const api = {
     // 📄 CERTIFICATE METHODS
     // =========================================================================
     
+    /**
+     * ✅ FIXED: Download certificate dengan header yang benar untuk PDF
+     */
     async downloadCertificate(courseId) {
         const token = this.getToken();
         
@@ -497,16 +550,32 @@ const api = {
         }
         
         try {
-            const response = await this._fetchWithTimeout(
+            // ✅ FIX: Gunakan fetch langsung, bukan _fetchWithTimeout
+            // karena kita butuh header khusus untuk PDF
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
+            
+            const response = await fetch(
                 `${API_BASE}/user/certificates/${courseId}/download`,
                 {
                     method: 'GET',
+                    signal: controller.signal,
+                    cache: 'no-store',
                     headers: {
                         'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
+                        'Accept': 'application/pdf',
+                        'ngrok-skip-browser-warning': 'true'
                     }
                 }
             );
+            
+            clearTimeout(timeoutId);
+            
+            if (response.status === 401) {
+                this.clearUserData();
+                window.location.href = 'login.html';
+                throw new Error('Unauthorized. Please login again.');
+            }
             
             if (!response.ok) {
                 if (response.status === 404) {
