@@ -715,6 +715,12 @@
             <div class="sidebar-item" data-section="quiz-monitoring">
                 <span class="s-icon">📝</span> Quiz Monitoring
             </div>
+
+            <!-- ✅ TAMBAHKAN INI SETELAHNYA -->
+            <div class="sidebar-label">Keuangan</div>
+            <div class="sidebar-item" data-section="payments">
+                <span class="s-icon">💰</span> Verifikasi Pembayaran
+            </div>
             
             <div class="sidebar-label">Akun</div>
             <a href="profile.html" class="sidebar-item">
@@ -1044,8 +1050,81 @@
                 </div>
             </div>
 
-        </main>
+    <!-- ✅ PAYMENT VERIFICATION SECTION -->
+    <div id="payments" class="section">
+        <div class="page-head">
+            <div class="page-eyebrow">Keuangan</div>
+            <h1 class="page-title">Verifikasi <em>Pembayaran</em></h1>
+            <p class="page-desc">Approve atau reject bukti pembayaran dari siswa</p>
+        </div>
+
+        <!-- Payment Stats -->
+        <div class="stats-grid" style="margin-bottom:24px;">
+            <div class="stat-card orange">
+                <div class="stat-label">Pending</div>
+                <div class="stat-value" id="statPendingPayments">0</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">Approved</div>
+                <div class="stat-value" id="statApprovedPayments">0</div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-value" id="statTotalRevenue" style="font-size:24px;">Rp 0</div>
+            </div>
+            <div class="stat-card purple">
+                <div class="stat-label">Total Transactions</div>
+                <div class="stat-value" id="statTotalTransactions">0</div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="fb-item">
+                <span class="filter-label">Status</span>
+                <select id="paymentFilterStatus" class="filter-select">
+                    <option value="pending">⏳ Pending</option>
+                    <option value="paid">✅ Approved</option>
+                    <option value="">Semua</option>
+                </select>
+            </div>
+            <div class="fb-item grow">
+                <span class="filter-label">Cari</span>
+                <input type="text" id="paymentSearchInput" class="filter-input" placeholder="Nama siswa atau course...">
+            </div>
+            <div class="fb-item" style="justify-content:flex-end;">
+                <button class="btn btn-primary" onclick="loadPayments()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- Payment Table -->
+        <div class="panel">
+            <div class="panel-head">
+                <span class="panel-title">Daftar Pembayaran</span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Siswa</th>
+                            <th>Course</th>
+                            <th>Jumlah</th>
+                            <th>Metode</th>
+                            <th>Tanggal</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsTableBody">
+                        <tr><td colspan="8"><div class="state-loading"><div class="spinner"></div></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+            </main>
+        </div>
 
     <!-- ===== MODALS ===== -->
 
@@ -1311,6 +1390,47 @@
         </div>
     </div>
 
+    <!-- Payment Proof Modal -->
+<div id="paymentProofModal" class="modal">
+    <div class="modal-box" style="max-width:600px;">
+        <div class="modal-head">
+            <h3 class="modal-title">📄 Bukti Pembayaran</h3>
+            <button class="modal-close" onclick="closePaymentProofModal()">&times;</button>
+        </div>
+        <div class="modal-content" style="text-align:center;">
+            <div id="paymentProofImage" style="margin-bottom:20px;">
+                <div class="state-loading"><div class="spinner"></div>Memuat gambar...</div>
+            </div>
+            <div id="paymentProofInfo" style="text-align:left; background:rgba(255,255,255,0.03); border-radius:10px; padding:16px;">
+                <!-- Info akan diisi via JS -->
+            </div>
+        </div>
+        <div class="modal-actions" id="paymentProofActions">
+            <!-- Actions akan diisi via JS -->
+        </div>
+    </div>
+</div>
+
+    <!-- Reject Payment Modal -->
+    <div id="rejectPaymentModal" class="modal">
+        <div class="modal-box" style="max-width:480px;">
+            <div class="modal-head">
+                <h3 class="modal-title">❌ Tolak Pembayaran</h3>
+                <button class="modal-close" onclick="closeRejectPaymentModal()">&times;</button>
+            </div>
+            <div class="modal-content">
+                <p style="font-size:14px;color:var(--gray);margin-bottom:16px;">Berikan alasan penolakan:</p>
+                <div class="form-group">
+                    <textarea id="rejectPaymentReason" class="form-textarea" rows="4" placeholder="Contoh: Bukti transfer tidak jelas, nominal tidak sesuai..."></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel-modal" onclick="closeRejectPaymentModal()">Batal</button>
+                <button type="button" class="btn btn-danger" onclick="confirmRejectPayment()">✓ Tolak Pembayaran</button>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <script src="js/api.js?v=2.3.0"></script>
@@ -1383,6 +1503,7 @@
                 if (s === 'certificates')    loadCertificates(1);
                 if (s === 'quiz-questions')  loadQuizzesForQuestionForm();
                 if (s === 'quiz-monitoring') { loadQuizAttempts(); loadCoursesForQuizFilter(); }
+                if (s === 'payments') { loadPayments(); }
                 if (s === 'users')           loadUsers();
             });
         });
@@ -2505,6 +2626,278 @@
             btn.textContent = originalText;
         }
     }
+
+    // ============================================
+    // 💰 PAYMENT VERIFICATION
+    // ============================================
+
+    let allPayments = [];
+    let currentPaymentId = null;
+    let currentPaymentData = null;
+
+    // Load payments when section is activated
+    async function loadPayments() {
+        const tbody = document.getElementById('paymentsTableBody');
+        const status = document.getElementById('paymentFilterStatus')?.value || '';
+        const search = document.getElementById('paymentSearchInput')?.value || '';
+        
+        tbody.innerHTML = '<tr><td colspan="8"><div class="state-loading"><div class="spinner"></div>Memuat data...</div></td></tr>';
+        
+        try {
+            let url = `${ADMIN_API_BASE}/admin/payments`;
+            const params = new URLSearchParams();
+            if (status) params.append('status', status);
+            if (search) params.append('search', search);
+            
+            if (params.toString()) url += `?${params.toString()}`;
+            
+            const r = await fetch(url, { 
+                headers: getStandardHeaders(true, false)
+            });
+            
+            if (!r.ok) throw new Error('Gagal memuat data');
+            
+            const data = await r.json();
+            allPayments = data.data || [];
+            
+            renderPaymentsTable(allPayments);
+            updatePaymentStats(data.summary || {});
+            
+        } catch(err) {
+            tbody.innerHTML = `<tr><td colspan="8" style="color:var(--error);text-align:center;padding:20px;">❌ ${err.message}</td></tr>`;
+        }
+    }
+
+    function renderPaymentsTable(payments) {
+        const tbody = document.getElementById('paymentsTableBody');
+        
+        if (!payments.length) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--gray);">Tidak ada data pembayaran</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = payments.map((p, i) => {
+            const statusBadge = {
+                'pending': '<span class="badge badge-warning">⏳ Pending</span>',
+                'paid': '<span class="badge badge-success">✅ Approved</span>',
+                'rejected': '<span class="badge badge-danger">❌ Rejected</span>'
+            }[p.payment_status] || '<span class="badge badge-gray">Unknown</span>';
+            
+            const methodLabel = {
+                'dana': '💙 DANA',
+                'gopay': '💚 GoPay',
+                'qris': '📱 QRIS',
+                'bank_transfer': '🏦 Transfer Bank'
+            }[p.payment_method] || p.payment_method || '-';
+            
+            const amount = p.amount_paid ? `Rp ${parseInt(p.amount_paid).toLocaleString('id-ID')}` : '-';
+            const date = p.created_at ? new Date(p.created_at).toLocaleDateString('id-ID') : '-';
+            
+            let actions = '';
+            if (p.payment_status === 'pending') {
+                actions = `
+                    <button class="btn btn-info btn-sm" onclick="viewPaymentProof(${p.id})">👁️ Lihat</button>
+                    <button class="btn btn-success btn-sm" onclick="approvePayment(${p.id})">✓ Approve</button>
+                    <button class="btn btn-danger btn-sm" onclick="openRejectPaymentModal(${p.id})">✗ Reject</button>
+                `;
+            } else if (p.payment_status === 'rejected') {
+                actions = `<span style="font-size:12px;color:var(--gray2);" title="${escapeHtml(p.rejection_reason || '')}">${escapeHtml((p.rejection_reason || '').substring(0, 30))}${(p.rejection_reason || '').length > 30 ? '...' : ''}</span>`;
+            } else {
+                actions = `<button class="btn btn-info btn-sm" onclick="viewPaymentProof(${p.id})">👁️ Lihat</button>`;
+            }
+            
+            return `<tr>
+                <td style="color:var(--gray2);">${i + 1}</td>
+                <td>
+                    <strong style="color:var(--white);">${escapeHtml(p.user?.name || '-')}</strong><br>
+                    <small style="color:var(--gray2);">${escapeHtml(p.user?.email || '')}</small>
+                </td>
+                <td>${escapeHtml(p.course?.title || '-')}</td>
+                <td><strong style="color:var(--purple-light);">${amount}</strong></td>
+                <td>${methodLabel}</td>
+                <td style="color:var(--gray2);">${date}</td>
+                <td>${statusBadge}</td>
+                <td>${actions}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    function updatePaymentStats(summary) {
+        document.getElementById('statPendingPayments').textContent = summary.pending || 0;
+        document.getElementById('statApprovedPayments').textContent = summary.paid || 0;
+        document.getElementById('statTotalTransactions').textContent = summary.total || 0;
+        
+        const revenue = summary.total_revenue || 0;
+        document.getElementById('statTotalRevenue').textContent = `Rp ${parseInt(revenue).toLocaleString('id-ID')}`;
+    }
+
+    // View payment proof
+    async function viewPaymentProof(paymentId) {
+        currentPaymentId = paymentId;
+        const payment = allPayments.find(p => p.id === paymentId);
+        
+        if (!payment) {
+            showToast('❌ Data pembayaran tidak ditemukan', 'error');
+            return;
+        }
+        
+        currentPaymentData = payment;
+        
+        // Show modal
+        document.getElementById('paymentProofModal').classList.add('active');
+        
+        // Load image
+        const imageContainer = document.getElementById('paymentProofImage');
+        if (payment.payment_proof) {
+            const imageUrl = payment.payment_proof.startsWith('http') 
+                ? payment.payment_proof 
+                : `${ADMIN_API_BASE.replace('/api', '')}/storage/${payment.payment_proof}`;
+            
+            imageContainer.innerHTML = `<img src="${imageUrl}" style="max-width:100%; border-radius:10px; border:1px solid rgba(255,255,255,0.1);" alt="Bukti Pembayaran">`;
+        } else {
+            imageContainer.innerHTML = '<div style="padding:40px; color:var(--gray);">📭 Tidak ada bukti transfer</div>';
+        }
+        
+        // Show info
+        const infoContainer = document.getElementById('paymentProofInfo');
+        const methodLabel = {
+            'dana': '💙 DANA',
+            'gopay': '💚 GoPay',
+            'qris': '📱 QRIS',
+            'bank_transfer': '🏦 Transfer Bank'
+        }[payment.payment_method] || payment.payment_method || '-';
+        
+        infoContainer.innerHTML = `
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <div style="font-size:11px; color:var(--gray2); text-transform:uppercase; margin-bottom:4px;">Siswa</div>
+                    <div style="font-size:14px; font-weight:600; color:var(--white);">${escapeHtml(payment.user?.name || '-')}</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; color:var(--gray2); text-transform:uppercase; margin-bottom:4px;">Course</div>
+                    <div style="font-size:14px; font-weight:600; color:var(--white);">${escapeHtml(payment.course?.title || '-')}</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; color:var(--gray2); text-transform:uppercase; margin-bottom:4px;">Jumlah</div>
+                    <div style="font-size:14px; font-weight:600; color:var(--purple-light);">Rp ${parseInt(payment.amount_paid || 0).toLocaleString('id-ID')}</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; color:var(--gray2); text-transform:uppercase; margin-bottom:4px;">Metode</div>
+                    <div style="font-size:14px; font-weight:600; color:var(--white);">${methodLabel}</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; color:var(--gray2); text-transform:uppercase; margin-bottom:4px;">Tanggal Upload</div>
+                    <div style="font-size:14px; color:var(--white);">${payment.created_at ? new Date(payment.created_at).toLocaleString('id-ID') : '-'}</div>
+                </div>
+                <div>
+                    <div style="font-size:11px; color:var(--gray2); text-transform:uppercase; margin-bottom:4px;">Status</div>
+                    <div style="font-size:14px; font-weight:600;">
+                        ${payment.payment_status === 'pending' ? '⏳ Pending' : payment.payment_status === 'paid' ? '✅ Approved' : '❌ Rejected'}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Show actions based on status
+        const actionsContainer = document.getElementById('paymentProofActions');
+        if (payment.payment_status === 'pending') {
+            actionsContainer.innerHTML = `
+                <button type="button" class="btn-cancel-modal" onclick="closePaymentProofModal()">Tutup</button>
+                <button type="button" class="btn btn-success" onclick="approvePayment(${payment.id}); closePaymentProofModal();">✓ Approve</button>
+                <button type="button" class="btn btn-danger" onclick="closePaymentProofModal(); openRejectPaymentModal(${payment.id});">✗ Reject</button>
+            `;
+        } else {
+            actionsContainer.innerHTML = `<button type="button" class="btn-cancel-modal" onclick="closePaymentProofModal()">Tutup</button>`;
+        }
+    }
+
+    function closePaymentProofModal() {
+        document.getElementById('paymentProofModal').classList.remove('active');
+        currentPaymentId = null;
+        currentPaymentData = null;
+    }
+
+    // Approve payment
+    async function approvePayment(paymentId) {
+        if (!confirm('Approve pembayaran ini? Siswa akan langsung bisa akses course.')) return;
+        
+        try {
+            const r = await fetch(`${ADMIN_API_BASE}/admin/payments/${paymentId}/approve`, {
+                method: 'POST',
+                headers: getStandardHeaders(true, true)
+            });
+            
+            const data = await r.json();
+            
+            if (data.success) {
+                showToast('✅ Pembayaran di-approve! Siswa bisa akses course.', 'success');
+                loadPayments();
+            } else {
+                showToast('❌ ' + (data.message || 'Gagal approve'), 'error');
+            }
+        } catch(err) {
+            showToast('❌ Error: ' + err.message, 'error');
+        }
+    }
+
+    // Reject payment
+    function openRejectPaymentModal(paymentId) {
+        currentPaymentId = paymentId;
+        document.getElementById('rejectPaymentReason').value = '';
+        document.getElementById('rejectPaymentModal').classList.add('active');
+    }
+
+    function closeRejectPaymentModal() {
+        document.getElementById('rejectPaymentModal').classList.remove('active');
+        currentPaymentId = null;
+    }
+
+    async function confirmRejectPayment() {
+        const reason = document.getElementById('rejectPaymentReason').value.trim();
+        
+        if (!reason) {
+            showToast('⚠️ Alasan wajib diisi', 'error');
+            return;
+        }
+        
+        try {
+            const r = await fetch(`${ADMIN_API_BASE}/admin/payments/${currentPaymentId}/reject`, {
+                method: 'POST',
+                headers: getStandardHeaders(true, true),
+                body: JSON.stringify({ reason })
+            });
+            
+            const data = await r.json();
+            
+            if (data.success) {
+                showToast('✅ Pembayaran di-reject', 'success');
+                closeRejectPaymentModal();
+                loadPayments();
+            } else {
+                showToast('❌ ' + (data.message || 'Gagal reject'), 'error');
+            }
+        } catch(err) {
+            showToast('❌ Error: ' + err.message, 'error');
+        }
+    }
+
+    // Setup event listeners for payment section
+    function setupPaymentListeners() {
+        document.getElementById('paymentFilterStatus')?.addEventListener('change', loadPayments);
+        document.getElementById('paymentSearchInput')?.addEventListener('input', debounce(() => {
+            loadPayments();
+        }, 500));
+        
+        // Setup modal close
+        setupModalClose('paymentProofModal');
+        setupModalClose('rejectPaymentModal');
+    }
+
+    // Call setup when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        setupPaymentListeners();
+    });
+
     </script>
 </body>
 </html>

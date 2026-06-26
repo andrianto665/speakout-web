@@ -537,9 +537,16 @@
 
             <div class="form-group">
                 <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword"
+                <input type="password" id="confirmPassword" name="password_confirmation"
                     placeholder="Ulangi password" required autocomplete="new-password">
             </div>
+
+            <!-- ✅ TAMBAH INI: Error message div -->
+            <div id="errorMessage" style="display:none; padding:12px 16px; margin-bottom:16px; 
+                background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); 
+                border-radius:8px; color:#ef4444; font-size:13px;">
+            </div>
+
             <div id="selectedCourse" style="display:none;
                 background:rgba(139,44,152,0.1);border:1px solid rgba(139,44,152,0.3);
                 border-radius:10px;padding:12px 16px;margin-bottom:16px;
@@ -702,19 +709,25 @@
             const confirmPassword = document.getElementById('confirmPassword')?.value;
             const btn             = document.querySelector('#registerForm .register-btn');
             const orig            = btn?.textContent || 'Daftar Sekarang';
+            const errorDiv        = document.getElementById('errorMessage');
 
+            // Hide error message
+            if (errorDiv) errorDiv.style.display = 'none';
+
+            // Validasi
             if (!name || !email || !password) {
-                showNotification('Mohon lengkapi semua field!', 'error'); return;
+                showNotification('Mohon lengkapi semua field!', 'error'); 
+                return;
             }
             if (password !== confirmPassword) {
-                showNotification('Password tidak cocok!', 'error'); return;
+                showNotification('Password tidak cocok!', 'error'); 
+                return;
             }
             if (password.length < 6) {
-                showNotification('Password minimal 6 karakter!', 'error'); return;
+                showNotification('Password minimal 6 karakter!', 'error'); 
+                return;
             }
 
-            // Cek course terpilih SEBELUM tombol di-disable, supaya popup
-            // konfirmasi muncul dalam kondisi form masih normal/belum loading.
             const courseId = document.getElementById('courseId')?.value || null;
             const confirmMsg = courseId
                 ? `Konfirmasi: kamu akan daftar untuk course "${selectedCourseDisplayName || courseId}".\n\nPastikan ini course yang benar sebelum lanjut.`
@@ -724,30 +737,90 @@
                 return;
             }
 
-            if (btn) { btn.textContent = 'Mendaftar...'; btn.disabled = true; }
+            if (btn) { btn.textContent = '⏳ Mendaftar...'; btn.disabled = true; }
 
             try {
                 console.log('🔍 DEBUG courseId yang mau dikirim:', courseId);
-                const result = await api.register(name, email, password, courseId);
-                console.log('🔍 DEBUG hasil dari server:', result);
-                if (result.success) {
-                    showNotification('Registrasi berhasil! Silakan login.', 'success');
-                    setTimeout(() => window.location.href = 'login.html', 2000);
-                } else {
-                    const errors = result.data?.errors;
-                    let msg = 'Registrasi gagal.';
-                    if (errors) {
-                        msg = Object.values(errors)[0]?.[0] || msg;
-                    } else if (result.data?.message) {
-                        msg = result.data.message;
-                    }
-                    showNotification(msg, 'error');
+                
+                // ✅ GANTI: Panggil API langsung, bukan pakai api.register()
+                const response = await fetch('http://127.0.0.1:8000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password,
+                        password_confirmation: password, // ✅ PENTING: Laravel butuh ini
+                        course_id: courseId
+                    })
+                });
+
+                const data = await response.json();
+                console.log('🔍 DEBUG hasil dari server:', data);
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Registrasi gagal');
                 }
+
+                // ✅ SIMPAN TOKEN KE LOCALSTORAGE
+                if (data.token) {
+                    localStorage.setItem('speakout_token', data.token);
+                    console.log('✅ Token tersimpan:', data.token.substring(0, 30) + '...');
+                }
+
+                // ✅ SIMPAN USER INFO
+                if (data.user) {
+                    localStorage.setItem('speakout_user', JSON.stringify(data.user));
+                    console.log('✅ User info tersimpan');
+                }
+
+                // ✅ CEK APAKAH ADA PAYMENT INFO
+                if (data.payment && data.payment.enrollment_id) {
+                    // Redirect ke halaman payment
+                    const paymentUrl = `payment.html?enrollment_id=${data.payment.enrollment_id}`;
+                    
+                    showNotification('✅ Registrasi berhasil! Mengalihkan ke pembayaran...', 'success');
+                    
+                    if (btn) {
+                        btn.textContent = '✅ Berhasil! Mengalihkan...';
+                    }
+                    
+                    setTimeout(() => {
+                        window.location.href = paymentUrl;
+                    }, 1500);
+                    
+                } else {
+                    // Tidak ada payment (mungkin tidak pilih course), redirect ke dashboard
+                    showNotification('✅ Registrasi berhasil! Mengalihkan ke dashboard...', 'success');
+                    
+                    if (btn) {
+                        btn.textContent = '✅ Berhasil! Mengalihkan...';
+                    }
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                }
+                
             } catch (err) {
-                console.error(err);
-                showNotification('Koneksi error. Pastikan server Laravel berjalan.', 'error');
-            } finally {
-                if (btn) { btn.textContent = orig; btn.disabled = false; }
+                console.error('❌ Register error:', err);
+                
+                // Tampilkan error di form
+                if (errorDiv) {
+                    errorDiv.textContent = '❌ ' + err.message;
+                    errorDiv.style.display = 'block';
+                }
+                
+                showNotification(err.message || 'Koneksi error. Pastikan server Laravel berjalan.', 'error');
+                
+                // Reset button
+                if (btn) { 
+                    btn.textContent = orig; 
+                    btn.disabled = false; 
+                }
             }
         });
     </script>

@@ -377,6 +377,76 @@
         .btn-continue.completed { background: rgba(16,185,129,0.15); color: var(--success); border: 1.5px solid rgba(16,185,129,0.3); }
         .btn-continue.completed:hover { background: var(--success); color: white; }
 
+        /* ===== COURSE LOCKED STATE (Payment Pending) ===== */
+        .course-card.locked {
+            opacity: 0.85;
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .course-card.locked::before {
+            background: linear-gradient(90deg, var(--warning), #d97706);
+            opacity: 1;
+        }
+        .course-card.locked .course-thumb {
+            position: relative;
+        }
+        .course-card.locked .course-thumb::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(13, 13, 24, 0.75);
+            backdrop-filter: blur(2px);
+            z-index: 1;
+        }
+        .locked-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+        }
+        .locked-icon {
+            font-size: 48px;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+        }
+        .locked-text {
+            color: var(--white);
+            font-weight: 700;
+            font-size: 14px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+        .locked-subtext {
+            color: var(--gray);
+            font-size: 12px;
+            max-width: 200px;
+        }
+        .btn-pay-now {
+            width: 100%;
+            padding: 13px 20px;
+            background: var(--warning);
+            color: #0d0d18;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .btn-pay-now:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(245, 158, 11, 0.35);
+        }
+
         /* Certificates */
         .certificate-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(340px,1fr)); gap: 24px; }
         .cert-card { background: var(--dark2); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.07); transition: all 0.3s; }
@@ -593,6 +663,18 @@
             <button class="btn-retry" onclick="loadDashboard()">↺ Coba Lagi</button>
         </div>
 
+        <!-- Payment Pending Banner -->
+        <div id="paymentPendingBanner" style="display:none; background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); border-radius:12px; padding:20px 24px; margin-bottom:24px;">
+            <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                <div style="font-size:32px;">⏳</div>
+                <div style="flex:1;">
+                    <h3 style="color:var(--warning); margin-bottom:4px;">Pembayaran Menunggu Konfirmasi</h3>
+                    <p style="color:var(--gray); font-size:14px; margin:0;">Kamu memiliki kursus yang menunggu konfirmasi pembayaran. Silakan upload bukti pembayaran untuk mengaktifkan kursus.</p>
+                </div>
+                <button onclick="goToPaymentPage()" style="background:var(--warning); color:#0d0d18; padding:12px 24px; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif;">Upload Bukti</button>
+            </div>
+        </div>
+
         <div id="emptyState" class="state-block" style="display:none;">
             <h3>🎓 Mulai Perjalanan Belajarmu!</h3>
             <p>Kamu belum terdaftar di course manapun. Course akan aktif otomatis setelah pembayaran dikonfirmasi oleh admin.</p>
@@ -743,9 +825,12 @@
         const error    = document.getElementById('errorState');
         const empty    = document.getElementById('emptyState');
         const enrolled = document.getElementById('enrolledSection');
+        const paymentBanner = document.getElementById('paymentPendingBanner');
 
         loading.style.display = 'block';
         [error, empty, enrolled].forEach(el => el.style.display = 'none');
+        
+        if (paymentBanner) paymentBanner.style.display = 'none';
 
         try {
             const user = api.getUser();
@@ -767,11 +852,20 @@
             document.getElementById('statInProgress').textContent = data.stats?.in_progress     ?? 0;
             document.getElementById('statCompleted').textContent  = data.stats?.total_completed ?? 0;
 
+            // ✅ CEK PAYMENT STATUS
+            const hasPendingPayment = await checkPendingPayments();
+            
+            // ✅ TAMPILKAN SEMUA COURSE (termasuk yang belum bayar, tapi di-lock)
             if (data.in_progress_courses?.length > 0) {
                 enrolled.style.display = 'block';
                 renderEnrolledCourses(data.in_progress_courses);
             } else {
                 empty.style.display = 'block';
+            }
+
+            // Tampilkan banner jika ada payment pending
+            if (hasPendingPayment && paymentBanner) {
+                paymentBanner.style.display = 'block';
             }
 
             await loadUserCertificates();
@@ -785,61 +879,211 @@
         }
     }
 
-    function renderEnrolledCourses(courses) {
-        const grid = document.getElementById('courseGrid');
-        grid.innerHTML = '';
-        courses.forEach(course => {
-            const isCompleted = course.is_completed === true || course.progress >= 100;
-            const statusClass = isCompleted ? 'completed' : 'in-progress';
-            const badgeText   = isCompleted ? '🏆 Completed' : `${course.progress}%`;
-            const btnText     = isCompleted ? '🎓 Lihat Sertifikat' : '▶ Lanjut Belajar';
-            const btnClass    = isCompleted ? 'completed' : '';
-            const btnAction   = isCompleted
-                ? `scrollToCertificates()`
-                : `continueLearning(${course.id}, ${course.last_lesson?.id || 'null'})`;
+    /* ===== PAYMENT STATUS CHECK ===== */
+    async function checkPendingPayments() {
+        try {
+            const token = api.getToken();
+            if (!token) return false;
+            
+            const res = await fetch(`${API_BASE}/user/enrollments`, {
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!res.ok) return false;
+            
+            const data = await res.json();
+            const enrollments = data.data || [];
+            
+            // ✅ SIMPAN MAPPING: course_id → payment_status
+            window.coursePaymentStatus = {};
+            window.pendingEnrollments = {};
+            
+            enrollments.forEach(e => {
+                if (e.course?.id) {
+                    window.coursePaymentStatus[e.course.id] = e.payment_status || 'pending';
+                    if (e.payment_status === 'pending') {
+                        window.pendingEnrollments[e.course.id] = e.id;
+                    }
+                }
+            });
+            
+            console.log('📊 Payment status per course:', window.coursePaymentStatus);
+            
+            // Cek apakah ada enrollment dengan status pending
+            const hasPending = enrollments.some(e => e.payment_status === 'pending');
+            
+            // Simpan enrollment pending pertama untuk banner
+            if (hasPending) {
+                const pendingEnrollment = enrollments.find(e => e.payment_status === 'pending');
+                window.pendingPaymentEnrollmentId = pendingEnrollment?.id;
+            }
+            
+            return hasPending;
+            
+        } catch (err) {
+            console.error('Error checking payment status:', err);
+            return false;
+        }
+    }
 
-            const lessonPreview = course.last_lesson ? `
-                <div class="lesson-preview">
-                    <div class="lesson-preview-label">Next Lesson</div>
-                    <div class="lesson-item">
-                        <span>${getLessonIcon(course.last_lesson.type)}</span>
-                        <span>${esc(course.last_lesson.title)}</span>
-                        <span class="lesson-status ${course.last_lesson.content ? '' : 'locked'}">
-                            ${course.last_lesson.content ? '▶' : '🔒'}
-                        </span>
+    function goToPaymentPage() {
+        if (window.pendingPaymentEnrollmentId) {
+            window.location.href = `payment.html?enrollment_id=${window.pendingPaymentEnrollmentId}`;
+        } else {
+            alert('Tidak ada pembayaran yang menunggu.');
+        }
+    }
+
+    // ✅ Redirect ke halaman pembayaran untuk course tertentu
+    function goToPayment(courseId) {
+        // Cari enrollment_id dari course yang dipilih
+        if (window.pendingEnrollments && window.pendingEnrollments[courseId]) {
+            window.location.href = `payment.html?enrollment_id=${window.pendingEnrollments[courseId]}`;
+        } else {
+            // Fallback: ambil dari API
+            fetchEnrollmentIdAndRedirect(courseId);
+        }
+    }
+
+    // ✅ Helper: Fetch enrollment_id berdasarkan course_id
+    async function fetchEnrollmentIdAndRedirect(courseId) {
+        try {
+            const token = api.getToken();
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const res = await fetch(`${API_BASE}/user/enrollments`, {
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!res.ok) {
+                alert('Gagal memuat data enrollment. Silakan coba lagi.');
+                return;
+            }
+            
+            const data = await res.json();
+            const enrollments = data.data || [];
+            
+            // Cari enrollment untuk course ini
+            const enrollment = enrollments.find(e => e.course?.id === courseId);
+            
+            if (enrollment) {
+                window.location.href = `payment.html?enrollment_id=${enrollment.id}`;
+            } else {
+                alert('Enrollment tidak ditemukan untuk course ini.');
+            }
+            
+        } catch (err) {
+            console.error('Error fetching enrollment:', err);
+            alert('Terjadi kesalahan. Silakan coba lagi.');
+        }
+    }
+
+    function renderEnrolledCourses(courses) {
+    const grid = document.getElementById('courseGrid');
+    grid.innerHTML = '';
+    
+    console.log('📊 Rendering courses:', courses);
+    console.log('📊 Payment status mapping:', window.coursePaymentStatus);
+
+    courses.forEach(course => {
+        // ✅ CEK STATUS PEMBAYARAN - PERBAIKAN LOGIKA
+        // Prioritas: course.payment_status → window.coursePaymentStatus → 'pending' (default)
+        const paymentStatus = course.payment_status 
+            || window.coursePaymentStatus?.[course.id] 
+            || 'pending'; // ← UBAH default dari 'paid' jadi 'pending'
+        
+        const isPaid = paymentStatus === 'paid';
+        const isLocked = !isPaid;
+        
+        console.log(`🔍 Course: ${course.title} | Payment: ${paymentStatus} | Locked: ${isLocked}`);
+        
+        const isCompleted = course.is_completed === true || course.progress >= 100;
+        const statusClass = isCompleted ? 'completed' : 'in-progress';
+        
+        // ✅ BADGE BERDASARKAN STATUS
+        let badgeText = `${course.progress}%`;
+        if (isLocked) badgeText = '🔒 Belum Dibayar';
+        else if (isCompleted) badgeText = '🏆 Completed';
+            
+            // ✅ TOMBOL BERDASARKAN STATUS
+            let btnHtml;
+            if (isLocked) {
+                btnHtml = `<button class="btn-pay-now" onclick="goToPayment(${course.id})" 
+                    style="width:100%;padding:13px 20px;background:var(--warning);color:#0d0d18;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                    💳 Selesaikan Pembayaran
+                </button>`;
+            } else if (isCompleted) {
+                btnHtml = `<button class="btn-continue completed" onclick="scrollToCertificates()"
+                    style="width:100%;padding:13px 20px;background:rgba(16,185,129,0.15);color:var(--success);border:1.5px solid rgba(16,185,129,0.3);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">
+                    🎓 Lihat Sertifikat
+                </button>`;
+            } else {
+                btnHtml = `<button class="btn-continue" onclick="continueLearning(${course.id}, ${course.last_lesson?.id || 'null'})"
+                    style="width:100%;padding:13px 20px;background:var(--purple);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">
+                    ▶ Lanjut Belajar
+                </button>`;
+            }
+
+            // ✅ PROGRESS BAR
+            const progressHtml = isLocked ? `
+                <div class="progress-wrap">
+                    <div style="text-align:center;padding:12px;background:rgba(245,158,11,0.08);border-radius:10px;border:1px solid rgba(245,158,11,0.2);">
+                        <div style="font-size:12px;color:var(--warning);font-weight:600;">⏳ Menunggu Pembayaran</div>
+                        <div style="font-size:11px;color:var(--gray);margin-top:4px;">Course akan aktif setelah pembayaran dikonfirmasi</div>
                     </div>
+                </div>` : `
+                <div class="progress-wrap">
+                    <div class="progress-head">
+                        <span class="lbl">Progress</span>
+                        <span class="val">${course.progress}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:${course.progress}%"></div>
+                    </div>
+                    <div class="progress-info">${course.completed_lessons||0}/${course.total_lessons||0} lessons selesai</div>
+                </div>`;
+
+            // ✅ LOCKED OVERLAY untuk thumbnail
+            const lockedOverlayHtml = isLocked ? `
+                <div style="position:absolute;inset:0;background:rgba(13,13,24,0.75);backdrop-filter:blur(2px);z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;">
+                    <div style="font-size:48px;">🔒</div>
+                    <div style="color:white;font-weight:700;font-size:14px;">Course Terkunci</div>
+                    <div style="color:var(--gray);font-size:12px;max-width:200px;">Selesaikan pembayaran untuk mengakses materi</div>
                 </div>` : '';
 
-            // ✅ FIX: Gunakan api.getAssetUrl() untuk thumbnail
             const thumbnailUrl = course.thumbnail ? api.getAssetUrl(course.thumbnail) : '';
 
             const card = document.createElement('div');
             card.className = `course-card ${statusClass}`;
+            card.style.position = 'relative';
             card.innerHTML = `
-                <div class="course-thumb">
+                <div class="course-thumb" style="position:relative;">
                     ${thumbnailUrl ? `<img src="${thumbnailUrl}" alt="${esc(course.title)}" onerror="this.style.display='none'">` : '📚'}
-                    <span class="course-badge ${statusClass}">${badgeText}</span>
+                    <span class="course-badge ${isLocked ? '' : statusClass}" 
+                        style="${isLocked ? 'background:var(--warning);color:#0d0d18;' : ''}">
+                        ${badgeText}
+                    </span>
+                    ${lockedOverlayHtml}
                 </div>
                 <div class="course-body">
                     <h3 class="course-title">${esc(course.title)}</h3>
                     <div class="course-meta-tags">
                         ${course.category ? `<span class="meta-tag cat">📚 ${esc(course.category)}</span>` : ''}
-                        ${course.level    ? `<span class="meta-tag lvl">🎓 ${esc(course.level)}</span>`    : ''}
+                        ${course.level ? `<span class="meta-tag lvl">🎓 ${esc(course.level)}</span>` : ''}
                         ${course.duration ? `<span class="meta-tag dur">⏱️ ${esc(course.duration)}</span>` : ''}
                     </div>
                     <div class="course-instructor">${esc(course.instructor)}</div>
-                    <div class="progress-wrap">
-                        <div class="progress-head">
-                            <span class="lbl">Progress</span>
-                            <span class="val">${course.progress}%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width:${course.progress}%"></div>
-                        </div>
-                        <div class="progress-info">${course.completed_lessons||0}/${course.total_lessons||0} lessons selesai</div>
-                    </div>
-                    ${lessonPreview}
-                    <button class="btn-continue ${btnClass}" onclick="${btnAction}">${btnText}</button>
+                    ${progressHtml}
+                    ${btnHtml}
                 </div>`;
             grid.appendChild(card);
         });

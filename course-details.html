@@ -669,6 +669,58 @@
     </footer>
 
     <script src="js/api.js?v=2.3.0"></script>
+    <!-- ✅ PAYMENT VALIDATION - CHECK BEFORE LOAD COURSE -->
+    <script>
+    (async function validateCourseAccess() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('course_id');
+        
+        if (!courseId) {
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        
+        try {
+            const token = localStorage.getItem('speakout_token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Ambil enrollment info
+            const res = await fetch(`${API_BASE}/user/enrollments`, {
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!res.ok) return;
+            
+            const data = await res.json();
+            const enrollments = data.data || [];
+            const enrollment = enrollments.find(e => e.course?.id == courseId);
+            
+            if (!enrollment) {
+                alert('Anda belum terdaftar di course ini.');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+            
+            // ✅ CEK PAYMENT STATUS
+            if (enrollment.payment_status !== 'paid') {
+                alert('Course ini belum dapat diakses. Silakan selesaikan pembayaran Anda terlebih dahulu.');
+                window.location.href = `payment.html?enrollment_id=${enrollment.id}`;
+                return;
+            }
+            
+            console.log('✅ Payment verified - course access granted');
+            
+        } catch (err) {
+            console.error('Payment validation error:', err);
+        }
+    })();
+    </script>
     <script src="js/course-details.js?v=2.3.0"></script>
     <script>
     /* ===== HEADER ===== */
@@ -829,35 +881,6 @@
     }
 
     window.addEventListener('beforeunload', () => { if (timerInterval) clearInterval(timerInterval); });
-
-    /* ===== CELEBRATION OVERLAY ===== */
-    function showCourseCompletedCelebration(courseId) {
-        document.querySelector('.celebration-overlay')?.remove();
-        const overlay = document.createElement('div');
-        overlay.className = 'celebration-overlay';
-        overlay.innerHTML = `
-            <div class="emoji">🎉</div>
-            <h2>Course Completed!</h2>
-            <p>Selamat! Kamu telah menyelesaikan course ini.</p>
-            <p style="color:var(--warning);margin:20px 0;">⏳ Certificate sedang menunggu persetujuan admin.<br>Kamu akan mendapat notifikasi saat certificate disetujui.</p>
-            <div class="btn-group">
-                <button class="btn btn-certificate" onclick="window.location.href='dashboard.html'">🏠 View Dashboard</button>
-                <button class="btn btn-secondary" onclick="this.closest('.celebration-overlay').remove()">✕ Keep Learning</button>
-            </div>`;
-        document.body.appendChild(overlay);
-        createConfetti(overlay);
-        showNotification('🎉 Selamat! Kamu telah menyelesaikan course!', 'success');
-    }
-
-    function createConfetti(container) {
-        const colors = ['#f59e0b', '#10b981', '#3b82f6', '#a83db8', '#ef4444'];
-        for (let i = 0; i < 60; i++) {
-            const c = document.createElement('div');
-            c.className = 'confetti';
-            c.style.cssText = `background:${colors[i%colors.length]};left:${Math.random()*100}%;top:-10px;animation-duration:${2+Math.random()*3}s;animation-delay:${Math.random()*0.5}s;`;
-            container.appendChild(c);
-        }
-    }
 
     /* ===== PATCH: toggleLessonComplete ===== */
     const _origToggle = window.toggleLessonComplete;
