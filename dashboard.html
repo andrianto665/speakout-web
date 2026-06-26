@@ -885,14 +885,20 @@
             const token = api.getToken();
             if (!token) return false;
             
+            console.log('🔍 Checking payment status...');
+            
             const res = await fetch(`${API_BASE}/user/enrollments`, {
                 headers: { 
                     'Authorization': `Bearer ${token}`, 
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
                 }
             });
             
-            if (!res.ok) return false;
+            if (!res.ok) {
+                console.error('❌ Payment check failed:', res.status);
+                return false;
+            }
             
             const data = await res.json();
             const enrollments = data.data || [];
@@ -912,10 +918,8 @@
             
             console.log('📊 Payment status per course:', window.coursePaymentStatus);
             
-            // Cek apakah ada enrollment dengan status pending
             const hasPending = enrollments.some(e => e.payment_status === 'pending');
             
-            // Simpan enrollment pending pertama untuk banner
             if (hasPending) {
                 const pendingEnrollment = enrollments.find(e => e.payment_status === 'pending');
                 window.pendingPaymentEnrollmentId = pendingEnrollment?.id;
@@ -924,7 +928,11 @@
             return hasPending;
             
         } catch (err) {
-            console.error('Error checking payment status:', err);
+            console.error('❌ Error checking payment status:', err);
+            console.error('🔧 Pastikan:');
+            console.error('  1. Backend Laravel running (php artisan serve)');
+            console.error('  2. Ngrok tunnel aktif');
+            console.error('  3. API_BASE di api.js sesuai dengan URL Ngrok');
             return false;
         }
     }
