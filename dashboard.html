@@ -7,11 +7,8 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Dashboard — SpeakOut E-Course</title>
-
-    <!-- ✅ TAMBAHKAN 2 BARIS INI -->
     <link rel="icon" type="image/png" href="images/icon-192.png">
     <link rel="shortcut icon" type="image/png" href="images/icon-192.png">
-    
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,7 +40,7 @@
         a { text-decoration: none; color: inherit; }
         img { max-width: 100%; display: block; }
 
-        /* ===== HEADER — mirip course-details ===== */
+        /* ===== HEADER ===== */
         .header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             padding: 0 40px; height: 68px;
@@ -57,8 +54,6 @@
             background: rgba(13, 13, 24, 0.99);
             border-bottom-color: rgba(139, 44, 152, 0.3);
         }
-
-        /* Logo di kiri */
         .logo {
             font-family: 'Playfair Display', serif;
             font-size: 22px; font-weight: 900; letter-spacing: 1px;
@@ -66,8 +61,6 @@
         }
         .logo .speak { color: var(--white); }
         .logo .out   { color: var(--orange); }
-
-        /* Nav di tengah */
         .nav { display: flex; align-items: center; gap: 32px; }
         .nav a {
             font-size: 14px; font-weight: 500; color: var(--gray);
@@ -80,8 +73,6 @@
         }
         .nav a:hover, .nav a.active { color: var(--white); }
         .nav a:hover::after, .nav a.active::after { transform: scaleX(1); }
-
-        /* User chip di kanan — persis course-details */
         .user-chip {
             position: relative;
             display: flex; align-items: center; gap: 10px;
@@ -104,8 +95,6 @@
             transition: transform 0.25s; display: inline-block;
         }
         .user-chip.open .avatar-caret { transform: rotate(180deg); }
-
-        /* Dropdown */
         .user-dropdown {
             position: absolute; top: calc(100% + 12px); right: 0;
             background: var(--dark3);
@@ -139,8 +128,6 @@
         .dropdown-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 6px 0; }
         .dropdown-item.logout { color: var(--error); }
         .dropdown-item.logout:hover { background: rgba(239,68,68,0.1); color: var(--error); }
-
-        /* Hamburger */
         .hamburger {
             display: none; flex-direction: column; gap: 5px;
             cursor: pointer; padding: 6px; border: none; background: none;
@@ -149,15 +136,11 @@
         .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
         .hamburger.open span:nth-child(2) { opacity: 0; }
         .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
-
-        /* Wrapper biar avatar profil & hamburger nempel deketan di kanan */
         .header-actions {
             display: flex;
             align-items: center;
             gap: 14px;
         }
-
-        /* Mobile Drawer */
         .mobile-drawer {
             position: fixed; top: 68px; left: 0; right: 0; z-index: 99;
             background: rgba(13,13,24,0.98); backdrop-filter: blur(14px);
@@ -171,35 +154,30 @@
         .mobile-drawer .drawer-logout { margin-top: 12px; padding: 13px; text-align: center; background: rgba(139,44,152,0.2); border-radius: 8px; font-weight: 700; color: var(--gray); border-bottom: none; cursor: pointer; }
         .mobile-drawer .drawer-logout:hover { background: var(--purple); color: white; }
 
-        /* ===== DASHBOARD HERO — mirip course-details hero ===== */
+        /* ===== DASHBOARD HERO ===== */
         .dash-hero {
             width: 100%;
             padding: 100px 40px 60px;
             background: linear-gradient(135deg, var(--dark) 0%, #1a0a35 50%, #0d1a35 100%);
             position: relative; overflow: hidden;
         }
-        /* Dot pattern background — sama seperti course-details */
         .dash-hero::before {
             content: '';
             position: absolute; inset: 0;
             background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
-        /* Radial glow — sama seperti course-details */
         .dash-hero::after {
             content: '';
             position: absolute; inset: 0;
             background: radial-gradient(ellipse 70% 80% at 20% 50%, rgba(139,44,152,0.15) 0%, transparent 60%);
             pointer-events: none;
         }
-
         .dash-hero-content {
             max-width: 1200px; margin: auto;
             position: relative; z-index: 2;
             display: flex; align-items: flex-start;
             justify-content: space-between; flex-wrap: wrap; gap: 36px;
         }
-
-        /* Eyebrow + Greeting */
         .dash-greeting { flex: 1; min-width: 260px; }
         .dash-eyebrow {
             display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
@@ -216,8 +194,6 @@
         }
         .dash-title em { font-style: italic; color: var(--purple-light); }
         .dash-subtitle { font-size: 15px; color: var(--gray); font-weight: 300; }
-
-        /* Stats — mirip course-progress-bar di course-details */
         .dash-stats {
             display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;
         }
@@ -250,8 +226,6 @@
             max-width: 1200px; margin: auto;
             padding: 0 40px 80px;
         }
-
-        /* Section header */
         .sec-head {
             display: flex; align-items: center; gap: 14px;
             margin: 52px 0 26px;
@@ -271,8 +245,6 @@
             flex: 1; height: 1px;
             background: linear-gradient(90deg, rgba(139,44,152,0.4), transparent);
         }
-
-        /* State blocks */
         .state-block { text-align: center; padding: 64px 20px; color: var(--gray); }
         .state-block h3 { color: var(--white); font-size: 20px; margin-bottom: 10px; }
         .spinner {
@@ -292,7 +264,7 @@
         }
         .btn-retry:hover { background: var(--orange); }
 
-        /* Course grid */
+        /* ===== COURSE GRID ===== */
         .course-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
@@ -312,7 +284,6 @@
         .course-card:hover::before { opacity: 1; }
         .course-card.completed { border-color: rgba(16,185,129,0.25); }
         .course-card.completed::before { background: linear-gradient(90deg, var(--success), #059669); opacity: 1; }
-
         .course-thumb {
             height: 180px;
             background: linear-gradient(135deg, var(--purple-dark) 0%, #1a0d2e 100%);
@@ -328,7 +299,6 @@
         }
         .course-badge.in-progress { background: var(--warning); color: #0d0d18; }
         .course-badge.completed   { background: var(--success); color: white; }
-
         .course-body { padding: 22px 24px 24px; }
         .course-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; line-height: 1.4; }
         .course-meta-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
@@ -343,7 +313,6 @@
         .meta-tag.dur { color: var(--warning); border-color: rgba(245,158,11,0.2); }
         .course-instructor { font-size: 13px; color: var(--gray); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
         .course-instructor::before { content: '👨‍🏫'; }
-
         .progress-wrap { margin-bottom: 18px; }
         .progress-head { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 7px; }
         .progress-head .lbl { color: var(--gray); }
@@ -356,7 +325,6 @@
         }
         .course-card.completed .progress-fill { background: linear-gradient(90deg, var(--success), #059669); }
         .progress-info { font-size: 11px; color: var(--gray2); margin-top: 5px; }
-
         .lesson-preview {
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
             border-radius: 10px; padding: 12px 14px; margin-bottom: 18px;
@@ -365,7 +333,6 @@
         .lesson-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
         .lesson-status { margin-left: auto; font-size: 13px; }
         .lesson-status.locked { color: var(--gray2); }
-
         .btn-continue {
             width: 100%; padding: 13px 20px; background: var(--purple); color: white;
             border: none; border-radius: 10px; font-size: 14px; font-weight: 700;
@@ -377,7 +344,7 @@
         .btn-continue.completed { background: rgba(16,185,129,0.15); color: var(--success); border: 1.5px solid rgba(16,185,129,0.3); }
         .btn-continue.completed:hover { background: var(--success); color: white; }
 
-        /* ===== COURSE LOCKED STATE (Payment Pending) ===== */
+        /* ===== COURSE LOCKED STATE ===== */
         .course-card.locked {
             opacity: 0.85;
             border-color: rgba(245, 158, 11, 0.3);
@@ -385,17 +352,6 @@
         .course-card.locked::before {
             background: linear-gradient(90deg, var(--warning), #d97706);
             opacity: 1;
-        }
-        .course-card.locked .course-thumb {
-            position: relative;
-        }
-        .course-card.locked .course-thumb::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(13, 13, 24, 0.75);
-            backdrop-filter: blur(2px);
-            z-index: 1;
         }
         .locked-overlay {
             position: absolute;
@@ -408,6 +364,8 @@
             z-index: 2;
             text-align: center;
             padding: 20px;
+            background: rgba(13, 13, 24, 0.75);
+            backdrop-filter: blur(2px);
         }
         .locked-icon {
             font-size: 48px;
@@ -447,7 +405,7 @@
             box-shadow: 0 10px 28px rgba(245, 158, 11, 0.35);
         }
 
-        /* Certificates */
+        /* ===== CERTIFICATES ===== */
         .certificate-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(340px,1fr)); gap: 24px; }
         .cert-card { background: var(--dark2); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.07); transition: all 0.3s; }
         .cert-card:hover { transform: translateY(-4px); border-color: rgba(139,44,152,0.35); box-shadow: 0 16px 40px rgba(139,44,152,0.18); }
@@ -481,7 +439,7 @@
         .btn-download.pending  { background: var(--warning); color: #0d0d18; }
         .btn-download.rejected { background: rgba(239,68,68,0.2); color: var(--error); border: 1px solid rgba(239,68,68,0.3); }
 
-        /* Gradebook */
+        /* ===== GRADEBOOK ===== */
         .gradebook-grid { display: grid; gap: 20px; }
         .gradebook-card { background: var(--dark2); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px; transition: all 0.3s; }
         .gradebook-card:hover { border-color: rgba(139,44,152,0.35); transform: translateY(-3px); box-shadow: 0 12px 36px rgba(139,44,152,0.15); }
@@ -852,20 +810,23 @@
             document.getElementById('statInProgress').textContent = data.stats?.in_progress     ?? 0;
             document.getElementById('statCompleted').textContent  = data.stats?.total_completed ?? 0;
 
-            // ✅ CEK PAYMENT STATUS
-            const hasPendingPayment = await checkPendingPayments();
+            // ✅ FETCH ALL ENROLLMENTS (including unpaid)
+            const allEnrollments = await fetchAllEnrollments();
             
-            // ✅ TAMPILKAN SEMUA COURSE (termasuk yang belum bayar, tapi di-lock)
-            if (data.in_progress_courses?.length > 0) {
+            // ✅ RENDER ALL COURSES (paid and unpaid)
+            if (allEnrollments.length > 0) {
                 enrolled.style.display = 'block';
-                renderEnrolledCourses(data.in_progress_courses);
+                renderAllEnrolledCourses(allEnrollments);
             } else {
                 empty.style.display = 'block';
             }
 
-            // Tampilkan banner jika ada payment pending
+            // Check if any payment is pending for banner
+            const hasPendingPayment = allEnrollments.some(e => e.payment_status === 'pending');
             if (hasPendingPayment && paymentBanner) {
                 paymentBanner.style.display = 'block';
+                const pendingEnrollment = allEnrollments.find(e => e.payment_status === 'pending');
+                window.pendingPaymentEnrollmentId = pendingEnrollment?.id;
             }
 
             await loadUserCertificates();
@@ -879,13 +840,11 @@
         }
     }
 
-    /* ===== PAYMENT STATUS CHECK ===== */
-    async function checkPendingPayments() {
+    /* ===== FETCH ALL ENROLLMENTS ===== */
+    async function fetchAllEnrollments() {
         try {
             const token = api.getToken();
-            if (!token) return false;
-            
-            console.log('🔍 Checking payment status...');
+            if (!token) return [];
             
             const res = await fetch(`${API_BASE}/user/enrollments`, {
                 headers: { 
@@ -895,10 +854,140 @@
                 }
             });
             
-            if (!res.ok) {
-                console.error('❌ Payment check failed:', res.status);
-                return false;
+            if (!res.ok) return [];
+            
+            const data = await res.json();
+            return data.data || [];
+            
+        } catch (err) {
+            console.error('Error fetching enrollments:', err);
+            return [];
+        }
+    }
+
+    /* ===== RENDER ALL COURSES (PAID & UNPAID) ===== */
+    function renderAllEnrolledCourses(enrollments) {
+        const grid = document.getElementById('courseGrid');
+        grid.innerHTML = '';
+        
+        console.log('📊 Rendering all enrollments:', enrollments);
+
+        enrollments.forEach(enrollment => {
+            const course = enrollment.course;
+            if (!course) return;
+            
+            const paymentStatus = enrollment.payment_status || 'pending';
+            const isPaid = paymentStatus === 'paid';
+            const isLocked = !isPaid;
+            
+            console.log(`🔍 Course: ${course.title} | Payment: ${paymentStatus} | Locked: ${isLocked}`);
+            
+            // Calculate progress from enrollment or course data
+            const progress = enrollment.progress || course.progress || 0;
+            const isCompleted = enrollment.is_completed === true || progress >= 100;
+            
+            let badgeText = `${progress}%`;
+            if (isLocked) badgeText = '🔒 Belum Dibayar';
+            else if (isCompleted) badgeText = '🏆 Completed';
+            
+            let btnHtml;
+            if (isLocked) {
+                btnHtml = `<button class="btn-pay-now" onclick="goToPayment(${course.id})">💳 Selesaikan Pembayaran</button>`;
+            } else if (isCompleted) {
+                btnHtml = `<button class="btn-continue completed" onclick="scrollToCertificates()">🎓 Lihat Sertifikat</button>`;
+            } else {
+                const lastLessonId = enrollment.last_lesson_id || course.last_lesson?.id;
+                btnHtml = `<button class="btn-continue" onclick="continueLearning(${course.id}, ${lastLessonId || 'null'})">▶ Lanjut Belajar</button>`;
             }
+
+            const progressHtml = isLocked ? `
+                <div class="progress-wrap">
+                    <div style="text-align:center;padding:12px;background:rgba(245,158,11,0.08);border-radius:10px;border:1px solid rgba(245,158,11,0.2);">
+                        <div style="font-size:12px;color:var(--warning);font-weight:600;">⏳ Menunggu Pembayaran</div>
+                        <div style="font-size:11px;color:var(--gray);margin-top:4px;">Course akan aktif setelah pembayaran dikonfirmasi</div>
+                    </div>
+                </div>` : `
+                <div class="progress-wrap">
+                    <div class="progress-head">
+                        <span class="lbl">Progress</span>
+                        <span class="val">${progress}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:${progress}%"></div>
+                    </div>
+                    <div class="progress-info">${enrollment.completed_lessons || 0}/${course.total_lessons || 0} lessons selesai</div>
+                </div>`;
+
+            const lockedOverlayHtml = isLocked ? `
+                <div class="locked-overlay">
+                    <div class="locked-icon">🔒</div>
+                    <div class="locked-text">Course Terkunci</div>
+                    <div class="locked-subtext">Selesaikan pembayaran untuk mengakses materi</div>
+                </div>` : '';
+
+            const thumbnailUrl = course.thumbnail ? api.getAssetUrl(course.thumbnail) : '';
+
+            const card = document.createElement('div');
+            card.className = `course-card ${isCompleted ? 'completed' : 'in-progress'} ${isLocked ? 'locked' : ''}`;
+            card.style.position = 'relative';
+            card.innerHTML = `
+                <div class="course-thumb" style="position:relative;">
+                    ${thumbnailUrl ? `<img src="${thumbnailUrl}" alt="${esc(course.title)}" onerror="this.style.display='none'">` : '📚'}
+                    <span class="course-badge ${isLocked ? '' : (isCompleted ? 'completed' : 'in-progress')}" 
+                        style="${isLocked ? 'background:var(--warning);color:#0d0d18;' : ''}">
+                        ${badgeText}
+                    </span>
+                    ${lockedOverlayHtml}
+                </div>
+                <div class="course-body">
+                    <h3 class="course-title">${esc(course.title)}</h3>
+                    <div class="course-meta-tags">
+                        ${course.category ? `<span class="meta-tag cat">📚 ${esc(course.category)}</span>` : ''}
+                        ${course.level ? `<span class="meta-tag lvl">🎓 ${esc(course.level)}</span>` : ''}
+                        ${course.duration ? `<span class="meta-tag dur">⏱️ ${esc(course.duration)}</span>` : ''}
+                    </div>
+                    <div class="course-instructor">${esc(course.instructor)}</div>
+                    ${progressHtml}
+                    ${btnHtml}
+                </div>`;
+            grid.appendChild(card);
+        });
+    }
+
+    /* ===== NAVIGATION FUNCTIONS ===== */
+    function goToPayment(courseId) {
+        // Find the enrollment for this course
+        fetchAllEnrollments().then(enrollments => {
+            const enrollment = enrollments.find(e => e.course?.id === courseId);
+            if (enrollment) {
+                window.location.href = `payment.html?enrollment_id=${enrollment.id}`;
+            } else {
+                alert('Enrollment tidak ditemukan untuk course ini.');
+            }
+        });
+    }
+
+    function continueLearning(courseId, lessonId) {
+        window.location.href = lessonId
+            ? `course-details.html?course_id=${courseId}&lesson_id=${lessonId}`
+            : `course-details.html?course_id=${courseId}`;
+    }
+
+    /* ===== PAYMENT STATUS CHECK ===== */
+    async function checkPendingPayments() {
+        try {
+            const token = api.getToken();
+            if (!token) return false;
+            
+            const res = await fetch(`${API_BASE}/user/enrollments`, {
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                }
+            });
+            
+            if (!res.ok) return false;
             
             const data = await res.json();
             const enrollments = data.data || [];
@@ -918,8 +1007,10 @@
             
             console.log('📊 Payment status per course:', window.coursePaymentStatus);
             
+            // Cek apakah ada enrollment dengan status pending
             const hasPending = enrollments.some(e => e.payment_status === 'pending');
             
+            // Simpan enrollment pending pertama untuk banner
             if (hasPending) {
                 const pendingEnrollment = enrollments.find(e => e.payment_status === 'pending');
                 window.pendingPaymentEnrollmentId = pendingEnrollment?.id;
@@ -928,11 +1019,7 @@
             return hasPending;
             
         } catch (err) {
-            console.error('❌ Error checking payment status:', err);
-            console.error('🔧 Pastikan:');
-            console.error('  1. Backend Laravel running (php artisan serve)');
-            console.error('  2. Ngrok tunnel aktif');
-            console.error('  3. API_BASE di api.js sesuai dengan URL Ngrok');
+            console.error('Error checking payment status:', err);
             return false;
         }
     }
@@ -945,18 +1032,14 @@
         }
     }
 
-    // ✅ Redirect ke halaman pembayaran untuk course tertentu
     function goToPayment(courseId) {
-        // Cari enrollment_id dari course yang dipilih
         if (window.pendingEnrollments && window.pendingEnrollments[courseId]) {
             window.location.href = `payment.html?enrollment_id=${window.pendingEnrollments[courseId]}`;
         } else {
-            // Fallback: ambil dari API
             fetchEnrollmentIdAndRedirect(courseId);
         }
     }
 
-    // ✅ Helper: Fetch enrollment_id berdasarkan course_id
     async function fetchEnrollmentIdAndRedirect(courseId) {
         try {
             const token = api.getToken();
@@ -968,7 +1051,8 @@
             const res = await fetch(`${API_BASE}/user/enrollments`, {
                 headers: { 
                     'Authorization': `Bearer ${token}`, 
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
                 }
             });
             
@@ -980,7 +1064,6 @@
             const data = await res.json();
             const enrollments = data.data || [];
             
-            // Cari enrollment untuk course ini
             const enrollment = enrollments.find(e => e.course?.id === courseId);
             
             if (enrollment) {
@@ -996,52 +1079,39 @@
     }
 
     function renderEnrolledCourses(courses) {
-    const grid = document.getElementById('courseGrid');
-    grid.innerHTML = '';
-    
-    console.log('📊 Rendering courses:', courses);
-    console.log('📊 Payment status mapping:', window.coursePaymentStatus);
+        const grid = document.getElementById('courseGrid');
+        grid.innerHTML = '';
+        
+        console.log('📊 Rendering courses:', courses);
+        console.log('📊 Payment status mapping:', window.coursePaymentStatus);
 
-    courses.forEach(course => {
-        // ✅ CEK STATUS PEMBAYARAN - PERBAIKAN LOGIKA
-        // Prioritas: course.payment_status → window.coursePaymentStatus → 'pending' (default)
-        const paymentStatus = course.payment_status 
-            || window.coursePaymentStatus?.[course.id] 
-            || 'pending'; // ← UBAH default dari 'paid' jadi 'pending'
-        
-        const isPaid = paymentStatus === 'paid';
-        const isLocked = !isPaid;
-        
-        console.log(`🔍 Course: ${course.title} | Payment: ${paymentStatus} | Locked: ${isLocked}`);
-        
-        const isCompleted = course.is_completed === true || course.progress >= 100;
-        const statusClass = isCompleted ? 'completed' : 'in-progress';
-        
-        // ✅ BADGE BERDASARKAN STATUS
-        let badgeText = `${course.progress}%`;
-        if (isLocked) badgeText = '🔒 Belum Dibayar';
-        else if (isCompleted) badgeText = '🏆 Completed';
+        courses.forEach(course => {
+            // ✅ CEK STATUS PEMBAYARAN
+            const paymentStatus = course.payment_status 
+                || window.coursePaymentStatus?.[course.id] 
+                || 'pending';
             
-            // ✅ TOMBOL BERDASARKAN STATUS
+            const isPaid = paymentStatus === 'paid';
+            const isLocked = !isPaid;
+            
+            console.log(`🔍 Course: ${course.title} | Payment: ${paymentStatus} | Locked: ${isLocked}`);
+            
+            const isCompleted = course.is_completed === true || course.progress >= 100;
+            const statusClass = isCompleted ? 'completed' : 'in-progress';
+            
+            let badgeText = `${course.progress}%`;
+            if (isLocked) badgeText = '🔒 Belum Dibayar';
+            else if (isCompleted) badgeText = '🏆 Completed';
+            
             let btnHtml;
             if (isLocked) {
-                btnHtml = `<button class="btn-pay-now" onclick="goToPayment(${course.id})" 
-                    style="width:100%;padding:13px 20px;background:var(--warning);color:#0d0d18;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-                    💳 Selesaikan Pembayaran
-                </button>`;
+                btnHtml = `<button class="btn-pay-now" onclick="goToPayment(${course.id})">💳 Selesaikan Pembayaran</button>`;
             } else if (isCompleted) {
-                btnHtml = `<button class="btn-continue completed" onclick="scrollToCertificates()"
-                    style="width:100%;padding:13px 20px;background:rgba(16,185,129,0.15);color:var(--success);border:1.5px solid rgba(16,185,129,0.3);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">
-                    🎓 Lihat Sertifikat
-                </button>`;
+                btnHtml = `<button class="btn-continue completed" onclick="scrollToCertificates()">🎓 Lihat Sertifikat</button>`;
             } else {
-                btnHtml = `<button class="btn-continue" onclick="continueLearning(${course.id}, ${course.last_lesson?.id || 'null'})"
-                    style="width:100%;padding:13px 20px;background:var(--purple);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">
-                    ▶ Lanjut Belajar
-                </button>`;
+                btnHtml = `<button class="btn-continue" onclick="continueLearning(${course.id}, ${course.last_lesson?.id || 'null'})">▶ Lanjut Belajar</button>`;
             }
 
-            // ✅ PROGRESS BAR
             const progressHtml = isLocked ? `
                 <div class="progress-wrap">
                     <div style="text-align:center;padding:12px;background:rgba(245,158,11,0.08);border-radius:10px;border:1px solid rgba(245,158,11,0.2);">
@@ -1060,18 +1130,17 @@
                     <div class="progress-info">${course.completed_lessons||0}/${course.total_lessons||0} lessons selesai</div>
                 </div>`;
 
-            // ✅ LOCKED OVERLAY untuk thumbnail
             const lockedOverlayHtml = isLocked ? `
-                <div style="position:absolute;inset:0;background:rgba(13,13,24,0.75);backdrop-filter:blur(2px);z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;">
-                    <div style="font-size:48px;">🔒</div>
-                    <div style="color:white;font-weight:700;font-size:14px;">Course Terkunci</div>
-                    <div style="color:var(--gray);font-size:12px;max-width:200px;">Selesaikan pembayaran untuk mengakses materi</div>
+                <div class="locked-overlay">
+                    <div class="locked-icon">🔒</div>
+                    <div class="locked-text">Course Terkunci</div>
+                    <div class="locked-subtext">Selesaikan pembayaran untuk mengakses materi</div>
                 </div>` : '';
 
             const thumbnailUrl = course.thumbnail ? api.getAssetUrl(course.thumbnail) : '';
 
             const card = document.createElement('div');
-            card.className = `course-card ${statusClass}`;
+            card.className = `course-card ${statusClass} ${isLocked ? 'locked' : ''}`;
             card.style.position = 'relative';
             card.innerHTML = `
                 <div class="course-thumb" style="position:relative;">
@@ -1102,7 +1171,6 @@
             const token = api.getToken();
             if (!token) return;
             
-            // ✅ FIX: Gunakan API_BASE dari api.js
             const res = await fetch(`${API_BASE}/user/enrolled-courses`, {
                 headers: { 
                     'Authorization': `Bearer ${token}`, 
@@ -1195,7 +1263,6 @@
             const token = api.getToken();
             if (!token) return;
             
-            // ✅ FIX: Gunakan API_BASE dari api.js
             const res = await fetch(`${API_BASE}/user/gradebook`, {
                 headers: { 
                     'Authorization': `Bearer ${token}`, 
@@ -1261,11 +1328,13 @@
             ? `course-details.html?course_id=${courseId}&lesson_id=${lessonId}`
             : `course-details.html?course_id=${courseId}`;
     }
+    
     function scrollToCertificates() {
         const sec = document.getElementById('certificatesSection');
         if (sec && sec.style.display !== 'none') sec.scrollIntoView({ behavior:'smooth', block:'start' });
         else alert('📋 Sertifikat sedang menunggu persetujuan admin.');
     }
+    
     async function downloadCertificate(courseId, btnEl) {
         const token = api.getToken();
         if (!token) {
@@ -1282,7 +1351,6 @@
                 btn.disabled = true;
             }
 
-            // ✅ FIX: Gunakan API_BASE dan header yang benar untuk PDF
             const response = await fetch(`${API_BASE}/user/certificates/${courseId}/download`, {
                 method: 'GET',
                 headers: {
@@ -1323,7 +1391,7 @@
 
         } catch (error) {
             console.error('Download error:', error);
-            alert(`❌ Gagal mengunduh sertifikat.\n\nError: ${error.message}\n\nPastikan:\n1. Certificate sudah approved\n2. Backend sudah running\n3. PDF library sudah terinstall`);
+            alert(`❌ Gagal mengunduh sertifikat.\n\nError: ${error.message}`);
 
             if (btn) {
                 btn.textContent = origText;
@@ -1339,14 +1407,13 @@
         document.getElementById('hamburger')?.classList.remove('open');
         document.getElementById('drawer')?.classList.remove('open');
     }
-    function getLessonIcon(type) {
-        return { video:'🎬', audio:'🎧', pdf:'📄', quiz:'✍️', test:'✍️', final:'🏆', normal:'📚' }[type] || '📄';
-    }
+    
     function formatDate(ds) {
         if (!ds) return '—';
         try { return new Date(ds).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' }); }
         catch(e) { return ds; }
     }
+    
     function esc(text) {
         if (!text) return '';
         const d = document.createElement('div');

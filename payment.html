@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=no">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -10,9 +10,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Pembayaran - SpeakOut E-Course</title>
+    <link rel="icon" type="image/png" href="images/icon-192.png">
+    <link rel="shortcut icon" type="image/png" href="images/icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ===== RESET & ROOT ===== */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --purple: #8B2C98;
@@ -41,13 +42,8 @@
             -webkit-text-size-adjust: 100%;
         }
         a { text-decoration: none; color: inherit; }
+        input, select, textarea { font-size: 16px !important; }
 
-        /* Prevent zoom on input focus untuk iOS */
-        input, select, textarea {
-            font-size: 16px !important;
-        }
-
-        /* ===== LOADING OVERLAY ===== */
         #loadingOverlay {
             position: fixed; inset: 0;
             background: var(--dark);
@@ -63,7 +59,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== HEADER ===== */
         .header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             padding: 0 40px; height: 68px;
@@ -86,14 +81,12 @@
         }
         .btn-back:hover { background: var(--purple); border-color: var(--purple); }
 
-        /* ===== MAIN CONTAINER ===== */
         .payment-container {
             max-width: 900px;
             margin: 100px auto 60px;
             padding: 0 40px;
         }
 
-        /* ===== PAGE HEADER ===== */
         .page-header {
             text-align: center;
             margin-bottom: 40px;
@@ -112,7 +105,6 @@
             font-size: 14px; color: var(--gray); margin-top: 10px;
         }
 
-        /* ===== STATUS BANNER ===== */
         .status-banner {
             padding: 20px 24px;
             border-radius: 14px;
@@ -133,21 +125,13 @@
             background: rgba(239, 68, 68, 0.1);
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
-        .status-icon {
-            font-size: 36px;
-            flex-shrink: 0;
-        }
-        .status-content h3 {
-            font-size: 16px; font-weight: 700; margin-bottom: 4px;
-        }
+        .status-icon { font-size: 36px; flex-shrink: 0; }
+        .status-content h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
         .status-banner.pending .status-content h3 { color: var(--warning); }
         .status-banner.paid .status-content h3 { color: var(--success); }
         .status-banner.rejected .status-content h3 { color: var(--error); }
-        .status-content p {
-            font-size: 13px; color: var(--gray);
-        }
+        .status-content p { font-size: 13px; color: var(--gray); }
 
-        /* ===== COURSE INFO CARD ===== */
         .course-info-card {
             background: var(--dark2);
             border: 1px solid rgba(255,255,255,0.07);
@@ -160,9 +144,7 @@
             flex-wrap: wrap;
             gap: 20px;
         }
-        .course-info-left {
-            flex: 1; min-width: 250px;
-        }
+        .course-info-left { flex: 1; min-width: 250px; }
         .course-label {
             font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
             color: var(--orange); font-weight: 700; margin-bottom: 6px;
@@ -171,9 +153,7 @@
             font-family: 'Playfair Display', serif;
             font-size: 22px; font-weight: 700; margin-bottom: 4px;
         }
-        .course-instructor {
-            font-size: 13px; color: var(--gray);
-        }
+        .course-instructor { font-size: 13px; color: var(--gray); }
         .course-price-box {
             background: linear-gradient(135deg, var(--purple-dark), var(--purple));
             padding: 20px 32px;
@@ -190,7 +170,6 @@
             font-size: 28px; font-weight: 900; color: var(--white);
         }
 
-        /* ===== PAYMENT METHODS ===== */
         .section-title {
             font-family: 'Playfair Display', serif;
             font-size: 20px; font-weight: 700;
@@ -220,18 +199,10 @@
             background: rgba(139,44,152,0.1);
             box-shadow: 0 8px 24px rgba(139,44,152,0.25);
         }
-        .payment-method-icon {
-            font-size: 36px;
-            margin-bottom: 10px;
-        }
-        .payment-method-name {
-            font-size: 15px; font-weight: 700; margin-bottom: 4px;
-        }
-        .payment-method-detail {
-            font-size: 12px; color: var(--gray);
-        }
+        .payment-method-icon { font-size: 36px; margin-bottom: 10px; }
+        .payment-method-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .payment-method-detail { font-size: 12px; color: var(--gray); }
 
-        /* ===== PAYMENT DETAILS BOX ===== */
         .payment-details-box {
             background: rgba(139,44,152,0.08);
             border: 1px solid rgba(139,44,152,0.3);
@@ -248,12 +219,8 @@
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .detail-row:last-child { border-bottom: none; }
-        .detail-label {
-            font-size: 13px; color: var(--gray);
-        }
-        .detail-value {
-            font-size: 14px; font-weight: 600; color: var(--white);
-        }
+        .detail-label { font-size: 13px; color: var(--gray); }
+        .detail-value { font-size: 14px; font-weight: 600; color: var(--white); }
         .detail-value.highlight {
             color: var(--orange);
             font-family: 'Playfair Display', serif;
@@ -270,12 +237,8 @@
             margin-left: 8px;
             transition: all 0.2s;
         }
-        .copy-btn:hover {
-            background: var(--purple);
-            border-color: var(--purple);
-        }
+        .copy-btn:hover { background: var(--purple); border-color: var(--purple); }
 
-        /* ===== UPLOAD SECTION ===== */
         .upload-section {
             background: var(--dark2);
             border: 1px solid rgba(255,255,255,0.07);
@@ -285,12 +248,8 @@
             display: none;
         }
         .upload-section.show { display: block; }
-        .upload-title {
-            font-size: 16px; font-weight: 700; margin-bottom: 8px;
-        }
-        .upload-subtitle {
-            font-size: 13px; color: var(--gray); margin-bottom: 20px;
-        }
+        .upload-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .upload-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 20px; }
         .upload-area {
             border: 2px dashed rgba(139,44,152,0.4);
             border-radius: 12px;
@@ -308,20 +267,11 @@
             border-color: var(--success);
             background: rgba(16,185,129,0.05);
         }
-        .upload-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-        .upload-text {
-            font-size: 14px; color: var(--gray);
-            margin-bottom: 6px;
-        }
-        .upload-hint {
-            font-size: 12px; color: var(--gray2);
-        }
+        .upload-icon { font-size: 48px; margin-bottom: 12px; }
+        .upload-text { font-size: 14px; color: var(--gray); margin-bottom: 6px; }
+        .upload-hint { font-size: 12px; color: var(--gray2); }
         #fileInput { display: none; }
 
-        /* ===== FILE PREVIEW ===== */
         .file-preview {
             display: none;
             margin-top: 16px;
@@ -339,9 +289,7 @@
             font-size: 13px; font-weight: 600;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .file-preview-size {
-            font-size: 11px; color: var(--gray);
-        }
+        .file-preview-size { font-size: 11px; color: var(--gray); }
         .file-preview-remove {
             background: rgba(239,68,68,0.15);
             border: 1px solid rgba(239,68,68,0.3);
@@ -352,7 +300,6 @@
             cursor: pointer;
         }
 
-        /* ===== SUBMIT BUTTON ===== */
         .btn-submit {
             width: 100%;
             padding: 16px 32px;
@@ -375,12 +322,8 @@
             transform: translateY(-2px);
             box-shadow: 0 12px 32px rgba(139,44,152,0.4);
         }
-        .btn-submit:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 24px; right: 24px;
@@ -400,17 +343,13 @@
         .toast.error { background: var(--error); }
         .toast.info { background: var(--info); }
 
-        /* ===== SUCCESS STATE ===== */
         .success-state {
             text-align: center;
             padding: 60px 20px;
             display: none;
         }
         .success-state.show { display: block; }
-        .success-icon {
-            font-size: 72px;
-            margin-bottom: 20px;
-        }
+        .success-icon { font-size: 72px; margin-bottom: 20px; }
         .success-title {
             font-family: 'Playfair Display', serif;
             font-size: 28px; font-weight: 900;
@@ -440,15 +379,12 @@
             transform: translateY(-2px);
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .header { padding: 0 20px; height: 60px; }
             .payment-container { padding: 0 20px; margin-top: 80px; }
             .course-info-card { flex-direction: column; align-items: stretch; }
             .course-price-box { width: 100%; }
             .payment-methods { grid-template-columns: 1fr 1fr; }
-            
-            /* Submit button fixed di bawah untuk mobile */
             .btn-submit {
                 position: fixed;
                 bottom: 0;
@@ -459,20 +395,9 @@
                 z-index: 100;
                 box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
             }
-            
-            /* Padding bottom agar konten tidak tertutup tombol */
-            .payment-container {
-                padding-bottom: 100px;
-            }
-            
-            /* Toast di kiri untuk mobile */
-            .toast {
-                left: 20px;
-                right: 20px;
-                max-width: none;
-            }
+            .payment-container { padding-bottom: 100px; }
+            .toast { left: 20px; right: 20px; max-width: none; }
         }
-        
         @media (max-width: 480px) {
             .payment-methods { grid-template-columns: 1fr; }
             .page-title { font-size: 24px; }
@@ -482,7 +407,6 @@
 </head>
 <body>
 
-    <!-- LOADING OVERLAY -->
     <div id="loadingOverlay">
         <div style="text-align: center;">
             <div class="spinner" style="margin: 0 auto 20px;"></div>
@@ -490,23 +414,19 @@
         </div>
     </div>
 
-    <!-- HEADER -->
     <header class="header">
         <a href="index.html" class="logo"><span class="speak">Speak</span><span class="out">Out</span></a>
         <button class="btn-back" onclick="goBack()">← Kembali</button>
     </header>
 
-    <!-- MAIN CONTAINER -->
     <div class="payment-container">
         
-        <!-- PAGE HEADER -->
         <div class="page-header">
             <div class="page-eyebrow">Payment Gateway</div>
             <h1 class="page-title">Selesaikan <em>Pembayaran</em></h1>
             <p class="page-subtitle">Pilih metode pembayaran dan upload bukti transfer untuk mengaktifkan kursus Anda</p>
         </div>
 
-        <!-- STATUS BANNER (akan di-update via JS) -->
         <div id="statusBanner" class="status-banner pending" style="display: none;">
             <div class="status-icon">⏳</div>
             <div class="status-content">
@@ -515,7 +435,6 @@
             </div>
         </div>
 
-        <!-- COURSE INFO -->
         <div class="course-info-card">
             <div class="course-info-left">
                 <div class="course-label">Kursus Terpilih</div>
@@ -528,13 +447,9 @@
             </div>
         </div>
 
-        <!-- PAYMENT METHODS -->
         <h3 class="section-title">💳 Pilih Metode Pembayaran</h3>
-        <div class="payment-methods" id="paymentMethods">
-            <!-- Akan diisi via JavaScript -->
-        </div>
+        <div class="payment-methods" id="paymentMethods"></div>
 
-        <!-- PAYMENT DETAILS -->
         <div class="payment-details-box" id="paymentDetails">
             <div class="detail-row">
                 <span class="detail-label">Metode Pembayaran</span>
@@ -557,7 +472,6 @@
             </div>
         </div>
 
-        <!-- UPLOAD SECTION -->
         <div class="upload-section" id="uploadSection">
             <h3 class="upload-title">📤 Upload Bukti Pembayaran</h3>
             <p class="upload-subtitle">Screenshot atau foto bukti transfer Anda (format: JPG, PNG, max 2MB)</p>
@@ -579,13 +493,11 @@
             </div>
         </div>
 
-        <!-- SUBMIT BUTTON -->
         <button class="btn-submit" id="submitBtn" onclick="submitPayment()" disabled>
             <span>📤</span>
             <span>Kirim Bukti Pembayaran</span>
         </button>
 
-        <!-- SUCCESS STATE -->
         <div class="success-state" id="successState">
             <div class="success-icon">✅</div>
             <h2 class="success-title">Pembayaran Berhasil Dikirim!</h2>
@@ -594,20 +506,14 @@
                 Proses verifikasi memakan waktu maksimal 1x24 jam. 
                 Anda akan mendapat notifikasi setelah pembayaran dikonfirmasi.
             </p>
-            <a href="dashboard.html" class="btn-dashboard">
-                🏠 Ke Dashboard
-            </a>
+            <a href="dashboard.html" class="btn-dashboard">🏠 Ke Dashboard</a>
         </div>
 
     </div>
 
-    <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
-    <!-- API BRIDGE -->
     <script src="js/api.js"></script>
-    
-    <!-- PAYMENT LOGIC -->
     <script src="js/payment.js"></script>
 
 </body>

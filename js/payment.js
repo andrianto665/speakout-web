@@ -1,306 +1,245 @@
-/**
- * Payment Page Logic
- * Handle payment info, method selection, file upload, and submission
- */
-
 // Global variables
 let enrollmentId = null;
+let enrollmentData = null;
 let selectedMethod = null;
 let selectedFile = null;
-let paymentData = null;
 
-// Payment methods configuration
-const PAYMENT_METHODS = {
-    dana: {
-        name: 'DANA',
-        number: '0812-3456-7890',
-        holder: 'LKP PalComTech',
-        icon: '💙'
-    },
-    gopay: {
-        name: 'GoPay',
-        number: '0812-3456-7890',
-        holder: 'LKP PalComTech',
-        icon: '💚'
-    },
-    qris: {
-        name: 'QRIS',
-        description: 'Scan QR Code dari semua e-wallet & m-banking',
-        icon: '📱'
-    },
-    bank_transfer: {
-        name: 'Transfer Bank',
-        bank: 'Bank Mandiri',
-        number: '123-000-1234-567',
-        holder: 'LKP PalComTech',
-        icon: '🏦'
-    }
-};
-
-// ============================================
-// INITIALIZATION
-// ============================================
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Payment page loaded');
-    
-    // Check authentication
-    if (!api.isLoggedIn()) {
-        window.location.href = 'login.html';
-        return;
-    }
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('💰 Payment page loaded');
     
     // Get enrollment ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     enrollmentId = urlParams.get('enrollment_id');
     
+    console.log('🔍 Enrollment ID from URL:', enrollmentId);
+    
     if (!enrollmentId) {
-        showToast('Enrollment ID tidak ditemukan', 'error');
+        console.error('❌ Enrollment ID tidak ditemukan di URL');
+        showToast('❌ Enrollment ID tidak ditemukan', 'error');
         setTimeout(() => window.location.href = 'dashboard.html', 2000);
         return;
     }
     
     // Load payment data
-    loadPaymentData();
+    await loadPaymentData();
     
     // Setup file input
     setupFileInput();
 });
 
-// ============================================
-// API FUNCTIONS
-// ============================================
-
-/**
- * Load payment info from API
- */
 async function loadPaymentData() {
     try {
-        const token = api.getToken();
-        const response = await fetch(`http://127.0.0.1:8000/api/user/enrollments/${enrollmentId}/payment-info`, {
+        const token = localStorage.getItem('speakout_token');
+        if (!token) {
+            showToast('❌ Silakan login terlebih dahulu', 'error');
+            setTimeout(() => window.location.href = 'login.html', 2000);
+            return;
+        }
+
+        console.log('📡 Fetching payment data for enrollment:', enrollmentId);
+        
+        const response = await fetch(`${API_BASE}/user/enrollments/${enrollmentId}/payment-info`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
             }
         });
-        
+
+        console.log('📥 Response status:', response.status);
+
+        // Hide loading overlay
+        document.getElementById('loadingOverlay').style.display = 'none';
+
+        // Handle error response
         if (!response.ok) {
-            throw new Error('Gagal memuat data pembayaran');
+            const errorData = await response.json().catch(() => ({}));
+            console.error('❌ Error response:', errorData);
+            
+            if (response.status === 404) {
+                showToast('❌ Enrollment tidak ditemukan. Silakan daftar ulang.', 'error');
+                setTimeout(() => window.location.href = 'dashboard.html', 3000);
+                return;
+            }
+            
+            throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
         }
-        
+
         const data = await response.json();
-        
-        if (data.success) {
-            paymentData = data;
+
+        if (data.success && data.enrollment) {
+            enrollmentData = data.enrollment;
+            paymentMethods = data.payment_methods || {};
             renderPaymentInfo();
+            renderPaymentMethods();
         } else {
-            throw new Error(data.message || 'Gagal memuat data');
+            throw new Error(data.message || 'Gagal memuat data pembayaran');
         }
-        
+
     } catch (error) {
-        console.error('Error loading payment data:', error);
-        showToast(error.message, 'error');
+        console.error('❌ Error loading payment data:', error);
         
-        // If enrollment not found or already paid, redirect to dashboard
-        if (error.message.includes('not found')) {
-            setTimeout(() => window.location.href = 'dashboard.html', 2000);
-        }
+        // Hide loading overlay
+        document.getElementById('loadingOverlay').style.display = 'none';
+        
+        // Show error message
+        const errorMessage = error.message || 'Gagal memuat data enrollment. Silakan coba lagi.';
+        alert(errorMessage);
+        
+        // Redirect to dashboard after 3 seconds
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 3000);
     }
 }
 
-/**
- * Render payment information to DOM
- */
 function renderPaymentInfo() {
-    const { enrollment, payment_methods } = paymentData;
+    if (!enrollmentData) return;
     
-    // Update status banner
-    updateStatusBanner(enrollment.status);
+    const amount = enrollmentData.amount || 0;
+    const status = enrollmentData.status || 'pending';
     
     // Update course info
-    document.getElementById('courseName').textContent = enrollment.course_title;
-    document.getElementById('coursePrice').textContent = formatRupiah(enrollment.amount);
+    document.getElementById('courseName').textContent = enrollmentData.course_title || 'Course tidak ditemukan';
+    document.getElementById('courseInstructor').textContent = `👨‍🏫 Instructor: ${enrollmentData.course_instructor || '-'}`;
+    document.getElementById('coursePrice').textContent = `Rp ${parseInt(amount).toLocaleString('id-ID')}`;
     
-    // ✅ TAMBAH INI: Update instructor name
-    const instructorEl = document.getElementById('courseInstructor');
-    if (instructorEl) {
-        instructorEl.textContent = '👨‍🏫 Instructor: ' + (enrollment.course_instructor || '-');
-    }
+    // Update status banner
+    const statusBanner = document.getElementById('statusBanner');
+    const statusTitle = document.getElementById('statusTitle');
+    const statusMessage = document.getElementById('statusMessage');
     
-    // Render payment methods
-    renderPaymentMethods(payment_methods);
+    statusBanner.style.display = 'flex';
+    statusBanner.className = 'status-banner';
     
-    // Hide loading overlay
-    document.getElementById('loadingOverlay').style.display = 'none';
-    
-    // If already paid, show success state
-    if (enrollment.status === 'paid') {
-        showSuccessState();
-    }
-}
-
-/**
- * Update status banner based on payment status
- */
-function updateStatusBanner(status) {
-    const banner = document.getElementById('statusBanner');
-    const icon = banner.querySelector('.status-icon');
-    const title = document.getElementById('statusTitle');
-    const message = document.getElementById('statusMessage');
-    
-    banner.style.display = 'flex';
-    banner.className = 'status-banner';
-    
-    switch(status) {
-        case 'pending':
-            banner.classList.add('pending');
-            icon.textContent = '⏳';
-            title.textContent = 'Menunggu Pembayaran';
-            message.textContent = 'Silakan pilih metode pembayaran dan upload bukti transfer';
-            break;
-        case 'paid':
-            banner.classList.add('paid');
-            icon.textContent = '✅';
-            title.textContent = 'Pembayaran Dikonfirmasi';
-            message.textContent = 'Terima kasih! Kursus Anda sudah aktif dan bisa diakses';
-            break;
-        case 'rejected':
-            banner.classList.add('rejected');
-            icon.textContent = '❌';
-            title.textContent = 'Pembayaran Ditolak';
-            message.textContent = 'Silakan hubungi admin untuk informasi lebih lanjut';
-            break;
+    if (status === 'paid') {
+        statusBanner.classList.add('paid');
+        statusTitle.textContent = '✅ Pembayaran Sudah Dikonfirmasi';
+        statusMessage.textContent = 'Course sudah aktif. Anda dapat mengakses materi pembelajaran.';
+        
+        // Hide payment sections
+        document.getElementById('paymentMethods').style.display = 'none';
+        document.getElementById('paymentDetails').style.display = 'none';
+        document.getElementById('uploadSection').style.display = 'none';
+        document.getElementById('submitBtn').style.display = 'none';
+        
+    } else if (status === 'rejected') {
+        statusBanner.classList.add('rejected');
+        statusTitle.textContent = '❌ Pembayaran Ditolak';
+        statusMessage.textContent = 'Pembayaran ditolak. Silakan upload ulang bukti pembayaran.';
+        
+    } else {
+        statusBanner.classList.add('pending');
+        statusTitle.textContent = '⏳ Menunggu Pembayaran';
+        statusMessage.textContent = 'Silakan pilih metode pembayaran dan upload bukti transfer';
     }
 }
 
-/**
- * Render payment methods grid
- */
-function renderPaymentMethods(methods) {
+function renderPaymentMethods() {
+    if (!enrollmentData || enrollmentData.payment_status === 'paid') return;
+    
+    const methods = [
+        { id: 'dana', name: 'DANA', icon: '💙', number: '0812-3456-7890', holder: 'LKP PalComTech' },
+        { id: 'gopay', name: 'GoPay', icon: '💚', number: '0812-3456-7890', holder: 'LKP PalComTech' },
+        { id: 'qris', name: 'QRIS', icon: '📱', number: 'Scan QR Code', holder: 'LKP PalComTech' },
+        { id: 'bank_transfer', name: 'Transfer Bank', icon: '🏦', number: '123-000-1234-567', holder: 'BCA - LKP PalComTech' }
+    ];
+
     const container = document.getElementById('paymentMethods');
-    container.innerHTML = '';
-    
-    Object.keys(methods).forEach(key => {
-        const method = methods[key];
-        const card = document.createElement('div');
-        card.className = 'payment-method';
-        card.onclick = () => selectPaymentMethod(key);
-        card.innerHTML = `
+    container.innerHTML = methods.map(method => `
+        <div class="payment-method" onclick="selectPaymentMethod('${method.id}')">
             <div class="payment-method-icon">${method.icon}</div>
             <div class="payment-method-name">${method.name}</div>
-            ${method.number ? `<div class="payment-method-detail">${method.number}</div>` : ''}
-        `;
-        container.appendChild(card);
-    });
+            <div class="payment-method-detail">${method.holder}</div>
+        </div>
+    `).join('');
 }
 
-// ============================================
-// PAYMENT METHOD SELECTION
-// ============================================
-
-/**
- * Handle payment method selection
- */
-function selectPaymentMethod(method) {
-    selectedMethod = method;
+function selectPaymentMethod(methodId) {
+    selectedMethod = methodId;
     
-    // Update UI - remove selected from all, add to clicked
-    document.querySelectorAll('.payment-method').forEach(card => {
-        card.classList.remove('selected');
+    // Update UI
+    document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('selected');
     });
-    event.currentTarget.classList.add('selected');
+    event.target.closest('.payment-method').classList.add('selected');
     
     // Show payment details
-    showPaymentDetails(method);
+    const methods = {
+        'dana': { name: 'DANA', number: '0812-3456-7890', holder: 'LKP PalComTech' },
+        'gopay': { name: 'GoPay', number: '0812-3456-7890', holder: 'LKP PalComTech' },
+        'qris': { name: 'QRIS', number: 'Scan QR Code', holder: 'LKP PalComTech' },
+        'bank_transfer': { name: 'Transfer Bank', number: '123-000-1234-567', holder: 'BCA - LKP PalComTech' }
+    };
     
-    // Show upload section
+    const method = methods[methodId];
+    const amount = enrollmentData.amount || enrollmentData.amount_paid || 0;
+    
+    document.getElementById('detailMethod').textContent = method.name;
+    document.getElementById('detailNumber').textContent = method.number;
+    document.getElementById('detailHolder').textContent = method.holder;
+    document.getElementById('detailAmount').textContent = `Rp ${parseInt(amount).toLocaleString('id-ID')}`;
+    
+    document.getElementById('paymentDetails').classList.add('show');
     document.getElementById('uploadSection').classList.add('show');
-    
-    // Scroll to upload section
-    document.getElementById('uploadSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-/**
- * Show payment details box
- */
-function showPaymentDetails(method) {
-    const details = PAYMENT_METHODS[method];
-    const box = document.getElementById('paymentDetails');
-    
-    document.getElementById('detailMethod').textContent = details.name;
-    document.getElementById('detailNumber').textContent = details.number || details.bank || '-';
-    document.getElementById('detailHolder').textContent = details.holder || details.name_holder || '-';
-    document.getElementById('detailAmount').textContent = formatRupiah(paymentData.enrollment.amount);
-    
-    box.classList.add('show');
+function copyNumber() {
+    const number = document.getElementById('detailNumber').textContent;
+    navigator.clipboard.writeText(number).then(() => {
+        showToast('✅ Nomor disalin!', 'success');
+    }).catch(() => {
+        showToast('❌ Gagal menyalin', 'error');
+    });
 }
 
-// ============================================
-// FILE UPLOAD HANDLING
-// ============================================
-
-/**
- * Setup file input event listeners
- */
 function setupFileInput() {
     const fileInput = document.getElementById('fileInput');
     const uploadArea = document.getElementById('uploadArea');
     
-    // Click to upload
     fileInput.addEventListener('change', function(e) {
-        handleFileSelect(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) handleFileSelect(file);
     });
     
     // Drag and drop
     uploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
-        uploadArea.style.borderColor = 'var(--purple)';
-        uploadArea.style.background = 'rgba(139,44,152,0.1)';
+        uploadArea.classList.add('has-file');
     });
     
-    uploadArea.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        uploadArea.style.borderColor = 'rgba(139,44,152,0.4)';
-        uploadArea.style.background = 'rgba(139,44,152,0.04)';
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('has-file');
     });
     
     uploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
-        uploadArea.style.borderColor = 'rgba(139,44,152,0.4)';
-        uploadArea.style.background = 'rgba(139,44,152,0.04)';
+        uploadArea.classList.remove('has-file');
         
         const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('image/')) {
-            handleFileSelect(file);
-        } else {
-            showToast('File harus berupa gambar (JPG/PNG)', 'error');
-        }
+        if (file) handleFileSelect(file);
     });
 }
 
-/**
- * Handle file selection
- */
 function handleFileSelect(file) {
-    if (!file) return;
-    
     // Validate file type
     if (!file.type.startsWith('image/')) {
-        showToast('File harus berupa gambar (JPG/PNG)', 'error');
+        showToast('❌ File harus berupa gambar (JPG/PNG)', 'error');
         return;
     }
     
     // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-        showToast('Ukuran file maksimal 2MB', 'error');
+        showToast('❌ Ukuran file maksimal 2MB', 'error');
         return;
     }
     
     selectedFile = file;
     
-    // Show file preview
+    // Update UI
     document.getElementById('fileName').textContent = file.name;
-    document.getElementById('fileSize').textContent = formatFileSize(file.size);
+    document.getElementById('fileSize').textContent = `${(file.size / 1024).toFixed(1)} KB`;
     document.getElementById('filePreview').classList.add('show');
     document.getElementById('uploadArea').classList.add('has-file');
     
@@ -308,9 +247,6 @@ function handleFileSelect(file) {
     document.getElementById('submitBtn').disabled = false;
 }
 
-/**
- * Remove selected file
- */
 function removeFile() {
     selectedFile = null;
     document.getElementById('fileInput').value = '';
@@ -319,121 +255,73 @@ function removeFile() {
     document.getElementById('submitBtn').disabled = true;
 }
 
-// ============================================
-// SUBMIT PAYMENT
-// ============================================
-
-/**
- * Submit payment proof
- */
 async function submitPayment() {
     if (!selectedMethod) {
-        showToast('Pilih metode pembayaran terlebih dahulu', 'error');
+        showToast('⚠️ Pilih metode pembayaran terlebih dahulu', 'error');
         return;
     }
     
     if (!selectedFile) {
-        showToast('Upload bukti pembayaran terlebih dahulu', 'error');
+        showToast('⚠️ Upload bukti pembayaran terlebih dahulu', 'error');
         return;
     }
     
-    const submitBtn = document.getElementById('submitBtn');
-    const originalText = submitBtn.innerHTML;
-    
-    // Disable button and show loading
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span>⏳</span><span>Mengirim...</span>';
+    const btn = document.getElementById('submitBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span><span>Mengupload...</span>';
     
     try {
-        // Create FormData
+        const token = localStorage.getItem('speakout_token');
         const formData = new FormData();
         formData.append('payment_method', selectedMethod);
         formData.append('payment_proof', selectedFile);
         
-        const token = api.getToken();
-        const response = await fetch(`http://127.0.0.1:8000/api/user/enrollments/${enrollmentId}/upload-payment`, {
+        const response = await fetch(`${API_BASE}/user/enrollments/${enrollmentId}/upload-payment`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'ngrok-skip-browser-warning': 'true'
+                // Don't set Content-Type, let browser set it with boundary
             },
             body: formData
         });
         
-        const data = await response.json();
+        const result = await response.json();
         
-        if (!response.ok) {
-            throw new Error(data.message || 'Gagal upload bukti pembayaran');
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Gagal upload bukti pembayaran');
         }
         
-        // Success
-        showToast('Bukti pembayaran berhasil dikirim!', 'success');
-        showSuccessState();
+        // Show success state
+        showToast('✅ Pembayaran berhasil dikirim!', 'success');
+        document.getElementById('loadingOverlay').style.display = 'none';
+        document.getElementById('statusBanner').className = 'status-banner pending';
+        document.getElementById('statusBanner').style.display = 'flex';
+        document.getElementById('statusTitle').textContent = '⏳ Menunggu Konfirmasi';
+        document.getElementById('statusMessage').textContent = 'Bukti pembayaran sudah diupload. Menunggu konfirmasi admin.';
+        
+        // Hide payment sections
+        document.getElementById('paymentMethods').style.display = 'none';
+        document.getElementById('paymentDetails').style.display = 'none';
+        document.getElementById('uploadSection').style.display = 'none';
+        document.getElementById('submitBtn').style.display = 'none';
+        
+        // Show success message
+        document.querySelector('.page-subtitle').textContent = 'Pembayaran Anda sedang diverifikasi. Proses maksimal 1x24 jam.';
         
     } catch (error) {
         console.error('Error submitting payment:', error);
-        showToast(error.message, 'error');
-        
-        // Reset button
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
+        showToast(`❌ ${error.message}`, 'error');
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     }
 }
 
-/**
- * Show success state
- */
-function showSuccessState() {
-    // Hide form elements
-    document.getElementById('paymentMethods').style.display = 'none';
-    document.getElementById('paymentDetails').style.display = 'none';
-    document.getElementById('uploadSection').style.display = 'none';
-    document.getElementById('submitBtn').style.display = 'none';
-    
-    // Show success state
-    document.getElementById('successState').classList.add('show');
-    
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+function goBack() {
+    window.history.back();
 }
 
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
-
-/**
- * Format number to Rupiah
- */
-function formatRupiah(amount) {
-    return 'Rp ' + parseFloat(amount).toLocaleString('id-ID');
-}
-
-/**
- * Format file size
- */
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-}
-
-/**
- * Copy payment number to clipboard
- */
-function copyNumber() {
-    const number = document.getElementById('detailNumber').textContent;
-    navigator.clipboard.writeText(number).then(() => {
-        showToast('Nomor berhasil disalin', 'info');
-    }).catch(err => {
-        console.error('Failed to copy:', err);
-        showToast('Gagal menyalin', 'error');
-    });
-}
-
-/**
- * Show toast notification
- */
 function showToast(message, type = 'info') {
     const toast = document.getElementById('toast');
     toast.textContent = message;
@@ -442,11 +330,4 @@ function showToast(message, type = 'info') {
     setTimeout(() => {
         toast.classList.remove('show');
     }, 3000);
-}
-
-/**
- * Go back to dashboard
- */
-function goBack() {
-    window.location.href = 'dashboard.html';
 }
