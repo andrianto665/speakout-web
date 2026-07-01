@@ -67,7 +67,8 @@ async function checkPaymentStatus(courseId) {
         const res = await fetch(`${API_BASE_URL}/user/enrollments`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
             }
         });
 
