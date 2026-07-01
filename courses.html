@@ -710,11 +710,13 @@
             const baseUrl = getBaseUrl();
             
             courses.forEach(course => {
-                // ✅ PERBAIKAN: Gunakan baseUrl dinamis untuk gambar
+                // ✅ FIX 1: gambar default pakai path lokal (tanpa baseUrl)
                 const imgUrl = course.thumbnail?.trim()
                     ? `${baseUrl}/${course.thumbnail}`
-                    : `${baseUrl}/assets/courses/` + (courseImages[course.title] || 'default.png');
-                const hasThumbnail = !!course.thumbnail?.trim();
+                    : `assets/courses/` + (courseImages[course.title] || 'default.png');
+
+                // ✅ FIX 2: hasImage juga true kalau ada di courseImages mapping
+                const hasImage = !!course.thumbnail?.trim() || !!courseImages[course.title];
 
                 const isEnrolled = typeof api !== 'undefined' && api.isLoggedIn() && course.is_enrolled;
                 const isFree = !course.price || course.price === 0;
@@ -726,8 +728,8 @@
                 const card = document.createElement('div');
                 card.className = 'course-card';
                 card.innerHTML = `
-                    <div class="course-image ${!hasThumbnail ? 'no-image' : ''}">
-                        ${hasThumbnail
+                    <div class="course-image ${!hasImage ? 'no-image' : ''}">
+                        ${hasImage
                             ? `<img src="${imgUrl}" alt="${esc(course.title)}" loading="lazy" onerror="this.parentElement.classList.add('no-image');this.remove();">`
                             : `<div class="course-placeholder">${esc(course.title)}</div>`}
                         <span class="course-badge">Premium</span>
