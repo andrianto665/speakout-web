@@ -742,12 +742,12 @@
             try {
                 console.log('🔍 DEBUG courseId yang mau dikirim:', courseId);
                 
-                // ✅ GANTI: Panggil API langsung, bukan pakai api.register()
-                const response = await fetch('http://127.0.0.1:8000/api/auth/register', {
+                const response = await fetch(`${API_BASE}/auth/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
                     },
                     body: JSON.stringify({
                         name: name,
