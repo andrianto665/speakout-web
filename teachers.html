@@ -573,7 +573,7 @@
                 const expertise = teacher.expertise || [];
 
                 // ✅ FIX: Gunakan api.getAssetUrl() untuk gambar
-                const photoUrl = api.getAssetUrl(photoPath);
+                const photoUrl = photoPath;
 
                 const card = document.createElement('div');
                 card.className = 'teacher-card';
