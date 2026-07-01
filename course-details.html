@@ -691,7 +691,8 @@
             const res = await fetch(`${API_BASE}/user/enrollments`, {
                 headers: { 
                     'Authorization': `Bearer ${token}`, 
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
                 }
             });
             
