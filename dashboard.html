@@ -925,14 +925,14 @@
                     <div class="locked-subtext">Selesaikan pembayaran untuk mengakses materi</div>
                 </div>` : '';
 
-            const thumbnailUrl = course.thumbnail ? api.getAssetUrl(course.thumbnail) : '';
+            const thumbnailUrl = course.thumbnail || '';
 
             const card = document.createElement('div');
             card.className = `course-card ${isCompleted ? 'completed' : 'in-progress'} ${isLocked ? 'locked' : ''}`;
             card.style.position = 'relative';
             card.innerHTML = `
                 <div class="course-thumb" style="position:relative;">
-                    ${thumbnailUrl ? `<img src="${thumbnailUrl}" alt="${esc(course.title)}" onerror="this.style.display='none'">` : '📚'}
+                    ${thumbnailUrl ? `<img src="${thumbnailUrl}" alt="${esc(course.title)}" onerror="this.src='assets/courses/default.png';this.onerror=null;">` : '📚'}
                     <span class="course-badge ${isLocked ? '' : (isCompleted ? 'completed' : 'in-progress')}" 
                         style="${isLocked ? 'background:var(--warning);color:#0d0d18;' : ''}">
                         ${badgeText}
@@ -1137,14 +1137,14 @@
                     <div class="locked-subtext">Selesaikan pembayaran untuk mengakses materi</div>
                 </div>` : '';
 
-            const thumbnailUrl = course.thumbnail ? api.getAssetUrl(course.thumbnail) : '';
+            const thumbnailUrl = course.thumbnail || '';
 
             const card = document.createElement('div');
             card.className = `course-card ${statusClass} ${isLocked ? 'locked' : ''}`;
             card.style.position = 'relative';
             card.innerHTML = `
                 <div class="course-thumb" style="position:relative;">
-                    ${thumbnailUrl ? `<img src="${thumbnailUrl}" alt="${esc(course.title)}" onerror="this.style.display='none'">` : '📚'}
+                    ${thumbnailUrl ? `<img src="${thumbnailUrl}" alt="${esc(course.title)}" onerror="this.src='assets/courses/default.png';this.onerror=null;">` : '📚'}
                     <span class="course-badge ${isLocked ? '' : statusClass}" 
                         style="${isLocked ? 'background:var(--warning);color:#0d0d18;' : ''}">
                         ${badgeText}
