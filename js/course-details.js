@@ -229,9 +229,8 @@ async function loadCourseDetails(courseId) {
         loadCompletedMeetings(courseId);
         renderCourseMeta(data);
         updateCourseProgressBar();
-        await preloadQuizTypes(data.meetings || []);
         renderMeetings(data.meetings || []);
-        
+
     } catch (error) {
         console.error('❌ Error loading course:', error);
         if (meetingList) {
@@ -241,38 +240,6 @@ async function loadCourseDetails(courseId) {
     }
 }
 
-/*
-========================================
-🔍 PRELOAD QUIZ TYPES (untuk numbering sidebar)
-========================================
-*/
-window.quizTypeMap = {}; // quiz_id -> 'duolingo' | 'text'
-
-async function preloadQuizTypes(meetings) {
-    const token = getAuthToken();
-    const quizMeetings = meetings.filter(m => m.quiz_id);
-
-    await Promise.all(quizMeetings.map(async (m) => {
-        if (window.quizTypeMap[m.quiz_id]) return;
-        try {
-            const res = await fetch(`${API_BASE_URL}/quizzes/${m.quiz_id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    'ngrok-skip-browser-warning': 'true'
-                }
-            });
-            if (!res.ok) return;
-            const quiz = await res.json();
-            const questions = quiz.questions || [];
-            const hasDuolingo = questions.some(q => ['image', 'translation', 'fillblank'].includes(q.question_type));
-            const hasText = questions.some(q => q.question_type === 'text' || !q.question_type);
-            window.quizTypeMap[m.quiz_id] = (hasDuolingo && !hasText) ? 'duolingo' : 'text';
-        } catch (err) {
-            console.warn('⚠️ Gagal cek tipe quiz', m.quiz_id, err);
-        }
-    }));
-}
 
 /*
 ========================================
@@ -287,8 +254,6 @@ function renderMeetings(meetings) {
 
     const sortedMeetings = [...meetings].sort((a, b) => (a.order_number || 0) - (b.order_number || 0));
     meetingList.innerHTML = '';
-
-    let lessonCounter = 0; // ✅ counter khusus lesson & quiz text (folder & quiz duolingo dilewati)
 
     sortedMeetings.forEach((meeting, index) => {
         const meetingEl = document.createElement('div');
@@ -308,17 +273,7 @@ function renderMeetings(meetings) {
         else if (meeting.quiz_id) typeIcon = '✍️';
         else if (!meeting.content || meeting.content.trim() === '') typeIcon = '📁';
 
-        // ✅ Nomor urut hanya untuk lesson & quiz text (bukan folder, bukan quiz duolingo)
-        const isFolder = typeIcon === '📁';
-        const isDuolingoQuiz = meeting.quiz_id && window.quizTypeMap?.[meeting.quiz_id] === 'duolingo';
-        let numberBadge = '';
-        if (!isFolder && !isDuolingoQuiz) {
-            lessonCounter++;
-            numberBadge = `<span class="meeting-number">${lessonCounter}.</span>`;
-        }
-
         meetingEl.innerHTML = `
-            ${numberBadge}
             <span class="meeting-icon">${typeIcon}</span>
             <span style="flex:1;">${escapeHtml(meeting.title || `Pertemuan ${index + 1}`)}${checkmark}</span>
         `;
