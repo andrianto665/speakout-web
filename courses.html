@@ -712,9 +712,10 @@
             
             courses.forEach(course => {
                 // ✅ FIX 1: gambar default pakai path lokal (tanpa baseUrl)
+                const fallbackImg = `assets/courses/` + (courseImages[course.title] || 'default.png');
                 const imgUrl = course.thumbnail?.trim()
                     ? `${baseUrl}/${course.thumbnail}`
-                    : `assets/courses/` + (courseImages[course.title] || 'default.png');
+                    : fallbackImg;
 
                 // ✅ FIX 2: hasImage juga true kalau ada di courseImages mapping
                 const hasImage = !!course.thumbnail?.trim() || !!courseImages[course.title];
@@ -731,7 +732,7 @@
                 card.innerHTML = `
                     <div class="course-image ${!hasImage ? 'no-image' : ''}">
                         ${hasImage
-                            ? `<img src="${imgUrl}" alt="${esc(course.title)}" loading="lazy" onerror="this.parentElement.classList.add('no-image');this.remove();">`
+                            ? `<img src="${imgUrl}" alt="${esc(course.title)}" loading="lazy" onerror="this.src='${fallbackImg}';this.onerror=null;">`
                             : `<div class="course-placeholder">${esc(course.title)}</div>`}
                         <span class="course-badge">Premium</span>
                         ${course.level ? `<span class="course-level-badge">${esc(course.level)}</span>` : ''}
