@@ -319,7 +319,7 @@ async function submitPayment() {
 }
 
 function goBack() {
-    window.location.href = 'login.html';
+    api.logout();
 }
 
 function showToast(message, type = 'info') {
