@@ -1,6 +1,7 @@
 {
   "name": "SpeakOut - Ngomong Inggris Jadi Mudah",
   "short_name": "SpeakOut",
+  "id": "/speakout-web/",
   "description": "Kursus Bahasa Inggris Online - Belajar Conversation, TOEFL, dan English untuk Profesional. Jadwal fleksibel!",
   "start_url": "./index.html",
   "display": "standalone",
