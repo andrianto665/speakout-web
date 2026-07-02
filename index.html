@@ -16,7 +16,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SpeakOut">
-    <link rel="apple-touch-icon" href="/images/icon-192.png">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
 
     <style>
         /* ===== RESET & ROOT ===== */
@@ -974,5 +974,16 @@
     <!-- Favorites & Notifications (tetap dipertahankan) -->
     <script src="js/favorites.js"></script>
     <script src="js/notification.js"></script>
+    <script src="js/app.js"></script>  <!-- ✅ tambahkan ini, ganti inline script -->
+    <!-- ✅ TAMBAHKAN INI -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('[PWA] SW registered:', reg.scope))
+            .catch(err => console.error('[PWA] SW registration failed:', err));
+        });
+    }
+    </script>
 </body>
 </html>

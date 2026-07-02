@@ -4,14 +4,17 @@ const API_ORIGINS = ['http://127.0.0.1:8000', 'http://10.0.2.2:8000']
 
 // File statis yang boleh di-cache (aset saja, BUKAN html)
 const STATIC_ASSETS = [
-  '/manifest.json',
-  '/images/icon-192.png',
-  '/images/icon-512.png',
-  '/css/main.css',
-  '/css/courses.css',
-  '/css/teachers.css',
-  '/js/app.js',
-  '/js/splash.js'
+  'manifest.json',
+  'offline.html',
+  'images/icon-192.png',
+  'images/icon-512.png',
+  'css/main.css',
+  'css/courses.css',
+  'css/teachers.css',
+  'js/app.js',
+  'js/splash.js',
+  'js/favorites.js',
+  'js/notification.js'
 ];
 
 // Install
@@ -71,12 +74,12 @@ self.addEventListener('fetch', event => {
         })
         .catch(() => {
           // Offline fallback: sajikan dari cache kalau network mati
-          return caches.match(event.request);
+          return caches.match(event.request).then(cached => cached || caches.match('offline.html'));
         })
     );
     return;
   }
-  if (url.pathname === '/js/api.js') {
+  if (url.pathname.endsWith('/js/api.js')) {
     event.respondWith(fetch(event.request));
     return;
 }
