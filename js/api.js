@@ -622,6 +622,37 @@ const api = {
 };
 
 // ============================================================================
+// 🔑 GOOGLE OAUTH CALLBACK HANDLER
+// Baca token & user dari URL (?token=...&user=...) lalu simpan ke localStorage
+// Harus dijalankan SEBELUM blok PAGE PROTECTION di bawah ini
+// ============================================================================
+
+(function handleGoogleOAuthRedirect() {
+    const params = new URLSearchParams(window.location.search);
+    const tokenFromUrl = params.get('token');
+    const userFromUrl = params.get('user');
+
+    if (tokenFromUrl && userFromUrl) {
+        try {
+            const userData = JSON.parse(decodeURIComponent(userFromUrl));
+
+            api.clearUserData();
+            localStorage.setItem('speakout_token', tokenFromUrl);
+            localStorage.setItem('speakout_user', JSON.stringify(userData));
+
+            console.log('✅ Google login berhasil, token tersimpan');
+
+            // Bersihkan URL supaya token tidak nyangkut di address bar
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+
+        } catch (e) {
+            console.error('❌ Gagal parsing data user dari Google redirect:', e);
+        }
+    }
+})();
+
+// ============================================================================
 // 🔒 PAGE PROTECTION
 // ============================================================================
 

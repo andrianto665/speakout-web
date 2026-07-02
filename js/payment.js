@@ -114,15 +114,17 @@ function renderPaymentInfo() {
     statusBanner.className = 'status-banner';
     
     if (status === 'paid') {
-        statusBanner.classList.add('paid');
-        statusTitle.textContent = '✅ Pembayaran Sudah Dikonfirmasi';
-        statusMessage.textContent = 'Course sudah aktif. Anda dapat mengakses materi pembelajaran.';
-        
-        // Hide payment sections
-        document.getElementById('paymentMethods').style.display = 'none';
-        document.getElementById('paymentDetails').style.display = 'none';
-        document.getElementById('uploadSection').style.display = 'none';
-        document.getElementById('submitBtn').style.display = 'none';
+    statusBanner.classList.add('paid');
+    statusTitle.textContent = '✅ Pembayaran Sudah Dikonfirmasi';
+    statusMessage.textContent = 'Course sudah aktif. Anda dapat mengakses materi pembelajaran.';
+    
+    // Hide payment sections
+    document.getElementById('paymentMethodsTitle').style.display = 'none';   // ✅ TAMBAHKAN
+    document.getElementById('paymentMethods').style.display = 'none';
+    document.getElementById('paymentDetails').style.display = 'none';
+    document.getElementById('uploadSection').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('successDashboardBtn').style.display = 'block';  // ✅ TAMBAHKAN
         
     } else if (status === 'rejected') {
         statusBanner.classList.add('rejected');
@@ -140,6 +142,7 @@ function renderPaymentMethods() {
     if (!enrollmentData || enrollmentData.payment_status === 'paid') return;
     
     const methods = [
+        { id: 'midtrans', name: 'Bayar Otomatis', icon: '🚀', number: '', holder: 'VA, E-wallet, Kartu (Instan)' },
         { id: 'dana', name: 'DANA', icon: '💙', number: '0812-3456-7890', holder: 'LKP PalComTech' },
         { id: 'gopay', name: 'GoPay', icon: '💚', number: '0812-3456-7890', holder: 'LKP PalComTech' },
         { id: 'qris', name: 'QRIS', icon: '📱', number: 'Scan QR Code', holder: 'LKP PalComTech' },
@@ -159,13 +162,21 @@ function renderPaymentMethods() {
 function selectPaymentMethod(methodId) {
     selectedMethod = methodId;
     
-    // Update UI
     document.querySelectorAll('.payment-method').forEach(el => {
         el.classList.remove('selected');
     });
     event.target.closest('.payment-method').classList.add('selected');
     
-    // Show payment details
+    // ✅ Kalau pilih Midtrans, langsung proses otomatis (tidak pakai upload manual)
+    if (methodId === 'midtrans') {
+        document.getElementById('paymentDetails').classList.remove('show');
+        document.getElementById('uploadSection').classList.remove('show');
+        document.getElementById('submitBtn').style.display = 'none';
+        handleMidtransPayment();
+        return;
+    }
+    
+    // Alur manual (DANA/GoPay/QRIS/Bank Transfer) — tidak berubah
     const methods = {
         'dana': { name: 'DANA', number: '0812-3456-7890', holder: 'LKP PalComTech' },
         'gopay': { name: 'GoPay', number: '0812-3456-7890', holder: 'LKP PalComTech' },
@@ -183,6 +194,88 @@ function selectPaymentMethod(methodId) {
     
     document.getElementById('paymentDetails').classList.add('show');
     document.getElementById('uploadSection').classList.add('show');
+    document.getElementById('submitBtn').style.display = 'flex';
+}
+
+async function handleMidtransPayment() {
+    showToast('⏳ Menyiapkan pembayaran...', 'info');
+    
+    try {
+        const token = localStorage.getItem('speakout_token');
+        
+        const response = await fetch(`${API_BASE}/payment/create`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
+            },
+            body: JSON.stringify({ enrollment_id: enrollmentId })
+        });
+        
+        const result = await response.json();
+        
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Gagal membuat transaksi pembayaran');
+        }
+        
+        const snapToken = result.data.snap_token;
+        
+        snap.pay(snapToken, {
+            onSuccess: function () {
+                showToast('✅ Pembayaran berhasil!', 'success');
+                syncPaymentStatus();
+            },
+            onPending: function () {
+                showToast('⏳ Menunggu pembayaran Anda diselesaikan...', 'info');
+            },
+            onError: function () {
+                showToast('❌ Pembayaran gagal, silakan coba lagi', 'error');
+            },
+            onClose: function () {
+                showToast('⚠️ Anda menutup jendela pembayaran', 'info');
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Error creating Midtrans payment:', error);
+        showToast(`❌ ${error.message}`, 'error');
+    }
+}
+
+function showMidtransSuccessState() {
+    document.getElementById('statusBanner').className = 'status-banner paid';
+    document.getElementById('statusBanner').style.display = 'flex';
+    document.getElementById('statusTitle').textContent = '✅ Pembayaran Berhasil';
+    document.getElementById('statusMessage').textContent = 'Course sudah aktif. Anda dapat mengakses materi pembelajaran.';
+    
+    document.getElementById('paymentMethodsTitle').style.display = 'none';  // ✅ TAMBAHKAN INI
+    document.getElementById('paymentMethods').style.display = 'none';
+    document.getElementById('paymentDetails').style.display = 'none';
+    document.getElementById('uploadSection').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('successDashboardBtn').style.display = 'block';
+    
+    document.querySelector('.page-subtitle').textContent = 'Terima kasih! Pembayaran Anda sudah diproses otomatis.';
+}
+
+async function syncPaymentStatus() {
+    try {
+        const token = localStorage.getItem('speakout_token');
+        await fetch(`${API_BASE}/payment/sync/${enrollmentId}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
+            }
+        });
+    } catch (e) {
+        console.error('Sync error:', e);
+    } finally {
+        showMidtransSuccessState();
+    }
 }
 
 function copyNumber() {

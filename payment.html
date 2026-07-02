@@ -11,6 +11,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Pembayaran - SpeakOut E-Course</title>
     <link rel="icon" type="image/png" href="images/icon-192.png">
+    <!-- Midtrans Snap -->
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="Mid-client-drql-zcUmnHxhpX7"></script>
     <link rel="shortcut icon" type="image/png" href="images/icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -447,7 +449,11 @@
             </div>
         </div>
 
-        <h3 class="section-title">💳 Pilih Metode Pembayaran</h3>
+        <a href="dashboard.html" id="successDashboardBtn" style="display:none; text-align:center; margin: 0 auto 24px; padding: 16px 32px; background: var(--purple); color: var(--white); border-radius: 12px; font-size: 15px; font-weight: 700; text-decoration: none; width: fit-content;">
+        🏠 Lanjut ke Dashboard
+        </a>
+
+        <h3 class="section-title" id="paymentMethodsTitle">💳 Pilih Metode Pembayaran</h3>
         <div class="payment-methods" id="paymentMethods"></div>
 
         <div class="payment-details-box" id="paymentDetails">

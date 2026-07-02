@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kwitansi Pembayaran — SpeakOut</title>
+<link rel="icon" type="image/png" href="images/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+        --purple: #8B2C98;
+        --orange: #FF5500;
+        --dark: #0d0d18;
+        --gray: #6a6a80;
+        --gray-light: #a0a0b8;
+        --border: #d8d8e0;
+    }
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: #e8e8ec;
+        color: #1a1a2e;
+        padding: 32px 16px;
+        line-height: 1.5;
+    }
+
+    /* ===== TOOLBAR (hidden on print) ===== */
+    .toolbar {
+        max-width: 620px;
+        margin: 0 auto 16px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    .btn {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 10px 20px; border-radius: 10px;
+        font-size: 13px; font-weight: 600;
+        border: none; cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: all 0.2s;
+    }
+    .btn-print { background: var(--purple); color: white; }
+    .btn-print:hover { background: var(--orange); }
+    .btn-back { background: white; color: var(--gray); border: 1px solid var(--border); }
+    .btn-back:hover { color: var(--dark); }
+
+    /* ===== RECEIPT ===== */
+    .receipt {
+        max-width: 620px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 4px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+        overflow: hidden;
+    }
+    .receipt-head {
+        background: linear-gradient(135deg, var(--purple), var(--orange));
+        color: white;
+        padding: 28px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    .receipt-logo {
+        font-family: 'Playfair Display', serif;
+        font-size: 24px; font-weight: 900;
+    }
+    .receipt-logo-sub {
+        font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+        opacity: 0.85; margin-top: 3px;
+    }
+    .receipt-badge {
+        text-align: right;
+        font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+        opacity: 0.9;
+    }
+    .receipt-badge strong {
+        display: block; font-size: 15px; letter-spacing: 0.5px;
+        margin-top: 4px; font-family: 'Playfair Display', serif;
+    }
+
+    .receipt-body { padding: 32px; }
+
+    .meta-row {
+        display: flex; justify-content: space-between;
+        padding-bottom: 20px; margin-bottom: 20px;
+        border-bottom: 1px dashed var(--border);
+        font-size: 13px;
+    }
+    .meta-row div span { display: block; }
+    .meta-label { color: var(--gray); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+    .meta-value { font-weight: 700; color: var(--dark); font-size: 14px; }
+
+    .info-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+        margin-bottom: 24px;
+    }
+    .info-item .meta-label { margin-bottom: 4px; }
+    .info-item .meta-value { font-size: 14px; font-weight: 600; }
+
+    .amount-box {
+        background: #f7f4f9;
+        border: 1px solid #e8ddec;
+        border-radius: 10px;
+        padding: 20px 24px;
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 24px;
+    }
+    .amount-label { font-size: 13px; color: var(--gray); font-weight: 600; }
+    .amount-value {
+        font-family: 'Playfair Display', serif;
+        font-size: 26px; font-weight: 900; color: var(--purple);
+    }
+
+    .status-line {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 13px; font-weight: 700; color: #10b981;
+        margin-bottom: 32px;
+    }
+
+    .sign-row {
+        display: flex; justify-content: space-between;
+        margin-top: 40px; text-align: center;
+    }
+    .sign-box { width: 45%; }
+    .sign-label { font-size: 12px; color: var(--gray); margin-bottom: 56px; }
+    .sign-name { font-size: 13px; font-weight: 700; border-top: 1px solid var(--border); padding-top: 6px; }
+
+    .receipt-foot {
+        text-align: center; padding: 16px 32px 28px;
+        font-size: 11px; color: var(--gray-light);
+    }
+
+    .state-loading, .state-error {
+        max-width: 620px; margin: 60px auto; text-align: center; color: var(--gray);
+        font-size: 14px;
+    }
+    .spinner {
+        width: 32px; height: 32px; margin: 0 auto 14px;
+        border: 3px solid #e0e0e6; border-top-color: var(--purple);
+        border-radius: 50%; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media print {
+        body { background: white; padding: 0; }
+        .toolbar { display: none; }
+        .receipt { box-shadow: none; max-width: 100%; }
+    }
+</style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button class="btn btn-back" onclick="window.close()">← Tutup</button>
+        <button class="btn btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+    </div>
+
+    <div id="loadingState" class="state-loading">
+        <div class="spinner"></div>
+        Memuat data kwitansi...
+    </div>
+
+    <div id="errorState" class="state-error" style="display:none;"></div>
+
+    <div id="receiptWrap" class="receipt" style="display:none;">
+        <div class="receipt-head">
+            <div>
+                <div class="receipt-logo">SpeakOut</div>
+                <div class="receipt-logo-sub">English Course</div>
+            </div>
+            <div class="receipt-badge">
+                Kwitansi Pembayaran
+                <strong id="receiptNumber">—</strong>
+            </div>
+        </div>
+
+        <div class="receipt-body">
+            <div class="meta-row">
+                <div>
+                    <span class="meta-label">Tanggal</span>
+                    <span class="meta-value" id="receiptDate">—</span>
+                </div>
+                <div style="text-align:right;">
+                    <span class="meta-label">Metode Pembayaran</span>
+                    <span class="meta-value" id="receiptMethod">—</span>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="meta-label">Nama Siswa</div>
+                    <div class="meta-value" id="receiptName">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="meta-label">Email</div>
+                    <div class="meta-value" id="receiptEmail">—</div>
+                </div>
+                <div class="info-item" style="grid-column: 1 / -1;">
+                    <div class="meta-label">Course</div>
+                    <div class="meta-value" id="receiptCourse">—</div>
+                </div>
+            </div>
+
+            <div class="amount-box">
+                <span class="amount-label">Jumlah Dibayar</span>
+                <span class="amount-value" id="receiptAmount">Rp 0</span>
+            </div>
+
+            <div class="status-line">
+                <span>✅</span>
+                <span>Pembayaran telah dikonfirmasi dan diterima</span>
+            </div>
+
+            <div class="sign-row">
+                <div class="sign-box">
+                    <div class="sign-label">Siswa</div>
+                    <div class="sign-name" id="receiptNameSign">—</div>
+                </div>
+                <div class="sign-box">
+                    <div class="sign-label">Admin / Kasir</div>
+                    <div class="sign-name" id="receiptAdminName">—</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="receipt-foot">
+            Kwitansi ini dicetak otomatis oleh sistem SpeakOut E-Course &middot; Simpan sebagai bukti pembayaran yang sah
+        </div>
+    </div>
+
+    <script src="js/api.js?v=2.3.0"></script>
+    <script>
+        const API_BASE_URL = typeof API_BASE !== 'undefined' ? API_BASE : 'http://127.0.0.1:8000/api';
+
+        function getHeaders() {
+            const headers = {
+                'Accept': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
+            };
+            const token = localStorage.getItem('speakout_token');
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            return headers;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            return new Date(dateStr).toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+        }
+
+        const methodLabel = {
+            'dana': 'DANA',
+            'gopay': 'GoPay',
+            'qris': 'QRIS',
+            'bank_transfer': 'Transfer Bank',
+            'midtrans': 'Midtrans (Otomatis)',
+        };
+
+        async function loadReceipt() {
+            const params = new URLSearchParams(window.location.search);
+            const enrollmentId = params.get('enrollment_id');
+
+            if (!enrollmentId) {
+                showError('Enrollment ID tidak ditemukan di URL');
+                return;
+            }
+
+            try {
+                const r = await fetch(`${API_BASE_URL}/admin/payments/${enrollmentId}`, {
+                    headers: getHeaders()
+                });
+
+                if (!r.ok) {
+                    if (r.status === 401 || r.status === 403) {
+                        throw new Error('Sesi habis atau bukan admin. Silakan login ulang.');
+                    }
+                    throw new Error('Data pembayaran tidak ditemukan');
+                }
+
+                const result = await r.json();
+                if (!result.success) throw new Error(result.message || 'Gagal memuat data');
+
+                renderReceipt(result.data, enrollmentId);
+
+            } catch (err) {
+                showError(err.message);
+            }
+        }
+
+        function renderReceipt(p, enrollmentId) {
+            document.getElementById('receiptNumber').textContent = 'INV-' + String(enrollmentId).padStart(5, '0');
+            document.getElementById('receiptDate').textContent = formatDate(p.paid_at || p.enrolled_at);
+            document.getElementById('receiptMethod').textContent = methodLabel[p.payment_method] || p.payment_method || '—';
+            document.getElementById('receiptName').textContent = p.user?.name || '—';
+            document.getElementById('receiptEmail').textContent = p.user?.email || '—';
+            document.getElementById('receiptCourse').textContent = p.course?.title || '—';
+            document.getElementById('receiptAmount').textContent = 'Rp ' + parseInt(p.amount || 0).toLocaleString('id-ID');
+            document.getElementById('receiptNameSign').textContent = p.user?.name || '—';
+
+            const adminUser = api.getUser();
+            document.getElementById('receiptAdminName').textContent = adminUser?.name || 'Admin';
+
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('receiptWrap').style.display = 'block';
+        }
+
+        function showError(msg) {
+            document.getElementById('loadingState').style.display = 'none';
+            const el = document.getElementById('errorState');
+            el.textContent = '❌ ' + msg;
+            el.style.display = 'block';
+        }
+
+        loadReceipt();
+    </script>
+</body>
+</html>

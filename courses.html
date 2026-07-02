@@ -769,20 +769,63 @@
         }
 
         /* ===== ENROLL ===== */
-        function handleEnroll(courseId, btn, event) {
+        async function handleEnroll(courseId, btn, event) {
             event.stopPropagation();
 
             const course = allCourses.find(c => c.id === courseId);
             const courseTitle = course?.title || '';
             const encodedName = encodeURIComponent(courseTitle);
 
-            if (typeof api !== 'undefined' && api.isLoggedIn()) {
-                alert('Kamu sudah login. Hubungi admin untuk enrollment ke course baru.');
-                window.location.href = 'dashboard.html';
+            // Belum login → alur register + enroll sekaligus (tidak berubah)
+            if (typeof api === 'undefined' || !api.isLoggedIn()) {
+                window.location.href = `register.html?course_id=${courseId}&course_name=${encodedName}`;
                 return;
             }
 
-            window.location.href = `register.html?course_id=${courseId}&course_name=${encodedName}`;
+            // ✅ Sudah login → langsung buat enrollment baru lewat API
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⏳ Memproses...';
+
+            try {
+                const token = localStorage.getItem('speakout_token');
+                const response = await fetch(`${API_BASE}/user/enroll/${courseId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Gagal mendaftar course');
+                }
+
+                // ✅ Response backend selalu punya enrollment_id di level atas
+                const enrollmentId = result.enrollment_id;
+
+                if (!enrollmentId) {
+                    throw new Error('Enrollment ID tidak ditemukan di response');
+                }
+
+                // ✅ Kalau course gratis (langsung paid), tidak perlu ke halaman payment
+                if (result.payment_status === 'paid') {
+                    alert('Berhasil mendaftar! Course sudah aktif.');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    window.location.href = `payment.html?enrollment_id=${enrollmentId}`;
+                }
+
+            } catch (error) {
+                console.error('❌ Error enroll:', error);
+                alert(`Gagal mendaftar: ${error.message}`);
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
         }
 
         function esc(str) {
