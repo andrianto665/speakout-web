@@ -36,21 +36,21 @@
   "screenshots": [
     {
       "src": "./images/screenshot-home.png",
-      "sizes": "295x579",
+      "sizes": "750x1624",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Halaman Beranda SpeakOut"
     },
     {
       "src": "./images/screenshot-courses.png",
-      "sizes": "294x586",
+      "sizes": "750x1624",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Daftar Kursus SpeakOut"
     },
     {
       "src": "./images/screenshot-wide.png",
-      "sizes": "1280x720",
+      "sizes": "852x440",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Tampilan Desktop SpeakOut"
