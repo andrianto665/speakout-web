@@ -1,5 +1,6 @@
 // Service Worker untuk SpeakOut PWA
-const CACHE_NAME = 'speakout-v4';
+const CACHE_NAME = 'speakout-v5'; // ⬅️ dinaikkan dari v4, supaya cache lama otomatis dibersihkan
+const API_CACHE_NAME = 'speakout-api-v1'; // ⬅️ cache terpisah khusus response API
 const API_ORIGINS = ['http://127.0.0.1:8000', 'http://10.0.2.2:8000']
 
 // File statis yang boleh di-cache (aset saja, BUKAN html)
@@ -30,41 +31,61 @@ self.addEventListener('install', event => {
         console.log('[SW] Cache failed:', error);
       })
   );
-  // Langsung aktif tanpa tunggu tab lama ditutup
   self.skipWaiting();
 });
 
-// Activate - hapus cache lama
+// Activate - hapus cache lama (termasuk cache API versi lama)
 self.addEventListener('activate', event => {
   console.log('[SW] Activated!');
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
+          if (cacheName !== CACHE_NAME && cacheName !== API_CACHE_NAME) {
             console.log('[SW] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     }).then(() => {
-      // Langsung kontrol semua tab
       return self.clients.claim();
     })
   );
 });
 
-// Fetch - strategy berbeda untuk HTML vs aset
+// Fetch - strategy berbeda untuk HTML vs API vs aset
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
+  const isApiRequest = API_ORIGINS.includes(url.origin) || url.pathname.startsWith('/api/');
 
-  // ✅ Request ke API: selalu langsung ke network, SW tidak ikut campur sama sekali
-  if (API_ORIGINS.includes(url.origin) || url.pathname.startsWith('/api/')) {
-    return; // tidak panggil respondWith() → browser lanjut fetch normal ke network
+  // ✅ Request ke API
+  if (isApiRequest) {
+    // Non-GET (login, submit quiz, enroll, payment, dll) → network-only, TIDAK PERNAH di-cache
+    if (event.request.method !== 'GET') {
+      return; // biarkan browser fetch normal, tanpa campur tangan SW
+    }
+
+    // GET ke API → network-first, fallback ke cache kalau offline
+    event.respondWith(
+      fetch(event.request)
+        .then(networkResponse => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(API_CACHE_NAME).then(cache => {
+              cache.put(event.request, responseClone);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          console.log('[SW] API offline, coba ambil dari cache:', url.pathname);
+          return caches.match(event.request, { cacheName: API_CACHE_NAME });
+        })
+    );
+    return;
   }
 
   // ✅ HTML pages: SELALU ambil dari network (fresh)
-  // Splash screen butuh ini agar tidak di-cache dalam state hidden
   if (event.request.mode === 'navigate' || 
       (event.request.method === 'GET' && event.request.headers.get('accept').includes('text/html'))) {
     event.respondWith(
@@ -73,21 +94,20 @@ self.addEventListener('fetch', event => {
           return response;
         })
         .catch(() => {
-          // Offline fallback: sajikan dari cache kalau network mati
           return caches.match(event.request).then(cached => cached || caches.match('offline.html'));
         })
     );
     return;
   }
+
   if (url.pathname.endsWith('/js/api.js')) {
     event.respondWith(fetch(event.request));
     return;
-}
+  }
 
   // Aset statis: cache-first, dan HANYA untuk GET
   if (event.request.method !== 'GET') return;
 
-  // ✅ Aset statis (CSS, JS, images): cache-first
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -95,7 +115,6 @@ self.addEventListener('fetch', event => {
           return response;
         }
         return fetch(event.request).then(networkResponse => {
-          // Simpan ke cache untuk next time
           if (networkResponse && networkResponse.status === 200) {
             const responseClone = networkResponse.clone();
             caches.open(CACHE_NAME).then(cache => {
