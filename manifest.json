@@ -4,7 +4,7 @@
   "description": "Kursus Bahasa Inggris Online - Belajar Conversation, TOEFL, dan English untuk Profesional. Jadwal fleksibel!",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#FFFFFF",
+  "background_color": "#0d0d18",
   "theme_color": "#8B2C98",
   "orientation": "portrait-primary",
   "icons": [
@@ -12,13 +12,48 @@
       "src": "./images/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "./images/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./images/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./images/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./images/screenshot-home.png",
+      "sizes": "295x579",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Halaman Beranda SpeakOut"
+    },
+    {
+      "src": "./images/screenshot-courses.png",
+      "sizes": "294x586",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Daftar Kursus SpeakOut"
+    },
+    {
+      "src": "./images/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Tampilan Desktop SpeakOut"
     }
   ],
   "categories": ["education", "productivity"],
